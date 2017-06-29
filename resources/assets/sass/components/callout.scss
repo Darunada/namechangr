@@ -1,0 +1,69 @@
+.callout {
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px solid #eee;
+  border-left-width: 5px;
+  border-radius: 3px;
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  code {
+    border-radius: 3px;
+  }
+}
+
+.callout-default {
+  border-left-color: #777;
+
+  h4 {
+    color: #777;
+  }
+}
+
+
+.callout-primary {
+  border-left-color: $brand-primary;
+
+  h4 {
+    color: $brand-primary;
+  }
+}
+
+.callout-success {
+  border-left-color: $alert-success-text;
+
+  h4 {
+    color: $alert-success-text;
+  }
+}
+
+.callout-danger {
+  border-left-color: $alert-danger-text;
+
+  h4 {
+    color: $alert-danger-text;
+  }
+}
+
+.callout-warning {
+  border-left-color: $alert-warning-text;
+
+  h4 {
+    color: $alert-warning-text;
+  }
+}
+
+.callout-info {
+  border-left-color: $alert-info-text;
+
+  h4 {
+    color: $alert-info-text;
+  }
+}

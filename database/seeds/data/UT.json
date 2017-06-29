@@ -1,0 +1,81 @@
+{
+    "districts": {
+        "1st": {
+            "counties": {
+                "Box Elder": ["43 North Main\nBrigham City, UT 84302-0873"],
+                "Cache": ["135 North 100 West\nLogan, UT 84321"],
+                "Rich": ["Rich County Courthouse\n20 South Main\nRandolph, UT 84064"]
+            }
+        },
+        "2nd": {
+            "counties": {
+                "Davis": [
+                    "805 South Main\nBountiful, UT 84010",
+                    "800 West State Street\nFarmington, UT 84025",
+                    "425 N. Wasatch\nLayton, UT 84041"
+                ],
+                "Morgan": ["48 W Young Street\nMorgan, UT 84050"],
+                "Weber": ["2525 Grant Avenue\nOgden, UT 84401"]
+            }
+        },
+        "3rd": {
+            "counties": {
+                "Salt Lake": [
+                    "450 South State St\nSalt Lake City, UT 84114-1860",
+                    "8080 S Redwood Rd. Ste. 1701\nWest Jordan, UT 84088"
+                ],
+                "Summit": ["6300 Justice Center Road Ste A\nPark City, UT 84098"],
+                "Tooele": ["74 S. 100 East, Suite 14\nTooele, UT 84074"]
+            }
+        },
+        "4th": {
+            "counties": {
+                "Juab": ["102 East 200 North\nNephi, UT 84648"],
+                "Millard": ["765 South Highway 99 Suite 6\nFillmore, UT 84631"],
+                "Utah": [
+                    "75 East 80 North, Suite 202\nAmerican Fork, UT 84003-0986",
+                    "125 North 100 West\nProvo, UT 84601",
+                    "30 West 100 South\nSalem, UT 84653",
+                    "775 West Center\nSpanish Fork, UT 84660"
+                ],
+                "Wasatch": ["1361 South Highway 40, Ste 110\nHeber City, UT 84032"]
+            }
+        },
+        "5th": {
+            "counties": {
+                "Beaver": ["2270 South 525 West\nBeaver, UT 84713"],
+                "Iron": ["40 North 100 East\nCedar City, UT 84720"],
+                "Washington": ["206 West Tabernacle\nSuite 100\nSt. George, UT 84770"]
+            }
+        },
+        "6th": {
+            "counties": {
+                "Garfield": ["55 South Main\nPanguitch, UT 84759"],
+                "Kane": ["76 North Main Street Suite 2\nKanab, UT 84741"],
+                "Piute": ["550 North Main\nJunction, UT 84740"],
+                "Sanpete": ["160 North Main, Room 303\nManti, UT 84642"],
+                "Sevier": ["845 East 300 North Richfield\nRichfield, UT 84701"],
+                "Wayne": ["Wayne County Courthouse\nLoa, UT 84747-0189"]
+            }
+        },
+        "7th": {
+            "counties": {
+                "Carbon": ["149 East 100 South\nPrice, UT 84501"],
+                "Emery": ["1850 North Des Bee Dove Road\nCastle Dale, UT 84513"],
+                "Grand": ["125 East Center Street\nMoab, UT 84532"],
+                "San Juan": ["297 South Main\nMonticello, UT 84535"]
+            }
+        },
+        "8th": {
+            "counties": {
+                "Daggett": ["95 North 100 West\nManila, UT 84046"],
+                "Duchesne": [
+                    "21554 West 9000 South\nDuchesne, UT 84021",
+                    "255 S. State\nRoosevelt, UT 84066"
+                ],
+                "Uintah": ["920 East Highway 40\nVernal, UT 84078"]
+            }
+        }
+    }
+}
+
