@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -471,7 +471,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)))
 
 /***/ }),
 /* 2 */
@@ -11004,31 +11004,14 @@ return jQuery;
 
 /**
  * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
+ * includes javascript, bootstrap, axios, other libraries.
  */
 __webpack_require__(28);
 
-$(function () {
-    $('.btn-confirm').on('click', function (e) {
-        e.preventDefault();
-        var $btn = $(this);
-
-        var text = $btn.data('confirm-text');
-        console.log(text);
-        if (text === undefined || text.length == 0) {
-            text = "Are you sure?";
-        }
-
-        var callback = $btn.data('after-confirm');
-
-        window.bootbox.confirm(text, function (result) {
-            if (result == true) {
-                eval(callback);
-            }
-        });
-    });
-});
+/**
+ * Then we fire up the kernel to run tasks depending what page we are on
+ */
+__webpack_require__(30);
 
 /***/ }),
 /* 9 */
@@ -11890,8 +11873,8 @@ module.exports = function spread(callback) {
 try {
   window.$ = window.jQuery = __webpack_require__(7);
 
-  __webpack_require__(30);
-  window.bootbox = __webpack_require__(29);
+  __webpack_require__(32);
+  window.bootbox = __webpack_require__(31);
 } catch (e) {}
 
 /**
@@ -11901,6 +11884,7 @@ try {
  */
 window.axios = __webpack_require__(10);
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.baseURL = '/api/v1';
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
@@ -11932,6 +11916,93 @@ if (token) {
 
 /***/ }),
 /* 29 */
+/***/ (function(module, exports) {
+
+/**
+ * Adds a .btn-confirm class that will prompt for confirmation before completing an action
+ * Attributes:
+ *      data-confirm-text: the message displayed in the confirmation dialog
+ *      data-after-confirm: the js that will be evaled after successful confirmation
+ *
+ * Example
+ * <a href="/profile"
+ *    class="btn btn-confirm"
+ *    data-confirm-text="Are you sure you want to delete your account?"
+ *    data-after-confirm="document.getElementById('destroy-account-form').submit();">
+ *      Destroy my Account
+ * </a>
+ * <a href="">Destroy my Account</a>
+ */
+$('.btn-confirm').on('click', function (e) {
+    e.preventDefault();
+    var $btn = $(this);
+
+    var text = $btn.data('confirm-text');
+    if (text === undefined || text.length == 0) {
+        text = "Are you sure?";
+    }
+
+    var callback = $btn.data('after-confirm');
+    if (callback == undefined && $btn.has('href')) {
+        callback = 'window.location = "' + $btn.attr('href') + '"';
+    }
+
+    window.bootbox.confirm(text, function (result) {
+        if (result == true) {
+            eval(callback);
+        }
+    });
+});
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+NAMECHANGR = {
+    common: {
+        init: function init() {
+            // site-wide code
+        }
+    },
+    ProfileController: {
+        init: function init() {
+            // controller-wide code
+        },
+        index: function index() {
+            __webpack_require__(29);
+        }
+    },
+    DashboardController: {
+        init: function init() {},
+        index: function index() {
+            __webpack_require__(29);
+        }
+    }
+};
+
+KERNEL = {
+    exec: function exec(controller, action) {
+        var ns = NAMECHANGR,
+            action = action === undefined ? "init" : action;
+
+        if (controller !== "" && ns[controller] && typeof ns[controller][action] == "function") {
+            ns[controller][action]();
+        }
+    },
+    init: function init() {
+        var body = document.body,
+            controller = body.getAttribute("data-controller"),
+            action = body.getAttribute("data-action");
+        KERNEL.exec("common");
+        KERNEL.exec(controller);
+        KERNEL.exec(controller, action);
+    }
+};
+
+$(document).ready(KERNEL.init);
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -12925,7 +12996,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /*!
@@ -15308,7 +15379,7 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -15498,7 +15569,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(8);

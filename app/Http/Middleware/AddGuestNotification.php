@@ -16,10 +16,12 @@ class AddGuestNotification
      */
     public function handle($request, Closure $next)
     {
+        $response = $next($request);
+
         if (Auth::guest()) {
-            flash("You are using a guest user and your data will not be saved!")->important()->warning();
+            flash("You are using a guest user and your data will not be saved!")->warning();
         }
 
-        return $next($request);
+        return $response;
     }
 }

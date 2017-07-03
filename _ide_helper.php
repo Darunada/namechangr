@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.27 on 2017-06-29.
+ * Generated for Laravel 5.4.27 on 2017-07-02.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -13802,6 +13802,26 @@ namespace AdrianMejias\States {
  
 }
 
+namespace Greggilbert\Recaptcha\Facades { 
+
+    class Recaptcha {
+        
+        /**
+         * Render the recaptcha
+         *
+         * @param array $options
+         * @return \Greggilbert\Recaptcha\view 
+         * @static 
+         */ 
+        public static function render($options = array())
+        {
+            return \Greggilbert\Recaptcha\Recaptcha::render($options);
+        }
+         
+    }
+ 
+}
+
 
 namespace  { 
 
@@ -15857,6 +15877,8 @@ namespace  {
     class FlashNotifier extends \Laracasts\Flash\Flash {}
 
     class States extends \AdrianMejias\States\StatesFacade {}
+
+    class Recaptcha extends \Greggilbert\Recaptcha\Facades\Recaptcha {}
  
 }
 

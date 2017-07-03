@@ -26,6 +26,7 @@ class StateController extends Controller
      */
     public function show(State $state)
     {
+        $state->load('counties');
         return $state;
     }
 }

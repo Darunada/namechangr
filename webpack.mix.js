@@ -15,3 +15,10 @@ mix.js('resources/assets/js/app.js', 'public/js');
 
 mix.sass('resources/assets/sass/app.scss', 'public/css');
 
+
+if (mix.inProduction()) {
+    mix.version();
+} else {
+    mix.sourceMaps();
+}
+

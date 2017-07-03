@@ -8,6 +8,7 @@
         "php": ">=5.6.4",
         "adrianmejias/laravel-states": "^1.2",
         "doctrine/dbal": "^2.5",
+        "greggilbert/recaptcha": "^2.2",
         "guzzlehttp/guzzle": "^6.2",
         "laracasts/flash": "3.0.2",
         "laravel/framework": "5.4.*",

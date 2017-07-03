@@ -39,7 +39,7 @@ class District extends Model
      */
     public function state()
     {
-        $this->belongsTo('App\Models\Location\State');
+        return $this->belongsTo('App\Models\Location\State');
     }
 
     /**
@@ -47,7 +47,7 @@ class District extends Model
      */
     public function counties()
     {
-        $this->belongsToMany('App\Models\Location\County', 'district_counties');
+        return $this->belongsToMany('App\Models\Location\County', 'district_counties');
     }
 
 }

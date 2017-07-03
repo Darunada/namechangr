@@ -22,6 +22,8 @@ Route::get('/terms', 'HomeController@terms')->name('terms');
  * The heart of the site
  */
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/dashboard/start', 'DashboardController@start')->name('start');
+Route::post('/dashboard/start', 'DashboardController@spawnApplication');
 
 /**
  * User authentication
@@ -37,3 +39,8 @@ Route::post('auth/{provider}/deauthorize', 'Auth\AuthController@handleDeauthoriz
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::post('/profile', 'ProfileController@update');
 Route::delete('/profile', 'ProfileController@delete');
+
+/**
+ * State routes
+ */
+Route::get('/UT/{application?}', 'States\UtController@index')->name('states.UT');

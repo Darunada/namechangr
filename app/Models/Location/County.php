@@ -43,14 +43,14 @@ class County extends Model
      */
     public function state()
     {
-        $this->belongsTo('App\Models\Location\State');
+        return $this->belongsTo('App\Models\Location\State');
     }
 
     /**
      * Counties have 1..n districts
      */
-    public function counties()
+    public function districts()
     {
-        $this->belongsToMany('App\Models\Court\District', 'district_counties');
+        return $this->belongsToMany('App\Models\Court\District', 'district_counties');
     }
 }

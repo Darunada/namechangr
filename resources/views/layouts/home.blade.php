@@ -21,7 +21,7 @@
         ]) !!};
     </script>
 </head>
-<body>
+<body data-controller="{{ $controller }}" data-action="{{ $action }}">
     <div id="app">
         @include('partials.navbar')
 
@@ -46,6 +46,7 @@
 
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
+    @stack('scripts')
     @include('partials.google_analytics')
 </body>
 </html>

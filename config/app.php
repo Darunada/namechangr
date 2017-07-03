@@ -180,10 +180,12 @@ return [
         // Authentication service provideers
         Laravel\Socialite\SocialiteServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
+        Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
 
         // Other service providers...
         Laracasts\Flash\FlashServiceProvider::class,
         AdrianMejias\States\StatesServiceProvider::class,
+        App\Providers\ApplicationServiceProvider::class,
     ],
 
     /*
@@ -235,6 +237,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'FlashNotifier' => \Laracasts\Flash\Flash::class,
         'States' => AdrianMejias\States\StatesFacade::class,
+        'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
 
     ],
 
