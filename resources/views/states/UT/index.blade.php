@@ -27,9 +27,9 @@
                         </a>
                     </li>
                     <li class="disabled">
-                        <a href="#profile" data-toggle="tab" title="profile">
+                        <a href="#profile" data-toggle="tab" title="Your Personal Information">
                             <span class="round-tabs two">
-                                <i class="glyphicon glyphicon-user"></i>
+                                <i class="fa fa-user"></i>
                             </span>
                         </a>
                     </li>
@@ -61,7 +61,7 @@
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="court-location">
                     <div class="col-xs-12">
-                        <h3 class="head text-center">Select Court Location</h3>
+                        <h3 class="head text-center">Court Location</h3>
                         @include('states.location-picker')
 
                         <ul class="list-inline pull-right">
@@ -71,16 +71,8 @@
                 </div>
                 <div class="tab-pane fade" id="profile">
                     <div class="col-xs-12">
-                        <h3 class="head text-center">Create a Bootsnipp<sup>™</sup> Profile</h3>
-                        <p class="narrow text-center">
-                            Lorem ipsum dolor sit amet, his ea mollis fabellas principes. Quo mazim facilis tincidunt ut, utinam
-                            saperet facilisi an vim.
-                        </p>
-
-                        <p class="text-center">
-                            <a href="" class="btn btn-success btn-outline-rounded green"> create your profile <span
-                                        style="margin-left:10px;" class="glyphicon glyphicon-send"></span></a>
-                        </p>
+                        <h3 class="head text-center">Your Personal Information</h3>
+                        
 
                         <ul class="list-inline pull-right">
                             <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
