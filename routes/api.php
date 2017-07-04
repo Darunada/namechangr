@@ -18,9 +18,7 @@ use Illuminate\Http\Request;
  */
 Route::group(['prefix'=>'v1', 'namespace'=>'Api', /*'middleware'=>'auth:api'*/], function() {
 
-    Route::resource('states', 'StateController', ['only'=> ['index', 'show']]);
-    Route::resource('states.counties', 'StateCountyController', ['only'=> ['index', 'show']]);
-    Route::resource('states.districts', 'StateDistrictController', ['only'=> ['index', 'show']]);
-    Route::resource('states.locations', 'StateLocationController', ['only'=> ['index', 'show']]);
+    Route::resource('counties', 'CountyController', ['only'=> ['index', 'show']]);
+    Route::resource('locations', 'LocationController', ['only'=> ['index', 'show']]);
 
 });

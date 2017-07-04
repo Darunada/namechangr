@@ -3,5 +3,8 @@
   "/css/app.css": "/css/app.css",
   "/js/usa-map.js": "/js/usa-map.js",
   "/js/vendor.js": "/js/vendor.js",
-  "/js/manifest.js": "/js/manifest.js"
+  "/js/manifest.js": "/js/manifest.js",
+  "/mix.js": "/mix.js",
+  "/js/location-picker.js": "/js/location-picker.js",
+  "/js/UT.js": "/js/UT.js"
 }

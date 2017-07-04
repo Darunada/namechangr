@@ -10,7 +10,9 @@
 @import "node_modules/font-awesome/scss/font-awesome.scss";
 @import "node_modules/bootstrap-social/bootstrap-social.scss";
 
-@import "components/callout.scss";
+// Vendor Libraries
+@import "components/steps";
+@import "components/callout";
 
 //.form-row [class^="col-"]:not(:last-of-type) .form-group {
 //  margin-right: -$form-group-margin-bottom / 2;
@@ -19,6 +21,10 @@
 //.form-row [class^="col-"]:not(:first-of-type) .form-group {
 //  margin-left: -$form-group-margin-bottom / 2;
 //}
+
+body.application {
+  background-color: white;
+}
 
 footer.footer {
   min-height:100px;
@@ -29,6 +35,12 @@ select.loading::before {
   content: "\f110";
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
+}
+
+.location-block input[type="radio"] {
+  margin-top: -1px;
+  vertical-align: middle;
+  height: 100%;
 }
 
 ul#applications-list {

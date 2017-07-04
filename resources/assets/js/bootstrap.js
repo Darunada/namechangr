@@ -6,10 +6,36 @@
  */
 try {
     window.$ = window.jQuery = require('jquery');
+    window._ = window.Underscore = require('underscore');
 
     require('bootstrap-sass');
-    window.bootbox = require('bootbox');
+
 } catch (e) {}
+
+/**
+ * Load in jquery validator and set some common sense defaults
+ */
+require('jquery-validation');
+
+jQuery.validator.setDefaults({
+    errorClass: "text-danger help-block",
+    errorElement: "p",
+    validClass: "",
+    errorPlacement: function (error, element) {
+        element.closest('.form-group').find('.text-danger').remove();
+        element.closest('.form-group').append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+        var formGroup = $(element).closest('.form-group');
+        formGroup.find('.form-control-feedback').remove();
+        formGroup.addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        var formGroup = $(element).closest('.form-group');
+        formGroup.find('.form-control-feedback, .text-danger').remove();
+        formGroup.removeClass("has-error");
+    }
+});
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

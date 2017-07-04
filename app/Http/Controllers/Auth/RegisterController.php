@@ -80,6 +80,13 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
+        $sessionApplication = $request->session()->get('activeApplication');
+        if($sessionApplication != null) {
+            $sessionApplication->user_id = $user->id;
+            $sessionApplication->save();
+            $request->session()->forget('activeApplication');
+        }
+
         $user->notify(new UserRegistered());
     }
 }

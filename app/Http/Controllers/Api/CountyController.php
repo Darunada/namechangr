@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Location\County;
 use App\Models\Location\State;
-use App\Models\Court\District;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class StateDistrictController extends Controller
+class CountyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,18 +17,19 @@ class StateDistrictController extends Controller
      */
     public function index(State $state)
     {
-        return $state->districts()->get();
+        return $state->counties()->get();
     }
 
     /**
      * Display the specified resource.
      *
      * @param State $state
-     * @param District $district
+     * @param County $county
      * @return \Illuminate\Http\Response
      */
-    public function show(State $state, District $district)
+    public function show(State $state, County $county)
     {
-        return $district;
+        $county->load('districts');
+        return $county;
     }
 }

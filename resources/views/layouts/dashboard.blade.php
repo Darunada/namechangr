@@ -20,6 +20,7 @@
             'csrfToken' => csrf_token()
         ]) !!};
     </script>
+    @stack('objects')
 </head>
 <body data-controller="{{ $controller }}" data-action="{{ $action }}">
     <div id="app">
@@ -45,8 +46,8 @@
     </div>
 
     <!-- Scripts -->
-    @stack('scripts')
     <script src="{{ mix('js/app.js') }}"></script>
+    @stack('scripts')
     @include('partials.google_analytics')
 </body>
 </html>

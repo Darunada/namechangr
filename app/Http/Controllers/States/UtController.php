@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\States;
 
 
+use App\Concerns\GuardsApplicationRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Location\State;
@@ -15,9 +16,12 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 class UtController extends Controller
 {
 
+    use GuardsApplicationRequests;
+
     protected $state;
 
-    public function __construct() {
+    public function __construct()
+    {
 
         $this->middleware('guest-notification');
 
@@ -25,33 +29,38 @@ class UtController extends Controller
 
     }
 
-    protected function guardRequest($application) {
-        if($application == null) {
-            throw new AccessDeniedException('Please start an application!');
+
+    public function index(Request $request, Application $application = null)
+    {
+        $redirect = $this->guard($application);
+        if ($redirect) {
+            return $redirect;
         }
 
-        if($application->state_id != $this->state->id) {
-            throw new AccessDeniedException("Somehow you got my '{$this->state->name}' generator for your '{$application->state->name}' application");
-        }
-
-        if($application->user_id != null && Auth::id() != $application->user_id) {
-            throw new AccessDeniedException("You don't have permission!");
-        }
+        $counties = $application->state->counties->pluck('name', 'id');
+        $locations = $application->state->locations->all();
+        return view('states.UT.index', compact('locations', 'counties', 'application'));
     }
 
-    public function index(Request $request, Application $application = null) {
-        try {
-            $this->guardRequest($application);
-        } catch(AccessDeniedException $e) {
-            flash($e->getMessage())->error()->important();
-            return redirect('dashboard');
+    public function save(Request $request, Application $application = null) {
+        $redirect = $this->guard($application);
+        if ($redirect) {
+            return $redirect;
         }
 
-        dump($application);
-        dump(Auth::user());
-        dd('henlo thot');
-    }
+        $application->fill($request->input());
+        if(Auth::check()) {
+            $application->save();
+        } else {
+            $request->session()->put('activeApplication', $application);
+        }
 
+        if($request->expectsJson()) {
+            return response()->json(['application'=>$application]);
+        } else {
+            return redirect('states.UT', $application->id);
+        }
+    }
 
     public function generateSexOffenderRegistryForm() {
         /*

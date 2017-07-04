@@ -186,6 +186,7 @@ return [
         Laracasts\Flash\FlashServiceProvider::class,
         AdrianMejias\States\StatesServiceProvider::class,
         App\Providers\ApplicationServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -238,7 +239,7 @@ return [
         'FlashNotifier' => \Laracasts\Flash\Flash::class,
         'States' => AdrianMejias\States\StatesFacade::class,
         'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
-
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

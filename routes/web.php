@@ -44,3 +44,4 @@ Route::delete('/profile', 'ProfileController@delete');
  * State routes
  */
 Route::get('/UT/{application?}', 'States\UtController@index')->name('states.UT');
+Route::post('/UT/{application?}', 'States\UtController@save')->name('states.UT.save');

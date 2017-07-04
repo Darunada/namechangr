@@ -20,6 +20,9 @@
     "laravel-mix": "0.*"
   },
   "dependencies": {
-    "raphael": "^2.2.7"
+    "jquery-steps": "^1.1.0",
+    "jquery-validation": "^1.16.0",
+    "raphael": "^2.2.7",
+    "underscore": "^1.8.3"
   }
 }

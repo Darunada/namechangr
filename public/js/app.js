@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 34);
+/******/ 	return __webpack_require__(__webpack_require__.s = 39);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,7 +73,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(6);
+var bind = __webpack_require__(7);
 
 /*global toString:true*/
 
@@ -380,7 +380,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(25);
+var normalizeHeaderName = __webpack_require__(26);
 
 var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 var DEFAULT_CONTENT_TYPE = {
@@ -397,10 +397,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(2);
+    adapter = __webpack_require__(3);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(2);
+    adapter = __webpack_require__(3);
   }
   return adapter;
 }
@@ -471,274 +471,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(37)))
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var settle = __webpack_require__(17);
-var buildURL = __webpack_require__(20);
-var parseHeaders = __webpack_require__(26);
-var isURLSameOrigin = __webpack_require__(24);
-var createError = __webpack_require__(5);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(19);
-
-module.exports = function xhrAdapter(config) {
-  return new Promise(function dispatchXhrRequest(resolve, reject) {
-    var requestData = config.data;
-    var requestHeaders = config.headers;
-
-    if (utils.isFormData(requestData)) {
-      delete requestHeaders['Content-Type']; // Let the browser set it
-    }
-
-    var request = new XMLHttpRequest();
-    var loadEvent = 'onreadystatechange';
-    var xDomain = false;
-
-    // For IE 8/9 CORS support
-    // Only supports POST and GET calls and doesn't returns the response headers.
-    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if ("development" !== 'test' &&
-        typeof window !== 'undefined' &&
-        window.XDomainRequest && !('withCredentials' in request) &&
-        !isURLSameOrigin(config.url)) {
-      request = new window.XDomainRequest();
-      loadEvent = 'onload';
-      xDomain = true;
-      request.onprogress = function handleProgress() {};
-      request.ontimeout = function handleTimeout() {};
-    }
-
-    // HTTP basic authentication
-    if (config.auth) {
-      var username = config.auth.username || '';
-      var password = config.auth.password || '';
-      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-    }
-
-    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
-
-    // Set the request timeout in MS
-    request.timeout = config.timeout;
-
-    // Listen for ready state
-    request[loadEvent] = function handleLoad() {
-      if (!request || (request.readyState !== 4 && !xDomain)) {
-        return;
-      }
-
-      // The request errored out and we didn't get a response, this will be
-      // handled by onerror instead
-      // With one exception: request that using file: protocol, most browsers
-      // will return status as 0 even though it's a successful request
-      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-        return;
-      }
-
-      // Prepare the response
-      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
-      var response = {
-        data: responseData,
-        // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
-        status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
-        headers: responseHeaders,
-        config: config,
-        request: request
-      };
-
-      settle(resolve, reject, response);
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle low level network errors
-    request.onerror = function handleError() {
-      // Real errors are hidden from us by the browser
-      // onerror should only fire if it's a network error
-      reject(createError('Network Error', config));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle timeout
-    request.ontimeout = function handleTimeout() {
-      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED'));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Add xsrf header
-    // This is only done if running in a standard browser environment.
-    // Specifically not if we're in a web worker, or react-native.
-    if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(22);
-
-      // Add xsrf header
-      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-          cookies.read(config.xsrfCookieName) :
-          undefined;
-
-      if (xsrfValue) {
-        requestHeaders[config.xsrfHeaderName] = xsrfValue;
-      }
-    }
-
-    // Add headers to the request
-    if ('setRequestHeader' in request) {
-      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-          // Remove Content-Type if data is undefined
-          delete requestHeaders[key];
-        } else {
-          // Otherwise add header to the request
-          request.setRequestHeader(key, val);
-        }
-      });
-    }
-
-    // Add withCredentials to request if needed
-    if (config.withCredentials) {
-      request.withCredentials = true;
-    }
-
-    // Add responseType to request if needed
-    if (config.responseType) {
-      try {
-        request.responseType = config.responseType;
-      } catch (e) {
-        if (request.responseType !== 'json') {
-          throw e;
-        }
-      }
-    }
-
-    // Handle progress if needed
-    if (typeof config.onDownloadProgress === 'function') {
-      request.addEventListener('progress', config.onDownloadProgress);
-    }
-
-    // Not all browsers support upload events
-    if (typeof config.onUploadProgress === 'function' && request.upload) {
-      request.upload.addEventListener('progress', config.onUploadProgress);
-    }
-
-    if (config.cancelToken) {
-      // Handle cancellation
-      config.cancelToken.promise.then(function onCanceled(cancel) {
-        if (!request) {
-          return;
-        }
-
-        request.abort();
-        reject(cancel);
-        // Clean up request
-        request = null;
-      });
-    }
-
-    if (requestData === undefined) {
-      requestData = null;
-    }
-
-    // Send the request
-    request.send(requestData);
-  });
-};
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * A `Cancel` is an object that is thrown when an operation is canceled.
- *
- * @class
- * @param {string=} message The message.
- */
-function Cancel(message) {
-  this.message = message;
-}
-
-Cancel.prototype.toString = function toString() {
-  return 'Cancel' + (this.message ? ': ' + this.message : '');
-};
-
-Cancel.prototype.__CANCEL__ = true;
-
-module.exports = Cancel;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function isCancel(value) {
-  return !!(value && value.__CANCEL__);
-};
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var enhanceError = __webpack_require__(16);
-
-/**
- * Create an Error with the specified message, config, error code, and response.
- *
- * @param {string} message The error message.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- @ @param {Object} [response] The response.
- * @returns {Error} The created error.
- */
-module.exports = function createError(message, config, code, response) {
-  var error = new Error(message);
-  return enhanceError(error, config, code, response);
-};
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = function bind(fn, thisArg) {
-  return function wrap() {
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-    return fn.apply(thisArg, args);
-  };
-};
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10998,43 +10734,316 @@ return jQuery;
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes javascript, bootstrap, axios, other libraries.
- */
-__webpack_require__(28);
-
-/**
- * Then we fire up the kernel to run tasks depending what page we are on
- */
-__webpack_require__(30);
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(11);
-
-/***/ }),
-/* 11 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(6);
-var Axios = __webpack_require__(13);
+var settle = __webpack_require__(18);
+var buildURL = __webpack_require__(21);
+var parseHeaders = __webpack_require__(27);
+var isURLSameOrigin = __webpack_require__(25);
+var createError = __webpack_require__(6);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(20);
+
+module.exports = function xhrAdapter(config) {
+  return new Promise(function dispatchXhrRequest(resolve, reject) {
+    var requestData = config.data;
+    var requestHeaders = config.headers;
+
+    if (utils.isFormData(requestData)) {
+      delete requestHeaders['Content-Type']; // Let the browser set it
+    }
+
+    var request = new XMLHttpRequest();
+    var loadEvent = 'onreadystatechange';
+    var xDomain = false;
+
+    // For IE 8/9 CORS support
+    // Only supports POST and GET calls and doesn't returns the response headers.
+    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
+    if ("development" !== 'test' &&
+        typeof window !== 'undefined' &&
+        window.XDomainRequest && !('withCredentials' in request) &&
+        !isURLSameOrigin(config.url)) {
+      request = new window.XDomainRequest();
+      loadEvent = 'onload';
+      xDomain = true;
+      request.onprogress = function handleProgress() {};
+      request.ontimeout = function handleTimeout() {};
+    }
+
+    // HTTP basic authentication
+    if (config.auth) {
+      var username = config.auth.username || '';
+      var password = config.auth.password || '';
+      requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
+    }
+
+    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+
+    // Set the request timeout in MS
+    request.timeout = config.timeout;
+
+    // Listen for ready state
+    request[loadEvent] = function handleLoad() {
+      if (!request || (request.readyState !== 4 && !xDomain)) {
+        return;
+      }
+
+      // The request errored out and we didn't get a response, this will be
+      // handled by onerror instead
+      // With one exception: request that using file: protocol, most browsers
+      // will return status as 0 even though it's a successful request
+      if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
+        return;
+      }
+
+      // Prepare the response
+      var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
+      var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
+      var response = {
+        data: responseData,
+        // IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)
+        status: request.status === 1223 ? 204 : request.status,
+        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        headers: responseHeaders,
+        config: config,
+        request: request
+      };
+
+      settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle low level network errors
+    request.onerror = function handleError() {
+      // Real errors are hidden from us by the browser
+      // onerror should only fire if it's a network error
+      reject(createError('Network Error', config));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle timeout
+    request.ontimeout = function handleTimeout() {
+      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED'));
+
+      // Clean up request
+      request = null;
+    };
+
+    // Add xsrf header
+    // This is only done if running in a standard browser environment.
+    // Specifically not if we're in a web worker, or react-native.
+    if (utils.isStandardBrowserEnv()) {
+      var cookies = __webpack_require__(23);
+
+      // Add xsrf header
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
+          cookies.read(config.xsrfCookieName) :
+          undefined;
+
+      if (xsrfValue) {
+        requestHeaders[config.xsrfHeaderName] = xsrfValue;
+      }
+    }
+
+    // Add headers to the request
+    if ('setRequestHeader' in request) {
+      utils.forEach(requestHeaders, function setRequestHeader(val, key) {
+        if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
+          // Remove Content-Type if data is undefined
+          delete requestHeaders[key];
+        } else {
+          // Otherwise add header to the request
+          request.setRequestHeader(key, val);
+        }
+      });
+    }
+
+    // Add withCredentials to request if needed
+    if (config.withCredentials) {
+      request.withCredentials = true;
+    }
+
+    // Add responseType to request if needed
+    if (config.responseType) {
+      try {
+        request.responseType = config.responseType;
+      } catch (e) {
+        if (request.responseType !== 'json') {
+          throw e;
+        }
+      }
+    }
+
+    // Handle progress if needed
+    if (typeof config.onDownloadProgress === 'function') {
+      request.addEventListener('progress', config.onDownloadProgress);
+    }
+
+    // Not all browsers support upload events
+    if (typeof config.onUploadProgress === 'function' && request.upload) {
+      request.upload.addEventListener('progress', config.onUploadProgress);
+    }
+
+    if (config.cancelToken) {
+      // Handle cancellation
+      config.cancelToken.promise.then(function onCanceled(cancel) {
+        if (!request) {
+          return;
+        }
+
+        request.abort();
+        reject(cancel);
+        // Clean up request
+        request = null;
+      });
+    }
+
+    if (requestData === undefined) {
+      requestData = null;
+    }
+
+    // Send the request
+    request.send(requestData);
+  });
+};
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * A `Cancel` is an object that is thrown when an operation is canceled.
+ *
+ * @class
+ * @param {string=} message The message.
+ */
+function Cancel(message) {
+  this.message = message;
+}
+
+Cancel.prototype.toString = function toString() {
+  return 'Cancel' + (this.message ? ': ' + this.message : '');
+};
+
+Cancel.prototype.__CANCEL__ = true;
+
+module.exports = Cancel;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function isCancel(value) {
+  return !!(value && value.__CANCEL__);
+};
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var enhanceError = __webpack_require__(17);
+
+/**
+ * Create an Error with the specified message, config, error code, and response.
+ *
+ * @param {string} message The error message.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ @ @param {Object} [response] The response.
+ * @returns {Error} The created error.
+ */
+module.exports = function createError(message, config, code, response) {
+  var error = new Error(message);
+  return enhanceError(error, config, code, response);
+};
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function bind(fn, thisArg) {
+  return function wrap() {
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+    return fn.apply(thisArg, args);
+  };
+};
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes jquery, bootstrap, axios, other libraries.
+ *
+ * These are the main core big deal libraries
+ */
+__webpack_require__(29);
+
+/**
+ * Other libraries
+ */
+window.bootbox = __webpack_require__(33);
+__webpack_require__(35);
+
+/**
+ * Components
+ */
+__webpack_require__(30);
+
+/***/ }),
+/* 9 */,
+/* 10 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(12);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+var bind = __webpack_require__(7);
+var Axios = __webpack_require__(14);
 var defaults = __webpack_require__(1);
 
 /**
@@ -11068,15 +11077,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(3);
-axios.CancelToken = __webpack_require__(12);
-axios.isCancel = __webpack_require__(4);
+axios.Cancel = __webpack_require__(4);
+axios.CancelToken = __webpack_require__(13);
+axios.isCancel = __webpack_require__(5);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(27);
+axios.spread = __webpack_require__(28);
 
 module.exports = axios;
 
@@ -11085,13 +11094,13 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(3);
+var Cancel = __webpack_require__(4);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -11149,7 +11158,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11157,10 +11166,10 @@ module.exports = CancelToken;
 
 var defaults = __webpack_require__(1);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(14);
-var dispatchRequest = __webpack_require__(15);
-var isAbsoluteURL = __webpack_require__(23);
-var combineURLs = __webpack_require__(21);
+var InterceptorManager = __webpack_require__(15);
+var dispatchRequest = __webpack_require__(16);
+var isAbsoluteURL = __webpack_require__(24);
+var combineURLs = __webpack_require__(22);
 
 /**
  * Create a new instance of Axios
@@ -11241,7 +11250,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11300,15 +11309,15 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(18);
-var isCancel = __webpack_require__(4);
+var transformData = __webpack_require__(19);
+var isCancel = __webpack_require__(5);
 var defaults = __webpack_require__(1);
 
 /**
@@ -11386,7 +11395,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11412,13 +11421,13 @@ module.exports = function enhanceError(error, config, code, response) {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(5);
+var createError = __webpack_require__(6);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -11444,7 +11453,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11471,7 +11480,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11514,7 +11523,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11589,7 +11598,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11608,7 +11617,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11668,7 +11677,7 @@ module.exports = (
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11689,7 +11698,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11764,7 +11773,7 @@ module.exports = (
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11783,7 +11792,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11827,7 +11836,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11861,7 +11870,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -11871,18 +11880,43 @@ module.exports = function spread(callback) {
  * code may be modified to fit the specific needs of your application.
  */
 try {
-  window.$ = window.jQuery = __webpack_require__(7);
+    window.$ = window.jQuery = __webpack_require__(2);
+    window._ = window.Underscore = __webpack_require__(38);
 
-  __webpack_require__(32);
-  window.bootbox = __webpack_require__(31);
+    __webpack_require__(34);
 } catch (e) {}
+
+/**
+ * Load in jquery validator and set some common sense defaults
+ */
+__webpack_require__(36);
+
+jQuery.validator.setDefaults({
+    errorClass: "text-danger help-block",
+    errorElement: "p",
+    validClass: "",
+    errorPlacement: function errorPlacement(error, element) {
+        element.closest('.form-group').find('.text-danger').remove();
+        element.closest('.form-group').append(error);
+    },
+    highlight: function highlight(element, errorClass, validClass) {
+        var formGroup = $(element).closest('.form-group');
+        formGroup.find('.form-control-feedback').remove();
+        formGroup.addClass("has-error");
+    },
+    unhighlight: function unhighlight(element, errorClass, validClass) {
+        var formGroup = $(element).closest('.form-group');
+        formGroup.find('.form-control-feedback, .text-danger').remove();
+        formGroup.removeClass("has-error");
+    }
+});
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
-window.axios = __webpack_require__(10);
+window.axios = __webpack_require__(11);
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.baseURL = '/api/v1';
 
@@ -11894,9 +11928,9 @@ window.axios.defaults.baseURL = '/api/v1';
 var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 /**
@@ -11915,7 +11949,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /**
@@ -11944,7 +11978,7 @@ $('.btn-confirm').on('click', function (e) {
 
     var callback = $btn.data('after-confirm');
     if (callback == undefined && $btn.has('href')) {
-        callback = 'window.location = "' + $btn.attr('href') + '"';
+        callback = 'window.location = "' + $btn.attr('href') + '";';
     }
 
     window.bootbox.confirm(text, function (result) {
@@ -11955,54 +11989,9 @@ $('.btn-confirm').on('click', function (e) {
 });
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-NAMECHANGR = {
-    common: {
-        init: function init() {
-            // site-wide code
-        }
-    },
-    ProfileController: {
-        init: function init() {
-            // controller-wide code
-        },
-        index: function index() {
-            __webpack_require__(29);
-        }
-    },
-    DashboardController: {
-        init: function init() {},
-        index: function index() {
-            __webpack_require__(29);
-        }
-    }
-};
-
-KERNEL = {
-    exec: function exec(controller, action) {
-        var ns = NAMECHANGR,
-            action = action === undefined ? "init" : action;
-
-        if (controller !== "" && ns[controller] && typeof ns[controller][action] == "function") {
-            ns[controller][action]();
-        }
-    },
-    init: function init() {
-        var body = document.body,
-            controller = body.getAttribute("data-controller"),
-            action = body.getAttribute("data-action");
-        KERNEL.exec("common");
-        KERNEL.exec(controller);
-        KERNEL.exec(controller, action);
-    }
-};
-
-$(document).ready(KERNEL.init);
-
-/***/ }),
-/* 31 */
+/* 31 */,
+/* 32 */,
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -12018,7 +12007,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   "use strict";
   if (true) {
     // AMD. Register as an anonymous module.
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -12996,7 +12985,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports) {
 
 /*!
@@ -15379,7 +15368,3636 @@ if (typeof jQuery === 'undefined') {
 
 
 /***/ }),
-/* 33 */
+/* 35 */
+/***/ (function(module, exports) {
+
+/*! 
+ * jQuery Steps v1.1.0 - 09/04/2014
+ * Copyright (c) 2014 Rafael Staib (http://www.jquery-steps.com)
+ * Licensed under MIT http://www.opensource.org/licenses/MIT
+ */
+;(function ($, undefined)
+{
+$.fn.extend({
+    _aria: function (name, value)
+    {
+        return this.attr("aria-" + name, value);
+    },
+
+    _removeAria: function (name)
+    {
+        return this.removeAttr("aria-" + name);
+    },
+
+    _enableAria: function (enable)
+    {
+        return (enable == null || enable) ? 
+            this.removeClass("disabled")._aria("disabled", "false") : 
+            this.addClass("disabled")._aria("disabled", "true");
+    },
+
+    _showAria: function (show)
+    {
+        return (show == null || show) ? 
+            this.show()._aria("hidden", "false") : 
+            this.hide()._aria("hidden", "true");
+    },
+
+    _selectAria: function (select)
+    {
+        return (select == null || select) ? 
+            this.addClass("current")._aria("selected", "true") : 
+            this.removeClass("current")._aria("selected", "false");
+    },
+
+    _id: function (id)
+    {
+        return (id) ? this.attr("id", id) : this.attr("id");
+    }
+});
+
+if (!String.prototype.format)
+{
+    String.prototype.format = function()
+    {
+        var args = (arguments.length === 1 && $.isArray(arguments[0])) ? arguments[0] : arguments;
+        var formattedString = this;
+        for (var i = 0; i < args.length; i++)
+        {
+            var pattern = new RegExp("\\{" + i + "\\}", "gm");
+            formattedString = formattedString.replace(pattern, args[i]);
+        }
+        return formattedString;
+    };
+}
+
+/**
+ * A global unique id count.
+ *
+ * @static
+ * @private
+ * @property _uniqueId
+ * @type Integer
+ **/
+var _uniqueId = 0;
+
+/**
+ * The plugin prefix for cookies.
+ *
+ * @final
+ * @private
+ * @property _cookiePrefix
+ * @type String
+ **/
+var _cookiePrefix = "jQu3ry_5teps_St@te_";
+
+/**
+ * Suffix for the unique tab id.
+ *
+ * @final
+ * @private
+ * @property _tabSuffix
+ * @type String
+ * @since 0.9.7
+ **/
+var _tabSuffix = "-t-";
+
+/**
+ * Suffix for the unique tabpanel id.
+ *
+ * @final
+ * @private
+ * @property _tabpanelSuffix
+ * @type String
+ * @since 0.9.7
+ **/
+var _tabpanelSuffix = "-p-";
+
+/**
+ * Suffix for the unique title id.
+ *
+ * @final
+ * @private
+ * @property _titleSuffix
+ * @type String
+ * @since 0.9.7
+ **/
+var _titleSuffix = "-h-";
+
+/**
+ * An error message for an "index out of range" error.
+ *
+ * @final
+ * @private
+ * @property _indexOutOfRangeErrorMessage
+ * @type String
+ **/
+var _indexOutOfRangeErrorMessage = "Index out of range.";
+
+/**
+ * An error message for an "missing corresponding element" error.
+ *
+ * @final
+ * @private
+ * @property _missingCorrespondingElementErrorMessage
+ * @type String
+ **/
+var _missingCorrespondingElementErrorMessage = "One or more corresponding step {0} are missing.";
+
+/**
+ * Adds a step to the cache.
+ *
+ * @static
+ * @private
+ * @method addStepToCache
+ * @param wizard {Object} A jQuery wizard object
+ * @param step {Object} The step object to add
+ **/
+function addStepToCache(wizard, step)
+{
+    getSteps(wizard).push(step);
+}
+
+function analyzeData(wizard, options, state)
+{
+    var stepTitles = wizard.children(options.headerTag),
+        stepContents = wizard.children(options.bodyTag);
+
+    // Validate content
+    if (stepTitles.length > stepContents.length)
+    {
+        throwError(_missingCorrespondingElementErrorMessage, "contents");
+    }
+    else if (stepTitles.length < stepContents.length)
+    {
+        throwError(_missingCorrespondingElementErrorMessage, "titles");
+    }
+        
+    var startIndex = options.startIndex;
+
+    state.stepCount = stepTitles.length;
+
+    // Tries to load the saved state (step position)
+    if (options.saveState && $.cookie)
+    {
+        var savedState = $.cookie(_cookiePrefix + getUniqueId(wizard));
+        // Sets the saved position to the start index if not undefined or out of range 
+        var savedIndex = parseInt(savedState, 0);
+        if (!isNaN(savedIndex) && savedIndex < state.stepCount)
+        {
+            startIndex = savedIndex;
+        }
+    }
+
+    state.currentIndex = startIndex;
+
+    stepTitles.each(function (index)
+    {
+        var item = $(this), // item == header
+            content = stepContents.eq(index),
+            modeData = content.data("mode"),
+            mode = (modeData == null) ? contentMode.html : getValidEnumValue(contentMode,
+                (/^\s*$/.test(modeData) || isNaN(modeData)) ? modeData : parseInt(modeData, 0)),
+            contentUrl = (mode === contentMode.html || content.data("url") === undefined) ?
+                "" : content.data("url"),
+            contentLoaded = (mode !== contentMode.html && content.data("loaded") === "1"),
+            step = $.extend({}, stepModel, {
+                title: item.html(),
+                content: (mode === contentMode.html) ? content.html() : "",
+                contentUrl: contentUrl,
+                contentMode: mode,
+                contentLoaded: contentLoaded
+            });
+
+        addStepToCache(wizard, step);
+    });
+}
+
+/**
+ * Triggers the onCanceled event.
+ *
+ * @static
+ * @private
+ * @method cancel
+ * @param wizard {Object} The jQuery wizard object
+ **/
+function cancel(wizard)
+{
+    wizard.triggerHandler("canceled");
+}
+
+function decreaseCurrentIndexBy(state, decreaseBy)
+{
+    return state.currentIndex - decreaseBy;
+}
+
+/**
+ * Removes the control functionality completely and transforms the current state to the initial HTML structure.
+ *
+ * @static
+ * @private
+ * @method destroy
+ * @param wizard {Object} A jQuery wizard object
+ **/
+function destroy(wizard, options)
+{
+    var eventNamespace = getEventNamespace(wizard);
+
+    // Remove virtual data objects from the wizard
+    wizard.unbind(eventNamespace).removeData("uid").removeData("options")
+        .removeData("state").removeData("steps").removeData("eventNamespace")
+        .find(".actions a").unbind(eventNamespace);
+
+    // Remove attributes and CSS classes from the wizard
+    wizard.removeClass(options.clearFixCssClass + " vertical");
+
+    var contents = wizard.find(".content > *");
+
+    // Remove virtual data objects from panels and their titles
+    contents.removeData("loaded").removeData("mode").removeData("url");
+
+    // Remove attributes, CSS classes and reset inline styles on all panels and their titles
+    contents.removeAttr("id").removeAttr("role").removeAttr("tabindex")
+        .removeAttr("class").removeAttr("style")._removeAria("labelledby")
+        ._removeAria("hidden");
+
+    // Empty panels if the mode is set to 'async' or 'iframe'
+    wizard.find(".content > [data-mode='async'],.content > [data-mode='iframe']").empty();
+
+    var wizardSubstitute = $("<{0} class=\"{1}\"></{0}>".format(wizard.get(0).tagName, wizard.attr("class")));
+
+    var wizardId = wizard._id();
+    if (wizardId != null && wizardId !== "")
+    {
+        wizardSubstitute._id(wizardId);
+    }
+
+    wizardSubstitute.html(wizard.find(".content").html());
+    wizard.after(wizardSubstitute);
+    wizard.remove();
+
+    return wizardSubstitute;
+}
+
+/**
+ * Triggers the onFinishing and onFinished event.
+ *
+ * @static
+ * @private
+ * @method finishStep
+ * @param wizard {Object} The jQuery wizard object
+ * @param state {Object} The state container of the current wizard
+ **/
+function finishStep(wizard, state)
+{
+    var currentStep = wizard.find(".steps li").eq(state.currentIndex);
+
+    if (wizard.triggerHandler("finishing", [state.currentIndex]))
+    {
+        currentStep.addClass("done").removeClass("error");
+        wizard.triggerHandler("finished", [state.currentIndex]);
+    }
+    else
+    {
+        currentStep.addClass("error");
+    }
+}
+
+/**
+ * Gets or creates if not exist an unique event namespace for the given wizard instance.
+ *
+ * @static
+ * @private
+ * @method getEventNamespace
+ * @param wizard {Object} A jQuery wizard object
+ * @return {String} Returns the unique event namespace for the given wizard
+ */
+function getEventNamespace(wizard)
+{
+    var eventNamespace = wizard.data("eventNamespace");
+
+    if (eventNamespace == null)
+    {
+        eventNamespace = "." + getUniqueId(wizard);
+        wizard.data("eventNamespace", eventNamespace);
+    }
+
+    return eventNamespace;
+}
+
+function getStepAnchor(wizard, index)
+{
+    var uniqueId = getUniqueId(wizard);
+
+    return wizard.find("#" + uniqueId + _tabSuffix + index);
+}
+
+function getStepPanel(wizard, index)
+{
+    var uniqueId = getUniqueId(wizard);
+
+    return wizard.find("#" + uniqueId + _tabpanelSuffix + index);
+}
+
+function getStepTitle(wizard, index)
+{
+    var uniqueId = getUniqueId(wizard);
+
+    return wizard.find("#" + uniqueId + _titleSuffix + index);
+}
+
+function getOptions(wizard)
+{
+    return wizard.data("options");
+}
+
+function getState(wizard)
+{
+    return wizard.data("state");
+}
+
+function getSteps(wizard)
+{
+    return wizard.data("steps");
+}
+
+/**
+ * Gets a specific step object by index.
+ *
+ * @static
+ * @private
+ * @method getStep
+ * @param index {Integer} An integer that belongs to the position of a step
+ * @return {Object} A specific step object
+ **/
+function getStep(wizard, index)
+{
+    var steps = getSteps(wizard);
+
+    if (index < 0 || index >= steps.length)
+    {
+        throwError(_indexOutOfRangeErrorMessage);
+    }
+
+    return steps[index];
+}
+
+/**
+ * Gets or creates if not exist an unique id from the given wizard instance.
+ *
+ * @static
+ * @private
+ * @method getUniqueId
+ * @param wizard {Object} A jQuery wizard object
+ * @return {String} Returns the unique id for the given wizard
+ */
+function getUniqueId(wizard)
+{
+    var uniqueId = wizard.data("uid");
+
+    if (uniqueId == null)
+    {
+        uniqueId = wizard._id();
+        if (uniqueId == null)
+        {
+            uniqueId = "steps-uid-".concat(_uniqueId);
+            wizard._id(uniqueId);
+        }
+
+        _uniqueId++;
+        wizard.data("uid", uniqueId);
+    }
+
+    return uniqueId;
+}
+
+/**
+ * Gets a valid enum value by checking a specific enum key or value.
+ * 
+ * @static
+ * @private
+ * @method getValidEnumValue
+ * @param enumType {Object} Type of enum
+ * @param keyOrValue {Object} Key as `String` or value as `Integer` to check for
+ */
+function getValidEnumValue(enumType, keyOrValue)
+{
+    validateArgument("enumType", enumType);
+    validateArgument("keyOrValue", keyOrValue);
+
+    // Is key
+    if (typeof keyOrValue === "string")
+    {
+        var value = enumType[keyOrValue];
+        if (value === undefined)
+        {
+            throwError("The enum key '{0}' does not exist.", keyOrValue);
+        }
+
+        return value;
+    }
+    // Is value
+    else if (typeof keyOrValue === "number")
+    {
+        for (var key in enumType)
+        {
+            if (enumType[key] === keyOrValue)
+            {
+                return keyOrValue;
+            }
+        }
+
+        throwError("Invalid enum value '{0}'.", keyOrValue);
+    }
+    // Type is not supported
+    else
+    {
+        throwError("Invalid key or value type.");
+    }
+}
+
+/**
+ * Routes to the next step.
+ *
+ * @static
+ * @private
+ * @method goToNextStep
+ * @param wizard {Object} The jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @return {Boolean} Indicates whether the action executed
+ **/
+function goToNextStep(wizard, options, state)
+{
+    return paginationClick(wizard, options, state, increaseCurrentIndexBy(state, 1));
+}
+
+/**
+ * Routes to the previous step.
+ *
+ * @static
+ * @private
+ * @method goToPreviousStep
+ * @param wizard {Object} The jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @return {Boolean} Indicates whether the action executed
+ **/
+function goToPreviousStep(wizard, options, state)
+{
+    return paginationClick(wizard, options, state, decreaseCurrentIndexBy(state, 1));
+}
+
+/**
+ * Routes to a specific step by a given index.
+ *
+ * @static
+ * @private
+ * @method goToStep
+ * @param wizard {Object} The jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param index {Integer} The position (zero-based) to route to
+ * @return {Boolean} Indicates whether the action succeeded or failed
+ **/
+function goToStep(wizard, options, state, index)
+{
+    if (index < 0 || index >= state.stepCount)
+    {
+        throwError(_indexOutOfRangeErrorMessage);
+    }
+
+    if (options.forceMoveForward && index < state.currentIndex)
+    {
+        return;
+    }
+
+    var oldIndex = state.currentIndex;
+    if (wizard.triggerHandler("stepChanging", [state.currentIndex, index]))
+    {
+        // Save new state
+        state.currentIndex = index;
+        saveCurrentStateToCookie(wizard, options, state);
+
+        // Change visualisation
+        refreshStepNavigation(wizard, options, state, oldIndex);
+        refreshPagination(wizard, options, state);
+        loadAsyncContent(wizard, options, state);
+        startTransitionEffect(wizard, options, state, index, oldIndex, function()
+        {
+            wizard.triggerHandler("stepChanged", [index, oldIndex]);
+        });
+    }
+    else
+    {
+        wizard.find(".steps li").eq(oldIndex).addClass("error");
+    }
+
+    return true;
+}
+
+function increaseCurrentIndexBy(state, increaseBy)
+{
+    return state.currentIndex + increaseBy;
+}
+
+/**
+ * Initializes the component.
+ *
+ * @static
+ * @private
+ * @method initialize
+ * @param options {Object} The component settings
+ **/
+function initialize(options)
+{
+    /*jshint -W040 */
+    var opts = $.extend(true, {}, defaults, options);
+
+    return this.each(function ()
+    {
+        var wizard = $(this);
+        var state = {
+            currentIndex: opts.startIndex,
+            currentStep: null,
+            stepCount: 0,
+            transitionElement: null
+        };
+
+        // Create data container
+        wizard.data("options", opts);
+        wizard.data("state", state);
+        wizard.data("steps", []);
+
+        analyzeData(wizard, opts, state);
+        render(wizard, opts, state);
+        registerEvents(wizard, opts);
+
+        // Trigger focus
+        if (opts.autoFocus && _uniqueId === 0)
+        {
+            getStepAnchor(wizard, opts.startIndex).focus();
+        }
+
+        wizard.triggerHandler("init", [opts.startIndex]);
+    });
+}
+
+/**
+ * Inserts a new step to a specific position.
+ *
+ * @static
+ * @private
+ * @method insertStep
+ * @param wizard {Object} The jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param index {Integer} The position (zero-based) to add
+ * @param step {Object} The step object to add
+ * @example
+ *     $("#wizard").steps().insert(0, {
+ *         title: "Title",
+ *         content: "", // optional
+ *         contentMode: "async", // optional
+ *         contentUrl: "/Content/Step/1" // optional
+ *     });
+ * @chainable
+ **/
+function insertStep(wizard, options, state, index, step)
+{
+    if (index < 0 || index > state.stepCount)
+    {
+        throwError(_indexOutOfRangeErrorMessage);
+    }
+
+    // TODO: Validate step object
+
+    // Change data
+    step = $.extend({}, stepModel, step);
+    insertStepToCache(wizard, index, step);
+    if (state.currentIndex !== state.stepCount && state.currentIndex >= index)
+    {
+        state.currentIndex++;
+        saveCurrentStateToCookie(wizard, options, state);
+    }
+    state.stepCount++;
+
+    var contentContainer = wizard.find(".content"),
+        header = $("<{0}>{1}</{0}>".format(options.headerTag, step.title)),
+        body = $("<{0}></{0}>".format(options.bodyTag));
+
+    if (step.contentMode == null || step.contentMode === contentMode.html)
+    {
+        body.html(step.content);
+    }
+
+    if (index === 0)
+    {
+        contentContainer.prepend(body).prepend(header);
+    }
+    else
+    {
+        getStepPanel(wizard, (index - 1)).after(body).after(header);
+    }
+
+    renderBody(wizard, state, body, index);
+    renderTitle(wizard, options, state, header, index);
+    refreshSteps(wizard, options, state, index);
+    if (index === state.currentIndex)
+    {
+        refreshStepNavigation(wizard, options, state);
+    }
+    refreshPagination(wizard, options, state);
+
+    return wizard;
+}
+
+/**
+ * Inserts a step object to the cache at a specific position.
+ *
+ * @static
+ * @private
+ * @method insertStepToCache
+ * @param wizard {Object} A jQuery wizard object
+ * @param index {Integer} The position (zero-based) to add
+ * @param step {Object} The step object to add
+ **/
+function insertStepToCache(wizard, index, step)
+{
+    getSteps(wizard).splice(index, 0, step);
+}
+
+/**
+ * Handles the keyup DOM event for pagination.
+ *
+ * @static
+ * @private
+ * @event keyup
+ * @param event {Object} An event object
+ */
+function keyUpHandler(event)
+{
+    var wizard = $(this),
+        options = getOptions(wizard),
+        state = getState(wizard);
+
+    if (options.suppressPaginationOnFocus && wizard.find(":focus").is(":input"))
+    {
+        event.preventDefault();
+        return false;
+    }
+
+    var keyCodes = { left: 37, right: 39 };
+    if (event.keyCode === keyCodes.left)
+    {
+        event.preventDefault();
+        goToPreviousStep(wizard, options, state);
+    }
+    else if (event.keyCode === keyCodes.right)
+    {
+        event.preventDefault();
+        goToNextStep(wizard, options, state);
+    }
+}
+
+/**
+ * Loads and includes async content.
+ *
+ * @static
+ * @private
+ * @method loadAsyncContent
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ */
+function loadAsyncContent(wizard, options, state)
+{
+    if (state.stepCount > 0)
+    {
+        var currentIndex = state.currentIndex,
+            currentStep = getStep(wizard, currentIndex);
+
+        if (!options.enableContentCache || !currentStep.contentLoaded)
+        {
+            switch (getValidEnumValue(contentMode, currentStep.contentMode))
+            {
+                case contentMode.iframe:
+                    wizard.find(".content > .body").eq(state.currentIndex).empty()
+                        .html("<iframe src=\"" + currentStep.contentUrl + "\" frameborder=\"0\" scrolling=\"no\" />")
+                        .data("loaded", "1");
+                    break;
+
+                case contentMode.async:
+                    var currentStepContent = getStepPanel(wizard, currentIndex)._aria("busy", "true")
+                        .empty().append(renderTemplate(options.loadingTemplate, { text: options.labels.loading }));
+
+                    $.ajax({ url: currentStep.contentUrl, cache: false }).done(function (data)
+                    {
+                        currentStepContent.empty().html(data)._aria("busy", "false").data("loaded", "1");
+                        wizard.triggerHandler("contentLoaded", [currentIndex]);
+                    });
+                    break;
+            }
+        }
+    }
+}
+
+/**
+ * Fires the action next or previous click event.
+ *
+ * @static
+ * @private
+ * @method paginationClick
+ * @param wizard {Object} The jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param index {Integer} The position (zero-based) to route to
+ * @return {Boolean} Indicates whether the event fired successfully or not
+ **/
+function paginationClick(wizard, options, state, index)
+{
+    var oldIndex = state.currentIndex;
+
+    if (index >= 0 && index < state.stepCount && !(options.forceMoveForward && index < state.currentIndex))
+    {
+        var anchor = getStepAnchor(wizard, index),
+            parent = anchor.parent(),
+            isDisabled = parent.hasClass("disabled");
+
+        // Enable the step to make the anchor clickable!
+        parent._enableAria();
+        anchor.click();
+
+        // An error occured
+        if (oldIndex === state.currentIndex && isDisabled)
+        {
+            // Disable the step again if current index has not changed; prevents click action.
+            parent._enableAria(false);
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Fires when a pagination click happens.
+ *
+ * @static
+ * @private
+ * @event click
+ * @param event {Object} An event object
+ */
+function paginationClickHandler(event)
+{
+    event.preventDefault();
+
+    var anchor = $(this),
+        wizard = anchor.parent().parent().parent().parent(),
+        options = getOptions(wizard),
+        state = getState(wizard),
+        href = anchor.attr("href");
+
+    switch (href.substring(href.lastIndexOf("#") + 1))
+    {
+        case "cancel":
+            cancel(wizard);
+            break;
+
+        case "finish":
+            finishStep(wizard, state);
+            break;
+
+        case "next":
+            goToNextStep(wizard, options, state);
+            break;
+
+        case "previous":
+            goToPreviousStep(wizard, options, state);
+            break;
+    }
+}
+
+/**
+ * Refreshs the visualization state for the entire pagination.
+ *
+ * @static
+ * @private
+ * @method refreshPagination
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ */
+function refreshPagination(wizard, options, state)
+{
+    if (options.enablePagination)
+    {
+        var finish = wizard.find(".actions a[href$='#finish']").parent(),
+            next = wizard.find(".actions a[href$='#next']").parent();
+
+        if (!options.forceMoveForward)
+        {
+            var previous = wizard.find(".actions a[href$='#previous']").parent();
+            previous._enableAria(state.currentIndex > 0);
+        }
+
+        if (options.enableFinishButton && options.showFinishButtonAlways)
+        {
+            finish._enableAria(state.stepCount > 0);
+            next._enableAria(state.stepCount > 1 && state.stepCount > (state.currentIndex + 1));
+        }
+        else
+        {
+            finish._showAria(options.enableFinishButton && state.stepCount === (state.currentIndex + 1));
+            next._showAria(state.stepCount === 0 || state.stepCount > (state.currentIndex + 1)).
+                _enableAria(state.stepCount > (state.currentIndex + 1) || !options.enableFinishButton);
+        }
+    }
+}
+
+/**
+ * Refreshs the visualization state for the step navigation (tabs).
+ *
+ * @static
+ * @private
+ * @method refreshStepNavigation
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param [oldIndex] {Integer} The index of the prior step
+ */
+function refreshStepNavigation(wizard, options, state, oldIndex)
+{
+    var currentOrNewStepAnchor = getStepAnchor(wizard, state.currentIndex),
+        currentInfo = $("<span class=\"current-info audible\">" + options.labels.current + " </span>"),
+        stepTitles = wizard.find(".content > .title");
+
+    if (oldIndex != null)
+    {
+        var oldStepAnchor = getStepAnchor(wizard, oldIndex);
+        oldStepAnchor.parent().addClass("done").removeClass("error")._selectAria(false);
+        stepTitles.eq(oldIndex).removeClass("current").next(".body").removeClass("current");
+        currentInfo = oldStepAnchor.find(".current-info");
+        currentOrNewStepAnchor.focus();
+    }
+
+    currentOrNewStepAnchor.prepend(currentInfo).parent()._selectAria().removeClass("done")._enableAria();
+    stepTitles.eq(state.currentIndex).addClass("current").next(".body").addClass("current");
+}
+
+/**
+ * Refreshes step buttons and their related titles beyond a certain position.
+ *
+ * @static
+ * @private
+ * @method refreshSteps
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param index {Integer} The start point for refreshing ids
+ */
+function refreshSteps(wizard, options, state, index)
+{
+    var uniqueId = getUniqueId(wizard);
+
+    for (var i = index; i < state.stepCount; i++)
+    {
+        var uniqueStepId = uniqueId + _tabSuffix + i,
+            uniqueBodyId = uniqueId + _tabpanelSuffix + i,
+            uniqueHeaderId = uniqueId + _titleSuffix + i,
+            title = wizard.find(".title").eq(i)._id(uniqueHeaderId);
+
+        wizard.find(".steps a").eq(i)._id(uniqueStepId)
+            ._aria("controls", uniqueBodyId).attr("href", "#" + uniqueHeaderId)
+            .html(renderTemplate(options.titleTemplate, { index: i + 1, title: title.html() }));
+        wizard.find(".body").eq(i)._id(uniqueBodyId)
+            ._aria("labelledby", uniqueHeaderId);
+    }
+}
+
+function registerEvents(wizard, options)
+{
+    var eventNamespace = getEventNamespace(wizard);
+
+    wizard.bind("canceled" + eventNamespace, options.onCanceled);
+    wizard.bind("contentLoaded" + eventNamespace, options.onContentLoaded);
+    wizard.bind("finishing" + eventNamespace, options.onFinishing);
+    wizard.bind("finished" + eventNamespace, options.onFinished);
+    wizard.bind("init" + eventNamespace, options.onInit);
+    wizard.bind("stepChanging" + eventNamespace, options.onStepChanging);
+    wizard.bind("stepChanged" + eventNamespace, options.onStepChanged);
+
+    if (options.enableKeyNavigation)
+    {
+        wizard.bind("keyup" + eventNamespace, keyUpHandler);
+    }
+
+    wizard.find(".actions a").bind("click" + eventNamespace, paginationClickHandler);
+}
+
+/**
+ * Removes a specific step by an given index.
+ *
+ * @static
+ * @private
+ * @method removeStep
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param index {Integer} The position (zero-based) of the step to remove
+ * @return Indecates whether the item is removed.
+ **/
+function removeStep(wizard, options, state, index)
+{
+    // Index out of range and try deleting current item will return false.
+    if (index < 0 || index >= state.stepCount || state.currentIndex === index)
+    {
+        return false;
+    }
+
+    // Change data
+    removeStepFromCache(wizard, index);
+    if (state.currentIndex > index)
+    {
+        state.currentIndex--;
+        saveCurrentStateToCookie(wizard, options, state);
+    }
+    state.stepCount--;
+
+    getStepTitle(wizard, index).remove();
+    getStepPanel(wizard, index).remove();
+    getStepAnchor(wizard, index).parent().remove();
+
+    // Set the "first" class to the new first step button 
+    if (index === 0)
+    {
+        wizard.find(".steps li").first().addClass("first");
+    }
+
+    // Set the "last" class to the new last step button 
+    if (index === state.stepCount)
+    {
+        wizard.find(".steps li").eq(index).addClass("last");
+    }
+
+    refreshSteps(wizard, options, state, index);
+    refreshPagination(wizard, options, state);
+
+    return true;
+}
+
+function removeStepFromCache(wizard, index)
+{
+    getSteps(wizard).splice(index, 1);
+}
+
+/**
+ * Transforms the base html structure to a more sensible html structure.
+ *
+ * @static
+ * @private
+ * @method render
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ **/
+function render(wizard, options, state)
+{
+    // Create a content wrapper and copy HTML from the intial wizard structure
+    var wrapperTemplate = "<{0} class=\"{1}\">{2}</{0}>",
+        orientation = getValidEnumValue(stepsOrientation, options.stepsOrientation),
+        verticalCssClass = (orientation === stepsOrientation.vertical) ? " vertical" : "",
+        contentWrapper = $(wrapperTemplate.format(options.contentContainerTag, "content " + options.clearFixCssClass, wizard.html())),
+        stepsWrapper = $(wrapperTemplate.format(options.stepsContainerTag, "steps " + options.clearFixCssClass, "<ul role=\"tablist\"></ul>")),
+        stepTitles = contentWrapper.children(options.headerTag),
+        stepContents = contentWrapper.children(options.bodyTag);
+
+    // Transform the wizard wrapper and remove the inner HTML
+    wizard.attr("role", "application").empty().append(stepsWrapper).append(contentWrapper)
+        .addClass(options.cssClass + " " + options.clearFixCssClass + verticalCssClass);
+
+    // Add WIA-ARIA support
+    stepContents.each(function (index)
+    {
+        renderBody(wizard, state, $(this), index);
+    });
+
+    stepTitles.each(function (index)
+    {
+        renderTitle(wizard, options, state, $(this), index);
+    });
+
+    refreshStepNavigation(wizard, options, state);
+    renderPagination(wizard, options, state);
+}
+
+/**
+ * Transforms the body to a proper tabpanel.
+ *
+ * @static
+ * @private
+ * @method renderBody
+ * @param wizard {Object} A jQuery wizard object
+ * @param body {Object} A jQuery body object
+ * @param index {Integer} The position of the body
+ */
+function renderBody(wizard, state, body, index)
+{
+    var uniqueId = getUniqueId(wizard),
+        uniqueBodyId = uniqueId + _tabpanelSuffix + index,
+        uniqueHeaderId = uniqueId + _titleSuffix + index;
+
+    body._id(uniqueBodyId).attr("role", "tabpanel")._aria("labelledby", uniqueHeaderId)
+        .addClass("body")._showAria(state.currentIndex === index);
+}
+
+/**
+ * Renders a pagination if enabled.
+ *
+ * @static
+ * @private
+ * @method renderPagination
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ */
+function renderPagination(wizard, options, state)
+{
+    if (options.enablePagination)
+    {
+        var pagination = "<{0} class=\"actions {1}\"><ul role=\"menu\" aria-label=\"{2}\">{3}</ul></{0}>",
+            buttonTemplate = "<li><a href=\"#{0}\" role=\"menuitem\">{1}</a></li>",
+            buttons = "";
+
+        if (!options.forceMoveForward)
+        {
+            buttons += buttonTemplate.format("previous", options.labels.previous);
+        }
+
+        buttons += buttonTemplate.format("next", options.labels.next);
+
+        if (options.enableFinishButton)
+        {
+            buttons += buttonTemplate.format("finish", options.labels.finish);
+        }
+
+        if (options.enableCancelButton)
+        {
+            buttons += buttonTemplate.format("cancel", options.labels.cancel);
+        }
+
+        wizard.append(pagination.format(options.actionContainerTag, options.clearFixCssClass,
+            options.labels.pagination, buttons));
+
+        refreshPagination(wizard, options, state);
+        loadAsyncContent(wizard, options, state);
+    }
+}
+
+/**
+ * Renders a template and replaces all placeholder.
+ *
+ * @static
+ * @private
+ * @method renderTemplate
+ * @param template {String} A template
+ * @param substitutes {Object} A list of substitute
+ * @return {String} The rendered template
+ */
+function renderTemplate(template, substitutes)
+{
+    var matches = template.match(/#([a-z]*)#/gi);
+
+    for (var i = 0; i < matches.length; i++)
+    {
+        var match = matches[i], 
+            key = match.substring(1, match.length - 1);
+
+        if (substitutes[key] === undefined)
+        {
+            throwError("The key '{0}' does not exist in the substitute collection!", key);
+        }
+
+        template = template.replace(match, substitutes[key]);
+    }
+
+    return template;
+}
+
+/**
+ * Transforms the title to a step item button.
+ *
+ * @static
+ * @private
+ * @method renderTitle
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ * @param header {Object} A jQuery header object
+ * @param index {Integer} The position of the header
+ */
+function renderTitle(wizard, options, state, header, index)
+{
+    var uniqueId = getUniqueId(wizard),
+        uniqueStepId = uniqueId + _tabSuffix + index,
+        uniqueBodyId = uniqueId + _tabpanelSuffix + index,
+        uniqueHeaderId = uniqueId + _titleSuffix + index,
+        stepCollection = wizard.find(".steps > ul"),
+        title = renderTemplate(options.titleTemplate, {
+            index: index + 1,
+            title: header.html()
+        }),
+        stepItem = $("<li role=\"tab\"><a id=\"" + uniqueStepId + "\" href=\"#" + uniqueHeaderId + 
+            "\" aria-controls=\"" + uniqueBodyId + "\">" + title + "</a></li>");
+        
+    stepItem._enableAria(options.enableAllSteps || state.currentIndex > index);
+
+    if (state.currentIndex > index)
+    {
+        stepItem.addClass("done");
+    }
+
+    header._id(uniqueHeaderId).attr("tabindex", "-1").addClass("title");
+
+    if (index === 0)
+    {
+        stepCollection.prepend(stepItem);
+    }
+    else
+    {
+        stepCollection.find("li").eq(index - 1).after(stepItem);
+    }
+
+    // Set the "first" class to the new first step button
+    if (index === 0)
+    {
+        stepCollection.find("li").removeClass("first").eq(index).addClass("first");
+    }
+
+    // Set the "last" class to the new last step button
+    if (index === (state.stepCount - 1))
+    {
+        stepCollection.find("li").removeClass("last").eq(index).addClass("last");
+    }
+
+    // Register click event
+    stepItem.children("a").bind("click" + getEventNamespace(wizard), stepClickHandler);
+}
+
+/**
+ * Saves the current state to a cookie.
+ *
+ * @static
+ * @private
+ * @method saveCurrentStateToCookie
+ * @param wizard {Object} A jQuery wizard object
+ * @param options {Object} Settings of the current wizard
+ * @param state {Object} The state container of the current wizard
+ */
+function saveCurrentStateToCookie(wizard, options, state)
+{
+    if (options.saveState && $.cookie)
+    {
+        $.cookie(_cookiePrefix + getUniqueId(wizard), state.currentIndex);
+    }
+}
+
+function startTransitionEffect(wizard, options, state, index, oldIndex, doneCallback)
+{
+    var stepContents = wizard.find(".content > .body"),
+        effect = getValidEnumValue(transitionEffect, options.transitionEffect),
+        effectSpeed = options.transitionEffectSpeed,
+        newStep = stepContents.eq(index),
+        currentStep = stepContents.eq(oldIndex);
+
+    switch (effect)
+    {
+        case transitionEffect.fade:
+        case transitionEffect.slide:
+            var hide = (effect === transitionEffect.fade) ? "fadeOut" : "slideUp",
+                show = (effect === transitionEffect.fade) ? "fadeIn" : "slideDown";
+
+            state.transitionElement = newStep;
+            currentStep[hide](effectSpeed, function ()
+            {
+                var wizard = $(this)._showAria(false).parent().parent(),
+                    state = getState(wizard);
+
+                if (state.transitionElement)
+                {
+                    state.transitionElement[show](effectSpeed, function ()
+                    {
+                        $(this)._showAria();
+                    }).promise().done(doneCallback);
+                    state.transitionElement = null;
+                }
+            });
+            break;
+
+        case transitionEffect.slideLeft:
+            var outerWidth = currentStep.outerWidth(true),
+                posFadeOut = (index > oldIndex) ? -(outerWidth) : outerWidth,
+                posFadeIn = (index > oldIndex) ? outerWidth : -(outerWidth);
+
+            $.when(currentStep.animate({ left: posFadeOut }, effectSpeed, 
+                    function () { $(this)._showAria(false); }),
+                newStep.css("left", posFadeIn + "px")._showAria()
+                    .animate({ left: 0 }, effectSpeed)).done(doneCallback);
+            break;
+
+        default:
+            $.when(currentStep._showAria(false), newStep._showAria())
+                .done(doneCallback);
+            break;
+    }
+}
+
+/**
+ * Fires when a step click happens.
+ *
+ * @static
+ * @private
+ * @event click
+ * @param event {Object} An event object
+ */
+function stepClickHandler(event)
+{
+    event.preventDefault();
+
+    var anchor = $(this),
+        wizard = anchor.parent().parent().parent().parent(),
+        options = getOptions(wizard),
+        state = getState(wizard),
+        oldIndex = state.currentIndex;
+
+    if (anchor.parent().is(":not(.disabled):not(.current)"))
+    {
+        var href = anchor.attr("href"),
+            position = parseInt(href.substring(href.lastIndexOf("-") + 1), 0);
+
+        goToStep(wizard, options, state, position);
+    }
+
+    // If nothing has changed
+    if (oldIndex === state.currentIndex)
+    {
+        getStepAnchor(wizard, oldIndex).focus();
+        return false;
+    }
+}
+
+function throwError(message)
+{
+    if (arguments.length > 1)
+    {
+        message = message.format(Array.prototype.slice.call(arguments, 1));
+    }
+
+    throw new Error(message);
+}
+
+/**
+ * Checks an argument for null or undefined and throws an error if one check applies.
+ *
+ * @static
+ * @private
+ * @method validateArgument
+ * @param argumentName {String} The name of the given argument
+ * @param argumentValue {Object} The argument itself
+ */
+function validateArgument(argumentName, argumentValue)
+{
+    if (argumentValue == null)
+    {
+        throwError("The argument '{0}' is null or undefined.", argumentName);
+    }
+}
+
+/**
+ * Represents a jQuery wizard plugin.
+ *
+ * @class steps
+ * @constructor
+ * @param [method={}] The name of the method as `String` or an JSON object for initialization
+ * @param [params=]* {Array} Additional arguments for a method call
+ * @chainable
+ **/
+$.fn.steps = function (method)
+{
+    if ($.fn.steps[method])
+    {
+        return $.fn.steps[method].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+    else if (typeof method === "object" || !method)
+    {
+        return initialize.apply(this, arguments);
+    }
+    else
+    {
+        $.error("Method " + method + " does not exist on jQuery.steps");
+    }
+};
+
+/**
+ * Adds a new step.
+ *
+ * @method add
+ * @param step {Object} The step object to add
+ * @chainable
+ **/
+$.fn.steps.add = function (step)
+{
+    var state = getState(this);
+    return insertStep(this, getOptions(this), state, state.stepCount, step);
+};
+
+/**
+ * Removes the control functionality completely and transforms the current state to the initial HTML structure.
+ *
+ * @method destroy
+ * @chainable
+ **/
+$.fn.steps.destroy = function ()
+{
+    return destroy(this, getOptions(this));
+};
+
+/**
+ * Triggers the onFinishing and onFinished event.
+ *
+ * @method finish
+ **/
+$.fn.steps.finish = function ()
+{
+    finishStep(this, getState(this));
+};
+
+/**
+ * Gets the current step index.
+ *
+ * @method getCurrentIndex
+ * @return {Integer} The actual step index (zero-based)
+ * @for steps
+ **/
+$.fn.steps.getCurrentIndex = function ()
+{
+    return getState(this).currentIndex;
+};
+
+/**
+ * Gets the current step object.
+ *
+ * @method getCurrentStep
+ * @return {Object} The actual step object
+ **/
+$.fn.steps.getCurrentStep = function ()
+{
+    return getStep(this, getState(this).currentIndex);
+};
+
+/**
+ * Gets a specific step object by index.
+ *
+ * @method getStep
+ * @param index {Integer} An integer that belongs to the position of a step
+ * @return {Object} A specific step object
+ **/
+$.fn.steps.getStep = function (index)
+{
+    return getStep(this, index);
+};
+
+/**
+ * Inserts a new step to a specific position.
+ *
+ * @method insert
+ * @param index {Integer} The position (zero-based) to add
+ * @param step {Object} The step object to add
+ * @example
+ *     $("#wizard").steps().insert(0, {
+ *         title: "Title",
+ *         content: "", // optional
+ *         contentMode: "async", // optional
+ *         contentUrl: "/Content/Step/1" // optional
+ *     });
+ * @chainable
+ **/
+$.fn.steps.insert = function (index, step)
+{
+    return insertStep(this, getOptions(this), getState(this), index, step);
+};
+
+/**
+ * Routes to the next step.
+ *
+ * @method next
+ * @return {Boolean} Indicates whether the action executed
+ **/
+$.fn.steps.next = function ()
+{
+    return goToNextStep(this, getOptions(this), getState(this));
+};
+
+/**
+ * Routes to the previous step.
+ *
+ * @method previous
+ * @return {Boolean} Indicates whether the action executed
+ **/
+$.fn.steps.previous = function ()
+{
+    return goToPreviousStep(this, getOptions(this), getState(this));
+};
+
+/**
+ * Removes a specific step by an given index.
+ *
+ * @method remove
+ * @param index {Integer} The position (zero-based) of the step to remove
+ * @return Indecates whether the item is removed.
+ **/
+$.fn.steps.remove = function (index)
+{
+    return removeStep(this, getOptions(this), getState(this), index);
+};
+
+/**
+ * Sets a specific step object by index.
+ *
+ * @method setStep
+ * @param index {Integer} An integer that belongs to the position of a step
+ * @param step {Object} The step object to change
+ **/
+$.fn.steps.setStep = function (index, step)
+{
+    throw new Error("Not yet implemented!");
+};
+
+/**
+ * Skips an certain amount of steps.
+ *
+ * @method skip
+ * @param count {Integer} The amount of steps that should be skipped
+ * @return {Boolean} Indicates whether the action executed
+ **/
+$.fn.steps.skip = function (count)
+{
+    throw new Error("Not yet implemented!");
+};
+
+/**
+ * An enum represents the different content types of a step and their loading mechanisms.
+ *
+ * @class contentMode
+ * @for steps
+ **/
+var contentMode = $.fn.steps.contentMode = {
+    /**
+     * HTML embedded content
+     *
+     * @readOnly
+     * @property html
+     * @type Integer
+     * @for contentMode
+     **/
+    html: 0,
+
+    /**
+     * IFrame embedded content
+     *
+     * @readOnly
+     * @property iframe
+     * @type Integer
+     * @for contentMode
+     **/
+    iframe: 1,
+
+    /**
+     * Async embedded content
+     *
+     * @readOnly
+     * @property async
+     * @type Integer
+     * @for contentMode
+     **/
+    async: 2
+};
+
+/**
+ * An enum represents the orientation of the steps navigation.
+ *
+ * @class stepsOrientation
+ * @for steps
+ **/
+var stepsOrientation = $.fn.steps.stepsOrientation = {
+    /**
+     * Horizontal orientation
+     *
+     * @readOnly
+     * @property horizontal
+     * @type Integer
+     * @for stepsOrientation
+     **/
+    horizontal: 0,
+
+    /**
+     * Vertical orientation
+     *
+     * @readOnly
+     * @property vertical
+     * @type Integer
+     * @for stepsOrientation
+     **/
+    vertical: 1
+};
+
+/**
+ * An enum that represents the various transition animations.
+ *
+ * @class transitionEffect
+ * @for steps
+ **/
+var transitionEffect = $.fn.steps.transitionEffect = {
+    /**
+     * No transition animation
+     *
+     * @readOnly
+     * @property none
+     * @type Integer
+     * @for transitionEffect
+     **/
+    none: 0,
+
+    /**
+     * Fade in transition
+     *
+     * @readOnly
+     * @property fade
+     * @type Integer
+     * @for transitionEffect
+     **/
+    fade: 1,
+
+    /**
+     * Slide up transition
+     *
+     * @readOnly
+     * @property slide
+     * @type Integer
+     * @for transitionEffect
+     **/
+    slide: 2,
+
+    /**
+     * Slide left transition
+     *
+     * @readOnly
+     * @property slideLeft
+     * @type Integer
+     * @for transitionEffect
+     **/
+    slideLeft: 3
+};
+
+var stepModel = $.fn.steps.stepModel = {
+    title: "",
+    content: "",
+    contentUrl: "",
+    contentMode: contentMode.html,
+    contentLoaded: false
+};
+
+/**
+ * An object that represents the default settings.
+ * There are two possibities to override the sub-properties.
+ * Either by doing it generally (global) or on initialization.
+ *
+ * @static
+ * @class defaults
+ * @for steps
+ * @example
+ *   // Global approach
+ *   $.steps.defaults.headerTag = "h3";
+ * @example
+ *   // Initialization approach
+ *   $("#wizard").steps({ headerTag: "h3" });
+ **/
+var defaults = $.fn.steps.defaults = {
+    /**
+     * The header tag is used to find the step button text within the declared wizard area.
+     *
+     * @property headerTag
+     * @type String
+     * @default "h1"
+     * @for defaults
+     **/
+    headerTag: "h1",
+
+    /**
+     * The body tag is used to find the step content within the declared wizard area.
+     *
+     * @property bodyTag
+     * @type String
+     * @default "div"
+     * @for defaults
+     **/
+    bodyTag: "div",
+
+    /**
+     * The content container tag which will be used to wrap all step contents.
+     *
+     * @property contentContainerTag
+     * @type String
+     * @default "div"
+     * @for defaults
+     **/
+    contentContainerTag: "div",
+
+    /**
+     * The action container tag which will be used to wrap the pagination navigation.
+     *
+     * @property actionContainerTag
+     * @type String
+     * @default "div"
+     * @for defaults
+     **/
+    actionContainerTag: "div",
+
+    /**
+     * The steps container tag which will be used to wrap the steps navigation.
+     *
+     * @property stepsContainerTag
+     * @type String
+     * @default "div"
+     * @for defaults
+     **/
+    stepsContainerTag: "div",
+
+    /**
+     * The css class which will be added to the outer component wrapper.
+     *
+     * @property cssClass
+     * @type String
+     * @default "wizard"
+     * @for defaults
+     * @example
+     *     <div class="wizard">
+     *         ...
+     *     </div>
+     **/
+    cssClass: "wizard",
+
+    /**
+     * The css class which will be used for floating scenarios.
+     *
+     * @property clearFixCssClass
+     * @type String
+     * @default "clearfix"
+     * @for defaults
+     **/
+    clearFixCssClass: "clearfix",
+
+    /**
+     * Determines whether the steps are vertically or horizontally oriented.
+     *
+     * @property stepsOrientation
+     * @type stepsOrientation
+     * @default horizontal
+     * @for defaults
+     * @since 1.0.0
+     **/
+    stepsOrientation: stepsOrientation.horizontal,
+
+    /*
+     * Tempplates
+     */
+
+    /**
+     * The title template which will be used to create a step button.
+     *
+     * @property titleTemplate
+     * @type String
+     * @default "<span class=\"number\">#index#.</span> #title#"
+     * @for defaults
+     **/
+    titleTemplate: "<span class=\"number\">#index#.</span> #title#",
+
+    /**
+     * The loading template which will be used to create the loading animation.
+     *
+     * @property loadingTemplate
+     * @type String
+     * @default "<span class=\"spinner\"></span> #text#"
+     * @for defaults
+     **/
+    loadingTemplate: "<span class=\"spinner\"></span> #text#",
+
+    /*
+     * Behaviour
+     */
+
+    /**
+     * Sets the focus to the first wizard instance in order to enable the key navigation from the begining if `true`. 
+     *
+     * @property autoFocus
+     * @type Boolean
+     * @default false
+     * @for defaults
+     * @since 0.9.4
+     **/
+    autoFocus: false,
+
+    /**
+     * Enables all steps from the begining if `true` (all steps are clickable).
+     *
+     * @property enableAllSteps
+     * @type Boolean
+     * @default false
+     * @for defaults
+     **/
+    enableAllSteps: false,
+
+    /**
+     * Enables keyboard navigation if `true` (arrow left and arrow right).
+     *
+     * @property enableKeyNavigation
+     * @type Boolean
+     * @default true
+     * @for defaults
+     **/
+    enableKeyNavigation: true,
+
+    /**
+     * Enables pagination if `true`.
+     *
+     * @property enablePagination
+     * @type Boolean
+     * @default true
+     * @for defaults
+     **/
+    enablePagination: true,
+
+    /**
+     * Suppresses pagination if a form field is focused.
+     *
+     * @property suppressPaginationOnFocus
+     * @type Boolean
+     * @default true
+     * @for defaults
+     **/
+    suppressPaginationOnFocus: true,
+
+    /**
+     * Enables cache for async loaded or iframe embedded content.
+     *
+     * @property enableContentCache
+     * @type Boolean
+     * @default true
+     * @for defaults
+     **/
+    enableContentCache: true,
+
+    /**
+     * Shows the cancel button if enabled.
+     *
+     * @property enableCancelButton
+     * @type Boolean
+     * @default false
+     * @for defaults
+     **/
+    enableCancelButton: false,
+
+    /**
+     * Shows the finish button if enabled.
+     *
+     * @property enableFinishButton
+     * @type Boolean
+     * @default true
+     * @for defaults
+     **/
+    enableFinishButton: true,
+
+    /**
+     * Not yet implemented.
+     *
+     * @property preloadContent
+     * @type Boolean
+     * @default false
+     * @for defaults
+     **/
+    preloadContent: false,
+
+    /**
+     * Shows the finish button always (on each step; right beside the next button) if `true`. 
+     * Otherwise the next button will be replaced by the finish button if the last step becomes active.
+     *
+     * @property showFinishButtonAlways
+     * @type Boolean
+     * @default false
+     * @for defaults
+     **/
+    showFinishButtonAlways: false,
+
+    /**
+     * Prevents jumping to a previous step.
+     *
+     * @property forceMoveForward
+     * @type Boolean
+     * @default false
+     * @for defaults
+     **/
+    forceMoveForward: false,
+
+    /**
+     * Saves the current state (step position) to a cookie.
+     * By coming next time the last active step becomes activated.
+     *
+     * @property saveState
+     * @type Boolean
+     * @default false
+     * @for defaults
+     **/
+    saveState: false,
+
+    /**
+     * The position to start on (zero-based).
+     *
+     * @property startIndex
+     * @type Integer
+     * @default 0
+     * @for defaults
+     **/
+    startIndex: 0,
+
+    /*
+     * Animation Effect Configuration
+     */
+
+    /**
+     * The animation effect which will be used for step transitions.
+     *
+     * @property transitionEffect
+     * @type transitionEffect
+     * @default none
+     * @for defaults
+     **/
+    transitionEffect: transitionEffect.none,
+
+    /**
+     * Animation speed for step transitions (in milliseconds).
+     *
+     * @property transitionEffectSpeed
+     * @type Integer
+     * @default 200
+     * @for defaults
+     **/
+    transitionEffectSpeed: 200,
+
+    /*
+     * Events
+     */
+
+    /**
+     * Fires before the step changes and can be used to prevent step changing by returning `false`. 
+     * Very useful for form validation. 
+     *
+     * @property onStepChanging
+     * @type Event
+     * @default function (event, currentIndex, newIndex) { return true; }
+     * @for defaults
+     **/
+    onStepChanging: function (event, currentIndex, newIndex) { return true; },
+
+    /**
+     * Fires after the step has change. 
+     *
+     * @property onStepChanged
+     * @type Event
+     * @default function (event, currentIndex, priorIndex) { }
+     * @for defaults
+     **/
+    onStepChanged: function (event, currentIndex, priorIndex) { },
+
+    /**
+     * Fires after cancelation. 
+     *
+     * @property onCanceled
+     * @type Event
+     * @default function (event) { }
+     * @for defaults
+     **/
+    onCanceled: function (event) { },
+
+    /**
+     * Fires before finishing and can be used to prevent completion by returning `false`. 
+     * Very useful for form validation. 
+     *
+     * @property onFinishing
+     * @type Event
+     * @default function (event, currentIndex) { return true; }
+     * @for defaults
+     **/
+    onFinishing: function (event, currentIndex) { return true; },
+
+    /**
+     * Fires after completion. 
+     *
+     * @property onFinished
+     * @type Event
+     * @default function (event, currentIndex) { }
+     * @for defaults
+     **/
+    onFinished: function (event, currentIndex) { },
+
+    /**
+     * Fires after async content is loaded. 
+     *
+     * @property onContentLoaded
+     * @type Event
+     * @default function (event, index) { }
+     * @for defaults
+     **/
+    onContentLoaded: function (event, currentIndex) { },
+
+    /**
+     * Fires when the wizard is initialized. 
+     *
+     * @property onInit
+     * @type Event
+     * @default function (event) { }
+     * @for defaults
+     **/
+    onInit: function (event, currentIndex) { },
+
+    /**
+     * Contains all labels. 
+     *
+     * @property labels
+     * @type Object
+     * @for defaults
+     **/
+    labels: {
+        /**
+         * Label for the cancel button.
+         *
+         * @property cancel
+         * @type String
+         * @default "Cancel"
+         * @for defaults
+         **/
+        cancel: "Cancel",
+
+        /**
+         * This label is important for accessability reasons.
+         * Indicates which step is activated.
+         *
+         * @property current
+         * @type String
+         * @default "current step:"
+         * @for defaults
+         **/
+        current: "current step:",
+
+        /**
+         * This label is important for accessability reasons and describes the kind of navigation.
+         *
+         * @property pagination
+         * @type String
+         * @default "Pagination"
+         * @for defaults
+         * @since 0.9.7
+         **/
+        pagination: "Pagination",
+
+        /**
+         * Label for the finish button.
+         *
+         * @property finish
+         * @type String
+         * @default "Finish"
+         * @for defaults
+         **/
+        finish: "Finish",
+
+        /**
+         * Label for the next button.
+         *
+         * @property next
+         * @type String
+         * @default "Next"
+         * @for defaults
+         **/
+        next: "Next",
+
+        /**
+         * Label for the previous button.
+         *
+         * @property previous
+         * @type String
+         * @default "Previous"
+         * @for defaults
+         **/
+        previous: "Previous",
+
+        /**
+         * Label for the loading animation.
+         *
+         * @property loading
+         * @type String
+         * @default "Loading ..."
+         * @for defaults
+         **/
+        loading: "Loading ..."
+    }
+};
+})(jQuery);
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * jQuery Validation Plugin v1.16.0
+ *
+ * http://jqueryvalidation.org/
+ *
+ * Copyright (c) 2016 Jörn Zaefferer
+ * Released under the MIT license
+ */
+(function( factory ) {
+	if ( true ) {
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if (typeof module === "object" && module.exports) {
+		module.exports = factory( require( "jquery" ) );
+	} else {
+		factory( jQuery );
+	}
+}(function( $ ) {
+
+$.extend( $.fn, {
+
+	// http://jqueryvalidation.org/validate/
+	validate: function( options ) {
+
+		// If nothing is selected, return nothing; can't chain anyway
+		if ( !this.length ) {
+			if ( options && options.debug && window.console ) {
+				console.warn( "Nothing selected, can't validate, returning nothing." );
+			}
+			return;
+		}
+
+		// Check if a validator for this form was already created
+		var validator = $.data( this[ 0 ], "validator" );
+		if ( validator ) {
+			return validator;
+		}
+
+		// Add novalidate tag if HTML5.
+		this.attr( "novalidate", "novalidate" );
+
+		validator = new $.validator( options, this[ 0 ] );
+		$.data( this[ 0 ], "validator", validator );
+
+		if ( validator.settings.onsubmit ) {
+
+			this.on( "click.validate", ":submit", function( event ) {
+				if ( validator.settings.submitHandler ) {
+					validator.submitButton = event.target;
+				}
+
+				// Allow suppressing validation by adding a cancel class to the submit button
+				if ( $( this ).hasClass( "cancel" ) ) {
+					validator.cancelSubmit = true;
+				}
+
+				// Allow suppressing validation by adding the html5 formnovalidate attribute to the submit button
+				if ( $( this ).attr( "formnovalidate" ) !== undefined ) {
+					validator.cancelSubmit = true;
+				}
+			} );
+
+			// Validate the form on submit
+			this.on( "submit.validate", function( event ) {
+				if ( validator.settings.debug ) {
+
+					// Prevent form submit to be able to see console output
+					event.preventDefault();
+				}
+				function handle() {
+					var hidden, result;
+					if ( validator.settings.submitHandler ) {
+						if ( validator.submitButton ) {
+
+							// Insert a hidden input as a replacement for the missing submit button
+							hidden = $( "<input type='hidden'/>" )
+								.attr( "name", validator.submitButton.name )
+								.val( $( validator.submitButton ).val() )
+								.appendTo( validator.currentForm );
+						}
+						result = validator.settings.submitHandler.call( validator, validator.currentForm, event );
+						if ( validator.submitButton ) {
+
+							// And clean up afterwards; thanks to no-block-scope, hidden can be referenced
+							hidden.remove();
+						}
+						if ( result !== undefined ) {
+							return result;
+						}
+						return false;
+					}
+					return true;
+				}
+
+				// Prevent submit for invalid forms or custom submit handlers
+				if ( validator.cancelSubmit ) {
+					validator.cancelSubmit = false;
+					return handle();
+				}
+				if ( validator.form() ) {
+					if ( validator.pendingRequest ) {
+						validator.formSubmitted = true;
+						return false;
+					}
+					return handle();
+				} else {
+					validator.focusInvalid();
+					return false;
+				}
+			} );
+		}
+
+		return validator;
+	},
+
+	// http://jqueryvalidation.org/valid/
+	valid: function() {
+		var valid, validator, errorList;
+
+		if ( $( this[ 0 ] ).is( "form" ) ) {
+			valid = this.validate().form();
+		} else {
+			errorList = [];
+			valid = true;
+			validator = $( this[ 0 ].form ).validate();
+			this.each( function() {
+				valid = validator.element( this ) && valid;
+				if ( !valid ) {
+					errorList = errorList.concat( validator.errorList );
+				}
+			} );
+			validator.errorList = errorList;
+		}
+		return valid;
+	},
+
+	// http://jqueryvalidation.org/rules/
+	rules: function( command, argument ) {
+		var element = this[ 0 ],
+			settings, staticRules, existingRules, data, param, filtered;
+
+		// If nothing is selected, return empty object; can't chain anyway
+		if ( element == null || element.form == null ) {
+			return;
+		}
+
+		if ( command ) {
+			settings = $.data( element.form, "validator" ).settings;
+			staticRules = settings.rules;
+			existingRules = $.validator.staticRules( element );
+			switch ( command ) {
+			case "add":
+				$.extend( existingRules, $.validator.normalizeRule( argument ) );
+
+				// Remove messages from rules, but allow them to be set separately
+				delete existingRules.messages;
+				staticRules[ element.name ] = existingRules;
+				if ( argument.messages ) {
+					settings.messages[ element.name ] = $.extend( settings.messages[ element.name ], argument.messages );
+				}
+				break;
+			case "remove":
+				if ( !argument ) {
+					delete staticRules[ element.name ];
+					return existingRules;
+				}
+				filtered = {};
+				$.each( argument.split( /\s/ ), function( index, method ) {
+					filtered[ method ] = existingRules[ method ];
+					delete existingRules[ method ];
+					if ( method === "required" ) {
+						$( element ).removeAttr( "aria-required" );
+					}
+				} );
+				return filtered;
+			}
+		}
+
+		data = $.validator.normalizeRules(
+		$.extend(
+			{},
+			$.validator.classRules( element ),
+			$.validator.attributeRules( element ),
+			$.validator.dataRules( element ),
+			$.validator.staticRules( element )
+		), element );
+
+		// Make sure required is at front
+		if ( data.required ) {
+			param = data.required;
+			delete data.required;
+			data = $.extend( { required: param }, data );
+			$( element ).attr( "aria-required", "true" );
+		}
+
+		// Make sure remote is at back
+		if ( data.remote ) {
+			param = data.remote;
+			delete data.remote;
+			data = $.extend( data, { remote: param } );
+		}
+
+		return data;
+	}
+} );
+
+// Custom selectors
+$.extend( $.expr.pseudos || $.expr[ ":" ], {		// '|| $.expr[ ":" ]' here enables backwards compatibility to jQuery 1.7. Can be removed when dropping jQ 1.7.x support
+
+	// http://jqueryvalidation.org/blank-selector/
+	blank: function( a ) {
+		return !$.trim( "" + $( a ).val() );
+	},
+
+	// http://jqueryvalidation.org/filled-selector/
+	filled: function( a ) {
+		var val = $( a ).val();
+		return val !== null && !!$.trim( "" + val );
+	},
+
+	// http://jqueryvalidation.org/unchecked-selector/
+	unchecked: function( a ) {
+		return !$( a ).prop( "checked" );
+	}
+} );
+
+// Constructor for validator
+$.validator = function( options, form ) {
+	this.settings = $.extend( true, {}, $.validator.defaults, options );
+	this.currentForm = form;
+	this.init();
+};
+
+// http://jqueryvalidation.org/jQuery.validator.format/
+$.validator.format = function( source, params ) {
+	if ( arguments.length === 1 ) {
+		return function() {
+			var args = $.makeArray( arguments );
+			args.unshift( source );
+			return $.validator.format.apply( this, args );
+		};
+	}
+	if ( params === undefined ) {
+		return source;
+	}
+	if ( arguments.length > 2 && params.constructor !== Array  ) {
+		params = $.makeArray( arguments ).slice( 1 );
+	}
+	if ( params.constructor !== Array ) {
+		params = [ params ];
+	}
+	$.each( params, function( i, n ) {
+		source = source.replace( new RegExp( "\\{" + i + "\\}", "g" ), function() {
+			return n;
+		} );
+	} );
+	return source;
+};
+
+$.extend( $.validator, {
+
+	defaults: {
+		messages: {},
+		groups: {},
+		rules: {},
+		errorClass: "error",
+		pendingClass: "pending",
+		validClass: "valid",
+		errorElement: "label",
+		focusCleanup: false,
+		focusInvalid: true,
+		errorContainer: $( [] ),
+		errorLabelContainer: $( [] ),
+		onsubmit: true,
+		ignore: ":hidden",
+		ignoreTitle: false,
+		onfocusin: function( element ) {
+			this.lastActive = element;
+
+			// Hide error label and remove error class on focus if enabled
+			if ( this.settings.focusCleanup ) {
+				if ( this.settings.unhighlight ) {
+					this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass );
+				}
+				this.hideThese( this.errorsFor( element ) );
+			}
+		},
+		onfocusout: function( element ) {
+			if ( !this.checkable( element ) && ( element.name in this.submitted || !this.optional( element ) ) ) {
+				this.element( element );
+			}
+		},
+		onkeyup: function( element, event ) {
+
+			// Avoid revalidate the field when pressing one of the following keys
+			// Shift       => 16
+			// Ctrl        => 17
+			// Alt         => 18
+			// Caps lock   => 20
+			// End         => 35
+			// Home        => 36
+			// Left arrow  => 37
+			// Up arrow    => 38
+			// Right arrow => 39
+			// Down arrow  => 40
+			// Insert      => 45
+			// Num lock    => 144
+			// AltGr key   => 225
+			var excludedKeys = [
+				16, 17, 18, 20, 35, 36, 37,
+				38, 39, 40, 45, 144, 225
+			];
+
+			if ( event.which === 9 && this.elementValue( element ) === "" || $.inArray( event.keyCode, excludedKeys ) !== -1 ) {
+				return;
+			} else if ( element.name in this.submitted || element.name in this.invalid ) {
+				this.element( element );
+			}
+		},
+		onclick: function( element ) {
+
+			// Click on selects, radiobuttons and checkboxes
+			if ( element.name in this.submitted ) {
+				this.element( element );
+
+			// Or option elements, check parent select in that case
+			} else if ( element.parentNode.name in this.submitted ) {
+				this.element( element.parentNode );
+			}
+		},
+		highlight: function( element, errorClass, validClass ) {
+			if ( element.type === "radio" ) {
+				this.findByName( element.name ).addClass( errorClass ).removeClass( validClass );
+			} else {
+				$( element ).addClass( errorClass ).removeClass( validClass );
+			}
+		},
+		unhighlight: function( element, errorClass, validClass ) {
+			if ( element.type === "radio" ) {
+				this.findByName( element.name ).removeClass( errorClass ).addClass( validClass );
+			} else {
+				$( element ).removeClass( errorClass ).addClass( validClass );
+			}
+		}
+	},
+
+	// http://jqueryvalidation.org/jQuery.validator.setDefaults/
+	setDefaults: function( settings ) {
+		$.extend( $.validator.defaults, settings );
+	},
+
+	messages: {
+		required: "This field is required.",
+		remote: "Please fix this field.",
+		email: "Please enter a valid email address.",
+		url: "Please enter a valid URL.",
+		date: "Please enter a valid date.",
+		dateISO: "Please enter a valid date (ISO).",
+		number: "Please enter a valid number.",
+		digits: "Please enter only digits.",
+		equalTo: "Please enter the same value again.",
+		maxlength: $.validator.format( "Please enter no more than {0} characters." ),
+		minlength: $.validator.format( "Please enter at least {0} characters." ),
+		rangelength: $.validator.format( "Please enter a value between {0} and {1} characters long." ),
+		range: $.validator.format( "Please enter a value between {0} and {1}." ),
+		max: $.validator.format( "Please enter a value less than or equal to {0}." ),
+		min: $.validator.format( "Please enter a value greater than or equal to {0}." ),
+		step: $.validator.format( "Please enter a multiple of {0}." )
+	},
+
+	autoCreateRanges: false,
+
+	prototype: {
+
+		init: function() {
+			this.labelContainer = $( this.settings.errorLabelContainer );
+			this.errorContext = this.labelContainer.length && this.labelContainer || $( this.currentForm );
+			this.containers = $( this.settings.errorContainer ).add( this.settings.errorLabelContainer );
+			this.submitted = {};
+			this.valueCache = {};
+			this.pendingRequest = 0;
+			this.pending = {};
+			this.invalid = {};
+			this.reset();
+
+			var groups = ( this.groups = {} ),
+				rules;
+			$.each( this.settings.groups, function( key, value ) {
+				if ( typeof value === "string" ) {
+					value = value.split( /\s/ );
+				}
+				$.each( value, function( index, name ) {
+					groups[ name ] = key;
+				} );
+			} );
+			rules = this.settings.rules;
+			$.each( rules, function( key, value ) {
+				rules[ key ] = $.validator.normalizeRule( value );
+			} );
+
+			function delegate( event ) {
+
+				// Set form expando on contenteditable
+				if ( !this.form && this.hasAttribute( "contenteditable" ) ) {
+					this.form = $( this ).closest( "form" )[ 0 ];
+				}
+
+				var validator = $.data( this.form, "validator" ),
+					eventType = "on" + event.type.replace( /^validate/, "" ),
+					settings = validator.settings;
+				if ( settings[ eventType ] && !$( this ).is( settings.ignore ) ) {
+					settings[ eventType ].call( validator, this, event );
+				}
+			}
+
+			$( this.currentForm )
+				.on( "focusin.validate focusout.validate keyup.validate",
+					":text, [type='password'], [type='file'], select, textarea, [type='number'], [type='search'], " +
+					"[type='tel'], [type='url'], [type='email'], [type='datetime'], [type='date'], [type='month'], " +
+					"[type='week'], [type='time'], [type='datetime-local'], [type='range'], [type='color'], " +
+					"[type='radio'], [type='checkbox'], [contenteditable], [type='button']", delegate )
+
+				// Support: Chrome, oldIE
+				// "select" is provided as event.target when clicking a option
+				.on( "click.validate", "select, option, [type='radio'], [type='checkbox']", delegate );
+
+			if ( this.settings.invalidHandler ) {
+				$( this.currentForm ).on( "invalid-form.validate", this.settings.invalidHandler );
+			}
+
+			// Add aria-required to any Static/Data/Class required fields before first validation
+			// Screen readers require this attribute to be present before the initial submission http://www.w3.org/TR/WCAG-TECHS/ARIA2.html
+			$( this.currentForm ).find( "[required], [data-rule-required], .required" ).attr( "aria-required", "true" );
+		},
+
+		// http://jqueryvalidation.org/Validator.form/
+		form: function() {
+			this.checkForm();
+			$.extend( this.submitted, this.errorMap );
+			this.invalid = $.extend( {}, this.errorMap );
+			if ( !this.valid() ) {
+				$( this.currentForm ).triggerHandler( "invalid-form", [ this ] );
+			}
+			this.showErrors();
+			return this.valid();
+		},
+
+		checkForm: function() {
+			this.prepareForm();
+			for ( var i = 0, elements = ( this.currentElements = this.elements() ); elements[ i ]; i++ ) {
+				this.check( elements[ i ] );
+			}
+			return this.valid();
+		},
+
+		// http://jqueryvalidation.org/Validator.element/
+		element: function( element ) {
+			var cleanElement = this.clean( element ),
+				checkElement = this.validationTargetFor( cleanElement ),
+				v = this,
+				result = true,
+				rs, group;
+
+			if ( checkElement === undefined ) {
+				delete this.invalid[ cleanElement.name ];
+			} else {
+				this.prepareElement( checkElement );
+				this.currentElements = $( checkElement );
+
+				// If this element is grouped, then validate all group elements already
+				// containing a value
+				group = this.groups[ checkElement.name ];
+				if ( group ) {
+					$.each( this.groups, function( name, testgroup ) {
+						if ( testgroup === group && name !== checkElement.name ) {
+							cleanElement = v.validationTargetFor( v.clean( v.findByName( name ) ) );
+							if ( cleanElement && cleanElement.name in v.invalid ) {
+								v.currentElements.push( cleanElement );
+								result = v.check( cleanElement ) && result;
+							}
+						}
+					} );
+				}
+
+				rs = this.check( checkElement ) !== false;
+				result = result && rs;
+				if ( rs ) {
+					this.invalid[ checkElement.name ] = false;
+				} else {
+					this.invalid[ checkElement.name ] = true;
+				}
+
+				if ( !this.numberOfInvalids() ) {
+
+					// Hide error containers on last error
+					this.toHide = this.toHide.add( this.containers );
+				}
+				this.showErrors();
+
+				// Add aria-invalid status for screen readers
+				$( element ).attr( "aria-invalid", !rs );
+			}
+
+			return result;
+		},
+
+		// http://jqueryvalidation.org/Validator.showErrors/
+		showErrors: function( errors ) {
+			if ( errors ) {
+				var validator = this;
+
+				// Add items to error list and map
+				$.extend( this.errorMap, errors );
+				this.errorList = $.map( this.errorMap, function( message, name ) {
+					return {
+						message: message,
+						element: validator.findByName( name )[ 0 ]
+					};
+				} );
+
+				// Remove items from success list
+				this.successList = $.grep( this.successList, function( element ) {
+					return !( element.name in errors );
+				} );
+			}
+			if ( this.settings.showErrors ) {
+				this.settings.showErrors.call( this, this.errorMap, this.errorList );
+			} else {
+				this.defaultShowErrors();
+			}
+		},
+
+		// http://jqueryvalidation.org/Validator.resetForm/
+		resetForm: function() {
+			if ( $.fn.resetForm ) {
+				$( this.currentForm ).resetForm();
+			}
+			this.invalid = {};
+			this.submitted = {};
+			this.prepareForm();
+			this.hideErrors();
+			var elements = this.elements()
+				.removeData( "previousValue" )
+				.removeAttr( "aria-invalid" );
+
+			this.resetElements( elements );
+		},
+
+		resetElements: function( elements ) {
+			var i;
+
+			if ( this.settings.unhighlight ) {
+				for ( i = 0; elements[ i ]; i++ ) {
+					this.settings.unhighlight.call( this, elements[ i ],
+						this.settings.errorClass, "" );
+					this.findByName( elements[ i ].name ).removeClass( this.settings.validClass );
+				}
+			} else {
+				elements
+					.removeClass( this.settings.errorClass )
+					.removeClass( this.settings.validClass );
+			}
+		},
+
+		numberOfInvalids: function() {
+			return this.objectLength( this.invalid );
+		},
+
+		objectLength: function( obj ) {
+			/* jshint unused: false */
+			var count = 0,
+				i;
+			for ( i in obj ) {
+				if ( obj[ i ] ) {
+					count++;
+				}
+			}
+			return count;
+		},
+
+		hideErrors: function() {
+			this.hideThese( this.toHide );
+		},
+
+		hideThese: function( errors ) {
+			errors.not( this.containers ).text( "" );
+			this.addWrapper( errors ).hide();
+		},
+
+		valid: function() {
+			return this.size() === 0;
+		},
+
+		size: function() {
+			return this.errorList.length;
+		},
+
+		focusInvalid: function() {
+			if ( this.settings.focusInvalid ) {
+				try {
+					$( this.findLastActive() || this.errorList.length && this.errorList[ 0 ].element || [] )
+					.filter( ":visible" )
+					.focus()
+
+					// Manually trigger focusin event; without it, focusin handler isn't called, findLastActive won't have anything to find
+					.trigger( "focusin" );
+				} catch ( e ) {
+
+					// Ignore IE throwing errors when focusing hidden elements
+				}
+			}
+		},
+
+		findLastActive: function() {
+			var lastActive = this.lastActive;
+			return lastActive && $.grep( this.errorList, function( n ) {
+				return n.element.name === lastActive.name;
+			} ).length === 1 && lastActive;
+		},
+
+		elements: function() {
+			var validator = this,
+				rulesCache = {};
+
+			// Select all valid inputs inside the form (no submit or reset buttons)
+			return $( this.currentForm )
+			.find( "input, select, textarea, [contenteditable]" )
+			.not( ":submit, :reset, :image, :disabled" )
+			.not( this.settings.ignore )
+			.filter( function() {
+				var name = this.name || $( this ).attr( "name" ); // For contenteditable
+				if ( !name && validator.settings.debug && window.console ) {
+					console.error( "%o has no name assigned", this );
+				}
+
+				// Set form expando on contenteditable
+				if ( this.hasAttribute( "contenteditable" ) ) {
+					this.form = $( this ).closest( "form" )[ 0 ];
+				}
+
+				// Select only the first element for each name, and only those with rules specified
+				if ( name in rulesCache || !validator.objectLength( $( this ).rules() ) ) {
+					return false;
+				}
+
+				rulesCache[ name ] = true;
+				return true;
+			} );
+		},
+
+		clean: function( selector ) {
+			return $( selector )[ 0 ];
+		},
+
+		errors: function() {
+			var errorClass = this.settings.errorClass.split( " " ).join( "." );
+			return $( this.settings.errorElement + "." + errorClass, this.errorContext );
+		},
+
+		resetInternals: function() {
+			this.successList = [];
+			this.errorList = [];
+			this.errorMap = {};
+			this.toShow = $( [] );
+			this.toHide = $( [] );
+		},
+
+		reset: function() {
+			this.resetInternals();
+			this.currentElements = $( [] );
+		},
+
+		prepareForm: function() {
+			this.reset();
+			this.toHide = this.errors().add( this.containers );
+		},
+
+		prepareElement: function( element ) {
+			this.reset();
+			this.toHide = this.errorsFor( element );
+		},
+
+		elementValue: function( element ) {
+			var $element = $( element ),
+				type = element.type,
+				val, idx;
+
+			if ( type === "radio" || type === "checkbox" ) {
+				return this.findByName( element.name ).filter( ":checked" ).val();
+			} else if ( type === "number" && typeof element.validity !== "undefined" ) {
+				return element.validity.badInput ? "NaN" : $element.val();
+			}
+
+			if ( element.hasAttribute( "contenteditable" ) ) {
+				val = $element.text();
+			} else {
+				val = $element.val();
+			}
+
+			if ( type === "file" ) {
+
+				// Modern browser (chrome & safari)
+				if ( val.substr( 0, 12 ) === "C:\\fakepath\\" ) {
+					return val.substr( 12 );
+				}
+
+				// Legacy browsers
+				// Unix-based path
+				idx = val.lastIndexOf( "/" );
+				if ( idx >= 0 ) {
+					return val.substr( idx + 1 );
+				}
+
+				// Windows-based path
+				idx = val.lastIndexOf( "\\" );
+				if ( idx >= 0 ) {
+					return val.substr( idx + 1 );
+				}
+
+				// Just the file name
+				return val;
+			}
+
+			if ( typeof val === "string" ) {
+				return val.replace( /\r/g, "" );
+			}
+			return val;
+		},
+
+		check: function( element ) {
+			element = this.validationTargetFor( this.clean( element ) );
+
+			var rules = $( element ).rules(),
+				rulesCount = $.map( rules, function( n, i ) {
+					return i;
+				} ).length,
+				dependencyMismatch = false,
+				val = this.elementValue( element ),
+				result, method, rule;
+
+			// If a normalizer is defined for this element, then
+			// call it to retreive the changed value instead
+			// of using the real one.
+			// Note that `this` in the normalizer is `element`.
+			if ( typeof rules.normalizer === "function" ) {
+				val = rules.normalizer.call( element, val );
+
+				if ( typeof val !== "string" ) {
+					throw new TypeError( "The normalizer should return a string value." );
+				}
+
+				// Delete the normalizer from rules to avoid treating
+				// it as a pre-defined method.
+				delete rules.normalizer;
+			}
+
+			for ( method in rules ) {
+				rule = { method: method, parameters: rules[ method ] };
+				try {
+					result = $.validator.methods[ method ].call( this, val, element, rule.parameters );
+
+					// If a method indicates that the field is optional and therefore valid,
+					// don't mark it as valid when there are no other rules
+					if ( result === "dependency-mismatch" && rulesCount === 1 ) {
+						dependencyMismatch = true;
+						continue;
+					}
+					dependencyMismatch = false;
+
+					if ( result === "pending" ) {
+						this.toHide = this.toHide.not( this.errorsFor( element ) );
+						return;
+					}
+
+					if ( !result ) {
+						this.formatAndAdd( element, rule );
+						return false;
+					}
+				} catch ( e ) {
+					if ( this.settings.debug && window.console ) {
+						console.log( "Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.", e );
+					}
+					if ( e instanceof TypeError ) {
+						e.message += ".  Exception occurred when checking element " + element.id + ", check the '" + rule.method + "' method.";
+					}
+
+					throw e;
+				}
+			}
+			if ( dependencyMismatch ) {
+				return;
+			}
+			if ( this.objectLength( rules ) ) {
+				this.successList.push( element );
+			}
+			return true;
+		},
+
+		// Return the custom message for the given element and validation method
+		// specified in the element's HTML5 data attribute
+		// return the generic message if present and no method specific message is present
+		customDataMessage: function( element, method ) {
+			return $( element ).data( "msg" + method.charAt( 0 ).toUpperCase() +
+				method.substring( 1 ).toLowerCase() ) || $( element ).data( "msg" );
+		},
+
+		// Return the custom message for the given element name and validation method
+		customMessage: function( name, method ) {
+			var m = this.settings.messages[ name ];
+			return m && ( m.constructor === String ? m : m[ method ] );
+		},
+
+		// Return the first defined argument, allowing empty strings
+		findDefined: function() {
+			for ( var i = 0; i < arguments.length; i++ ) {
+				if ( arguments[ i ] !== undefined ) {
+					return arguments[ i ];
+				}
+			}
+			return undefined;
+		},
+
+		// The second parameter 'rule' used to be a string, and extended to an object literal
+		// of the following form:
+		// rule = {
+		//     method: "method name",
+		//     parameters: "the given method parameters"
+		// }
+		//
+		// The old behavior still supported, kept to maintain backward compatibility with
+		// old code, and will be removed in the next major release.
+		defaultMessage: function( element, rule ) {
+			if ( typeof rule === "string" ) {
+				rule = { method: rule };
+			}
+
+			var message = this.findDefined(
+					this.customMessage( element.name, rule.method ),
+					this.customDataMessage( element, rule.method ),
+
+					// 'title' is never undefined, so handle empty string as undefined
+					!this.settings.ignoreTitle && element.title || undefined,
+					$.validator.messages[ rule.method ],
+					"<strong>Warning: No message defined for " + element.name + "</strong>"
+				),
+				theregex = /\$?\{(\d+)\}/g;
+			if ( typeof message === "function" ) {
+				message = message.call( this, rule.parameters, element );
+			} else if ( theregex.test( message ) ) {
+				message = $.validator.format( message.replace( theregex, "{$1}" ), rule.parameters );
+			}
+
+			return message;
+		},
+
+		formatAndAdd: function( element, rule ) {
+			var message = this.defaultMessage( element, rule );
+
+			this.errorList.push( {
+				message: message,
+				element: element,
+				method: rule.method
+			} );
+
+			this.errorMap[ element.name ] = message;
+			this.submitted[ element.name ] = message;
+		},
+
+		addWrapper: function( toToggle ) {
+			if ( this.settings.wrapper ) {
+				toToggle = toToggle.add( toToggle.parent( this.settings.wrapper ) );
+			}
+			return toToggle;
+		},
+
+		defaultShowErrors: function() {
+			var i, elements, error;
+			for ( i = 0; this.errorList[ i ]; i++ ) {
+				error = this.errorList[ i ];
+				if ( this.settings.highlight ) {
+					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass );
+				}
+				this.showLabel( error.element, error.message );
+			}
+			if ( this.errorList.length ) {
+				this.toShow = this.toShow.add( this.containers );
+			}
+			if ( this.settings.success ) {
+				for ( i = 0; this.successList[ i ]; i++ ) {
+					this.showLabel( this.successList[ i ] );
+				}
+			}
+			if ( this.settings.unhighlight ) {
+				for ( i = 0, elements = this.validElements(); elements[ i ]; i++ ) {
+					this.settings.unhighlight.call( this, elements[ i ], this.settings.errorClass, this.settings.validClass );
+				}
+			}
+			this.toHide = this.toHide.not( this.toShow );
+			this.hideErrors();
+			this.addWrapper( this.toShow ).show();
+		},
+
+		validElements: function() {
+			return this.currentElements.not( this.invalidElements() );
+		},
+
+		invalidElements: function() {
+			return $( this.errorList ).map( function() {
+				return this.element;
+			} );
+		},
+
+		showLabel: function( element, message ) {
+			var place, group, errorID, v,
+				error = this.errorsFor( element ),
+				elementID = this.idOrName( element ),
+				describedBy = $( element ).attr( "aria-describedby" );
+
+			if ( error.length ) {
+
+				// Refresh error/success class
+				error.removeClass( this.settings.validClass ).addClass( this.settings.errorClass );
+
+				// Replace message on existing label
+				error.html( message );
+			} else {
+
+				// Create error element
+				error = $( "<" + this.settings.errorElement + ">" )
+					.attr( "id", elementID + "-error" )
+					.addClass( this.settings.errorClass )
+					.html( message || "" );
+
+				// Maintain reference to the element to be placed into the DOM
+				place = error;
+				if ( this.settings.wrapper ) {
+
+					// Make sure the element is visible, even in IE
+					// actually showing the wrapped element is handled elsewhere
+					place = error.hide().show().wrap( "<" + this.settings.wrapper + "/>" ).parent();
+				}
+				if ( this.labelContainer.length ) {
+					this.labelContainer.append( place );
+				} else if ( this.settings.errorPlacement ) {
+					this.settings.errorPlacement.call( this, place, $( element ) );
+				} else {
+					place.insertAfter( element );
+				}
+
+				// Link error back to the element
+				if ( error.is( "label" ) ) {
+
+					// If the error is a label, then associate using 'for'
+					error.attr( "for", elementID );
+
+					// If the element is not a child of an associated label, then it's necessary
+					// to explicitly apply aria-describedby
+				} else if ( error.parents( "label[for='" + this.escapeCssMeta( elementID ) + "']" ).length === 0 ) {
+					errorID = error.attr( "id" );
+
+					// Respect existing non-error aria-describedby
+					if ( !describedBy ) {
+						describedBy = errorID;
+					} else if ( !describedBy.match( new RegExp( "\\b" + this.escapeCssMeta( errorID ) + "\\b" ) ) ) {
+
+						// Add to end of list if not already present
+						describedBy += " " + errorID;
+					}
+					$( element ).attr( "aria-describedby", describedBy );
+
+					// If this element is grouped, then assign to all elements in the same group
+					group = this.groups[ element.name ];
+					if ( group ) {
+						v = this;
+						$.each( v.groups, function( name, testgroup ) {
+							if ( testgroup === group ) {
+								$( "[name='" + v.escapeCssMeta( name ) + "']", v.currentForm )
+									.attr( "aria-describedby", error.attr( "id" ) );
+							}
+						} );
+					}
+				}
+			}
+			if ( !message && this.settings.success ) {
+				error.text( "" );
+				if ( typeof this.settings.success === "string" ) {
+					error.addClass( this.settings.success );
+				} else {
+					this.settings.success( error, element );
+				}
+			}
+			this.toShow = this.toShow.add( error );
+		},
+
+		errorsFor: function( element ) {
+			var name = this.escapeCssMeta( this.idOrName( element ) ),
+				describer = $( element ).attr( "aria-describedby" ),
+				selector = "label[for='" + name + "'], label[for='" + name + "'] *";
+
+			// 'aria-describedby' should directly reference the error element
+			if ( describer ) {
+				selector = selector + ", #" + this.escapeCssMeta( describer )
+					.replace( /\s+/g, ", #" );
+			}
+
+			return this
+				.errors()
+				.filter( selector );
+		},
+
+		// See https://api.jquery.com/category/selectors/, for CSS
+		// meta-characters that should be escaped in order to be used with JQuery
+		// as a literal part of a name/id or any selector.
+		escapeCssMeta: function( string ) {
+			return string.replace( /([\\!"#$%&'()*+,./:;<=>?@\[\]^`{|}~])/g, "\\$1" );
+		},
+
+		idOrName: function( element ) {
+			return this.groups[ element.name ] || ( this.checkable( element ) ? element.name : element.id || element.name );
+		},
+
+		validationTargetFor: function( element ) {
+
+			// If radio/checkbox, validate first element in group instead
+			if ( this.checkable( element ) ) {
+				element = this.findByName( element.name );
+			}
+
+			// Always apply ignore filter
+			return $( element ).not( this.settings.ignore )[ 0 ];
+		},
+
+		checkable: function( element ) {
+			return ( /radio|checkbox/i ).test( element.type );
+		},
+
+		findByName: function( name ) {
+			return $( this.currentForm ).find( "[name='" + this.escapeCssMeta( name ) + "']" );
+		},
+
+		getLength: function( value, element ) {
+			switch ( element.nodeName.toLowerCase() ) {
+			case "select":
+				return $( "option:selected", element ).length;
+			case "input":
+				if ( this.checkable( element ) ) {
+					return this.findByName( element.name ).filter( ":checked" ).length;
+				}
+			}
+			return value.length;
+		},
+
+		depend: function( param, element ) {
+			return this.dependTypes[ typeof param ] ? this.dependTypes[ typeof param ]( param, element ) : true;
+		},
+
+		dependTypes: {
+			"boolean": function( param ) {
+				return param;
+			},
+			"string": function( param, element ) {
+				return !!$( param, element.form ).length;
+			},
+			"function": function( param, element ) {
+				return param( element );
+			}
+		},
+
+		optional: function( element ) {
+			var val = this.elementValue( element );
+			return !$.validator.methods.required.call( this, val, element ) && "dependency-mismatch";
+		},
+
+		startRequest: function( element ) {
+			if ( !this.pending[ element.name ] ) {
+				this.pendingRequest++;
+				$( element ).addClass( this.settings.pendingClass );
+				this.pending[ element.name ] = true;
+			}
+		},
+
+		stopRequest: function( element, valid ) {
+			this.pendingRequest--;
+
+			// Sometimes synchronization fails, make sure pendingRequest is never < 0
+			if ( this.pendingRequest < 0 ) {
+				this.pendingRequest = 0;
+			}
+			delete this.pending[ element.name ];
+			$( element ).removeClass( this.settings.pendingClass );
+			if ( valid && this.pendingRequest === 0 && this.formSubmitted && this.form() ) {
+				$( this.currentForm ).submit();
+				this.formSubmitted = false;
+			} else if ( !valid && this.pendingRequest === 0 && this.formSubmitted ) {
+				$( this.currentForm ).triggerHandler( "invalid-form", [ this ] );
+				this.formSubmitted = false;
+			}
+		},
+
+		previousValue: function( element, method ) {
+			method = typeof method === "string" && method || "remote";
+
+			return $.data( element, "previousValue" ) || $.data( element, "previousValue", {
+				old: null,
+				valid: true,
+				message: this.defaultMessage( element, { method: method } )
+			} );
+		},
+
+		// Cleans up all forms and elements, removes validator-specific events
+		destroy: function() {
+			this.resetForm();
+
+			$( this.currentForm )
+				.off( ".validate" )
+				.removeData( "validator" )
+				.find( ".validate-equalTo-blur" )
+					.off( ".validate-equalTo" )
+					.removeClass( "validate-equalTo-blur" );
+		}
+
+	},
+
+	classRuleSettings: {
+		required: { required: true },
+		email: { email: true },
+		url: { url: true },
+		date: { date: true },
+		dateISO: { dateISO: true },
+		number: { number: true },
+		digits: { digits: true },
+		creditcard: { creditcard: true }
+	},
+
+	addClassRules: function( className, rules ) {
+		if ( className.constructor === String ) {
+			this.classRuleSettings[ className ] = rules;
+		} else {
+			$.extend( this.classRuleSettings, className );
+		}
+	},
+
+	classRules: function( element ) {
+		var rules = {},
+			classes = $( element ).attr( "class" );
+
+		if ( classes ) {
+			$.each( classes.split( " " ), function() {
+				if ( this in $.validator.classRuleSettings ) {
+					$.extend( rules, $.validator.classRuleSettings[ this ] );
+				}
+			} );
+		}
+		return rules;
+	},
+
+	normalizeAttributeRule: function( rules, type, method, value ) {
+
+		// Convert the value to a number for number inputs, and for text for backwards compability
+		// allows type="date" and others to be compared as strings
+		if ( /min|max|step/.test( method ) && ( type === null || /number|range|text/.test( type ) ) ) {
+			value = Number( value );
+
+			// Support Opera Mini, which returns NaN for undefined minlength
+			if ( isNaN( value ) ) {
+				value = undefined;
+			}
+		}
+
+		if ( value || value === 0 ) {
+			rules[ method ] = value;
+		} else if ( type === method && type !== "range" ) {
+
+			// Exception: the jquery validate 'range' method
+			// does not test for the html5 'range' type
+			rules[ method ] = true;
+		}
+	},
+
+	attributeRules: function( element ) {
+		var rules = {},
+			$element = $( element ),
+			type = element.getAttribute( "type" ),
+			method, value;
+
+		for ( method in $.validator.methods ) {
+
+			// Support for <input required> in both html5 and older browsers
+			if ( method === "required" ) {
+				value = element.getAttribute( method );
+
+				// Some browsers return an empty string for the required attribute
+				// and non-HTML5 browsers might have required="" markup
+				if ( value === "" ) {
+					value = true;
+				}
+
+				// Force non-HTML5 browsers to return bool
+				value = !!value;
+			} else {
+				value = $element.attr( method );
+			}
+
+			this.normalizeAttributeRule( rules, type, method, value );
+		}
+
+		// 'maxlength' may be returned as -1, 2147483647 ( IE ) and 524288 ( safari ) for text inputs
+		if ( rules.maxlength && /-1|2147483647|524288/.test( rules.maxlength ) ) {
+			delete rules.maxlength;
+		}
+
+		return rules;
+	},
+
+	dataRules: function( element ) {
+		var rules = {},
+			$element = $( element ),
+			type = element.getAttribute( "type" ),
+			method, value;
+
+		for ( method in $.validator.methods ) {
+			value = $element.data( "rule" + method.charAt( 0 ).toUpperCase() + method.substring( 1 ).toLowerCase() );
+			this.normalizeAttributeRule( rules, type, method, value );
+		}
+		return rules;
+	},
+
+	staticRules: function( element ) {
+		var rules = {},
+			validator = $.data( element.form, "validator" );
+
+		if ( validator.settings.rules ) {
+			rules = $.validator.normalizeRule( validator.settings.rules[ element.name ] ) || {};
+		}
+		return rules;
+	},
+
+	normalizeRules: function( rules, element ) {
+
+		// Handle dependency check
+		$.each( rules, function( prop, val ) {
+
+			// Ignore rule when param is explicitly false, eg. required:false
+			if ( val === false ) {
+				delete rules[ prop ];
+				return;
+			}
+			if ( val.param || val.depends ) {
+				var keepRule = true;
+				switch ( typeof val.depends ) {
+				case "string":
+					keepRule = !!$( val.depends, element.form ).length;
+					break;
+				case "function":
+					keepRule = val.depends.call( element, element );
+					break;
+				}
+				if ( keepRule ) {
+					rules[ prop ] = val.param !== undefined ? val.param : true;
+				} else {
+					$.data( element.form, "validator" ).resetElements( $( element ) );
+					delete rules[ prop ];
+				}
+			}
+		} );
+
+		// Evaluate parameters
+		$.each( rules, function( rule, parameter ) {
+			rules[ rule ] = $.isFunction( parameter ) && rule !== "normalizer" ? parameter( element ) : parameter;
+		} );
+
+		// Clean number parameters
+		$.each( [ "minlength", "maxlength" ], function() {
+			if ( rules[ this ] ) {
+				rules[ this ] = Number( rules[ this ] );
+			}
+		} );
+		$.each( [ "rangelength", "range" ], function() {
+			var parts;
+			if ( rules[ this ] ) {
+				if ( $.isArray( rules[ this ] ) ) {
+					rules[ this ] = [ Number( rules[ this ][ 0 ] ), Number( rules[ this ][ 1 ] ) ];
+				} else if ( typeof rules[ this ] === "string" ) {
+					parts = rules[ this ].replace( /[\[\]]/g, "" ).split( /[\s,]+/ );
+					rules[ this ] = [ Number( parts[ 0 ] ), Number( parts[ 1 ] ) ];
+				}
+			}
+		} );
+
+		if ( $.validator.autoCreateRanges ) {
+
+			// Auto-create ranges
+			if ( rules.min != null && rules.max != null ) {
+				rules.range = [ rules.min, rules.max ];
+				delete rules.min;
+				delete rules.max;
+			}
+			if ( rules.minlength != null && rules.maxlength != null ) {
+				rules.rangelength = [ rules.minlength, rules.maxlength ];
+				delete rules.minlength;
+				delete rules.maxlength;
+			}
+		}
+
+		return rules;
+	},
+
+	// Converts a simple string to a {string: true} rule, e.g., "required" to {required:true}
+	normalizeRule: function( data ) {
+		if ( typeof data === "string" ) {
+			var transformed = {};
+			$.each( data.split( /\s/ ), function() {
+				transformed[ this ] = true;
+			} );
+			data = transformed;
+		}
+		return data;
+	},
+
+	// http://jqueryvalidation.org/jQuery.validator.addMethod/
+	addMethod: function( name, method, message ) {
+		$.validator.methods[ name ] = method;
+		$.validator.messages[ name ] = message !== undefined ? message : $.validator.messages[ name ];
+		if ( method.length < 3 ) {
+			$.validator.addClassRules( name, $.validator.normalizeRule( name ) );
+		}
+	},
+
+	// http://jqueryvalidation.org/jQuery.validator.methods/
+	methods: {
+
+		// http://jqueryvalidation.org/required-method/
+		required: function( value, element, param ) {
+
+			// Check if dependency is met
+			if ( !this.depend( param, element ) ) {
+				return "dependency-mismatch";
+			}
+			if ( element.nodeName.toLowerCase() === "select" ) {
+
+				// Could be an array for select-multiple or a string, both are fine this way
+				var val = $( element ).val();
+				return val && val.length > 0;
+			}
+			if ( this.checkable( element ) ) {
+				return this.getLength( value, element ) > 0;
+			}
+			return value.length > 0;
+		},
+
+		// http://jqueryvalidation.org/email-method/
+		email: function( value, element ) {
+
+			// From https://html.spec.whatwg.org/multipage/forms.html#valid-e-mail-address
+			// Retrieved 2014-01-14
+			// If you have a problem with this implementation, report a bug against the above spec
+			// Or use custom methods to implement your own email validation
+			return this.optional( element ) || /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test( value );
+		},
+
+		// http://jqueryvalidation.org/url-method/
+		url: function( value, element ) {
+
+			// Copyright (c) 2010-2013 Diego Perini, MIT licensed
+			// https://gist.github.com/dperini/729294
+			// see also https://mathiasbynens.be/demo/url-regex
+			// modified to allow protocol-relative URLs
+			return this.optional( element ) || /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/i.test( value );
+		},
+
+		// http://jqueryvalidation.org/date-method/
+		date: function( value, element ) {
+			return this.optional( element ) || !/Invalid|NaN/.test( new Date( value ).toString() );
+		},
+
+		// http://jqueryvalidation.org/dateISO-method/
+		dateISO: function( value, element ) {
+			return this.optional( element ) || /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test( value );
+		},
+
+		// http://jqueryvalidation.org/number-method/
+		number: function( value, element ) {
+			return this.optional( element ) || /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test( value );
+		},
+
+		// http://jqueryvalidation.org/digits-method/
+		digits: function( value, element ) {
+			return this.optional( element ) || /^\d+$/.test( value );
+		},
+
+		// http://jqueryvalidation.org/minlength-method/
+		minlength: function( value, element, param ) {
+			var length = $.isArray( value ) ? value.length : this.getLength( value, element );
+			return this.optional( element ) || length >= param;
+		},
+
+		// http://jqueryvalidation.org/maxlength-method/
+		maxlength: function( value, element, param ) {
+			var length = $.isArray( value ) ? value.length : this.getLength( value, element );
+			return this.optional( element ) || length <= param;
+		},
+
+		// http://jqueryvalidation.org/rangelength-method/
+		rangelength: function( value, element, param ) {
+			var length = $.isArray( value ) ? value.length : this.getLength( value, element );
+			return this.optional( element ) || ( length >= param[ 0 ] && length <= param[ 1 ] );
+		},
+
+		// http://jqueryvalidation.org/min-method/
+		min: function( value, element, param ) {
+			return this.optional( element ) || value >= param;
+		},
+
+		// http://jqueryvalidation.org/max-method/
+		max: function( value, element, param ) {
+			return this.optional( element ) || value <= param;
+		},
+
+		// http://jqueryvalidation.org/range-method/
+		range: function( value, element, param ) {
+			return this.optional( element ) || ( value >= param[ 0 ] && value <= param[ 1 ] );
+		},
+
+		// http://jqueryvalidation.org/step-method/
+		step: function( value, element, param ) {
+			var type = $( element ).attr( "type" ),
+				errorMessage = "Step attribute on input type " + type + " is not supported.",
+				supportedTypes = [ "text", "number", "range" ],
+				re = new RegExp( "\\b" + type + "\\b" ),
+				notSupported = type && !re.test( supportedTypes.join() ),
+				decimalPlaces = function( num ) {
+					var match = ( "" + num ).match( /(?:\.(\d+))?$/ );
+					if ( !match ) {
+						return 0;
+					}
+
+					// Number of digits right of decimal point.
+					return match[ 1 ] ? match[ 1 ].length : 0;
+				},
+				toInt = function( num ) {
+					return Math.round( num * Math.pow( 10, decimals ) );
+				},
+				valid = true,
+				decimals;
+
+			// Works only for text, number and range input types
+			// TODO find a way to support input types date, datetime, datetime-local, month, time and week
+			if ( notSupported ) {
+				throw new Error( errorMessage );
+			}
+
+			decimals = decimalPlaces( param );
+
+			// Value can't have too many decimals
+			if ( decimalPlaces( value ) > decimals || toInt( value ) % toInt( param ) !== 0 ) {
+				valid = false;
+			}
+
+			return this.optional( element ) || valid;
+		},
+
+		// http://jqueryvalidation.org/equalTo-method/
+		equalTo: function( value, element, param ) {
+
+			// Bind to the blur event of the target in order to revalidate whenever the target field is updated
+			var target = $( param );
+			if ( this.settings.onfocusout && target.not( ".validate-equalTo-blur" ).length ) {
+				target.addClass( "validate-equalTo-blur" ).on( "blur.validate-equalTo", function() {
+					$( element ).valid();
+				} );
+			}
+			return value === target.val();
+		},
+
+		// http://jqueryvalidation.org/remote-method/
+		remote: function( value, element, param, method ) {
+			if ( this.optional( element ) ) {
+				return "dependency-mismatch";
+			}
+
+			method = typeof method === "string" && method || "remote";
+
+			var previous = this.previousValue( element, method ),
+				validator, data, optionDataString;
+
+			if ( !this.settings.messages[ element.name ] ) {
+				this.settings.messages[ element.name ] = {};
+			}
+			previous.originalMessage = previous.originalMessage || this.settings.messages[ element.name ][ method ];
+			this.settings.messages[ element.name ][ method ] = previous.message;
+
+			param = typeof param === "string" && { url: param } || param;
+			optionDataString = $.param( $.extend( { data: value }, param.data ) );
+			if ( previous.old === optionDataString ) {
+				return previous.valid;
+			}
+
+			previous.old = optionDataString;
+			validator = this;
+			this.startRequest( element );
+			data = {};
+			data[ element.name ] = value;
+			$.ajax( $.extend( true, {
+				mode: "abort",
+				port: "validate" + element.name,
+				dataType: "json",
+				data: data,
+				context: validator.currentForm,
+				success: function( response ) {
+					var valid = response === true || response === "true",
+						errors, message, submitted;
+
+					validator.settings.messages[ element.name ][ method ] = previous.originalMessage;
+					if ( valid ) {
+						submitted = validator.formSubmitted;
+						validator.resetInternals();
+						validator.toHide = validator.errorsFor( element );
+						validator.formSubmitted = submitted;
+						validator.successList.push( element );
+						validator.invalid[ element.name ] = false;
+						validator.showErrors();
+					} else {
+						errors = {};
+						message = response || validator.defaultMessage( element, { method: method, parameters: value } );
+						errors[ element.name ] = previous.message = message;
+						validator.invalid[ element.name ] = true;
+						validator.showErrors( errors );
+					}
+					previous.valid = valid;
+					validator.stopRequest( element, valid );
+				}
+			}, param ) );
+			return "pending";
+		}
+	}
+
+} );
+
+// Ajax mode: abort
+// usage: $.ajax({ mode: "abort"[, port: "uniqueport"]});
+// if mode:"abort" is used, the previous request on that port (port can be undefined) is aborted via XMLHttpRequest.abort()
+
+var pendingRequests = {},
+	ajax;
+
+// Use a prefilter if available (1.5+)
+if ( $.ajaxPrefilter ) {
+	$.ajaxPrefilter( function( settings, _, xhr ) {
+		var port = settings.port;
+		if ( settings.mode === "abort" ) {
+			if ( pendingRequests[ port ] ) {
+				pendingRequests[ port ].abort();
+			}
+			pendingRequests[ port ] = xhr;
+		}
+	} );
+} else {
+
+	// Proxy ajax
+	ajax = $.ajax;
+	$.ajax = function( settings ) {
+		var mode = ( "mode" in settings ? settings : $.ajaxSettings ).mode,
+			port = ( "port" in settings ? settings : $.ajaxSettings ).port;
+		if ( mode === "abort" ) {
+			if ( pendingRequests[ port ] ) {
+				pendingRequests[ port ].abort();
+			}
+			pendingRequests[ port ] = ajax.apply( this, arguments );
+			return pendingRequests[ port ];
+		}
+		return ajax.apply( this, arguments );
+	};
+}
+return $;
+}));
+
+/***/ }),
+/* 37 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -15569,11 +19187,1566 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 34 */
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
+//     http://underscorejs.org
+//     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+//     Underscore may be freely distributed under the MIT license.
+
+(function() {
+
+  // Baseline setup
+  // --------------
+
+  // Establish the root object, `window` in the browser, or `exports` on the server.
+  var root = this;
+
+  // Save the previous value of the `_` variable.
+  var previousUnderscore = root._;
+
+  // Save bytes in the minified (but not gzipped) version:
+  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+
+  // Create quick reference variables for speed access to core prototypes.
+  var
+    push             = ArrayProto.push,
+    slice            = ArrayProto.slice,
+    toString         = ObjProto.toString,
+    hasOwnProperty   = ObjProto.hasOwnProperty;
+
+  // All **ECMAScript 5** native function implementations that we hope to use
+  // are declared here.
+  var
+    nativeIsArray      = Array.isArray,
+    nativeKeys         = Object.keys,
+    nativeBind         = FuncProto.bind,
+    nativeCreate       = Object.create;
+
+  // Naked function reference for surrogate-prototype-swapping.
+  var Ctor = function(){};
+
+  // Create a safe reference to the Underscore object for use below.
+  var _ = function(obj) {
+    if (obj instanceof _) return obj;
+    if (!(this instanceof _)) return new _(obj);
+    this._wrapped = obj;
+  };
+
+  // Export the Underscore object for **Node.js**, with
+  // backwards-compatibility for the old `require()` API. If we're in
+  // the browser, add `_` as a global object.
+  if (true) {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = _;
+    }
+    exports._ = _;
+  } else {
+    root._ = _;
+  }
+
+  // Current version.
+  _.VERSION = '1.8.3';
+
+  // Internal function that returns an efficient (for current engines) version
+  // of the passed-in callback, to be repeatedly applied in other Underscore
+  // functions.
+  var optimizeCb = function(func, context, argCount) {
+    if (context === void 0) return func;
+    switch (argCount == null ? 3 : argCount) {
+      case 1: return function(value) {
+        return func.call(context, value);
+      };
+      case 2: return function(value, other) {
+        return func.call(context, value, other);
+      };
+      case 3: return function(value, index, collection) {
+        return func.call(context, value, index, collection);
+      };
+      case 4: return function(accumulator, value, index, collection) {
+        return func.call(context, accumulator, value, index, collection);
+      };
+    }
+    return function() {
+      return func.apply(context, arguments);
+    };
+  };
+
+  // A mostly-internal function to generate callbacks that can be applied
+  // to each element in a collection, returning the desired result — either
+  // identity, an arbitrary callback, a property matcher, or a property accessor.
+  var cb = function(value, context, argCount) {
+    if (value == null) return _.identity;
+    if (_.isFunction(value)) return optimizeCb(value, context, argCount);
+    if (_.isObject(value)) return _.matcher(value);
+    return _.property(value);
+  };
+  _.iteratee = function(value, context) {
+    return cb(value, context, Infinity);
+  };
+
+  // An internal function for creating assigner functions.
+  var createAssigner = function(keysFunc, undefinedOnly) {
+    return function(obj) {
+      var length = arguments.length;
+      if (length < 2 || obj == null) return obj;
+      for (var index = 1; index < length; index++) {
+        var source = arguments[index],
+            keys = keysFunc(source),
+            l = keys.length;
+        for (var i = 0; i < l; i++) {
+          var key = keys[i];
+          if (!undefinedOnly || obj[key] === void 0) obj[key] = source[key];
+        }
+      }
+      return obj;
+    };
+  };
+
+  // An internal function for creating a new object that inherits from another.
+  var baseCreate = function(prototype) {
+    if (!_.isObject(prototype)) return {};
+    if (nativeCreate) return nativeCreate(prototype);
+    Ctor.prototype = prototype;
+    var result = new Ctor;
+    Ctor.prototype = null;
+    return result;
+  };
+
+  var property = function(key) {
+    return function(obj) {
+      return obj == null ? void 0 : obj[key];
+    };
+  };
+
+  // Helper for collection methods to determine whether a collection
+  // should be iterated as an array or as an object
+  // Related: http://people.mozilla.org/~jorendorff/es6-draft.html#sec-tolength
+  // Avoids a very nasty iOS 8 JIT bug on ARM-64. #2094
+  var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+  var getLength = property('length');
+  var isArrayLike = function(collection) {
+    var length = getLength(collection);
+    return typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+  };
+
+  // Collection Functions
+  // --------------------
+
+  // The cornerstone, an `each` implementation, aka `forEach`.
+  // Handles raw objects in addition to array-likes. Treats all
+  // sparse array-likes as if they were dense.
+  _.each = _.forEach = function(obj, iteratee, context) {
+    iteratee = optimizeCb(iteratee, context);
+    var i, length;
+    if (isArrayLike(obj)) {
+      for (i = 0, length = obj.length; i < length; i++) {
+        iteratee(obj[i], i, obj);
+      }
+    } else {
+      var keys = _.keys(obj);
+      for (i = 0, length = keys.length; i < length; i++) {
+        iteratee(obj[keys[i]], keys[i], obj);
+      }
+    }
+    return obj;
+  };
+
+  // Return the results of applying the iteratee to each element.
+  _.map = _.collect = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length,
+        results = Array(length);
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      results[index] = iteratee(obj[currentKey], currentKey, obj);
+    }
+    return results;
+  };
+
+  // Create a reducing function iterating left or right.
+  function createReduce(dir) {
+    // Optimized iterator function as using arguments.length
+    // in the main function will deoptimize the, see #1991.
+    function iterator(obj, iteratee, memo, keys, index, length) {
+      for (; index >= 0 && index < length; index += dir) {
+        var currentKey = keys ? keys[index] : index;
+        memo = iteratee(memo, obj[currentKey], currentKey, obj);
+      }
+      return memo;
+    }
+
+    return function(obj, iteratee, memo, context) {
+      iteratee = optimizeCb(iteratee, context, 4);
+      var keys = !isArrayLike(obj) && _.keys(obj),
+          length = (keys || obj).length,
+          index = dir > 0 ? 0 : length - 1;
+      // Determine the initial value if none is provided.
+      if (arguments.length < 3) {
+        memo = obj[keys ? keys[index] : index];
+        index += dir;
+      }
+      return iterator(obj, iteratee, memo, keys, index, length);
+    };
+  }
+
+  // **Reduce** builds up a single result from a list of values, aka `inject`,
+  // or `foldl`.
+  _.reduce = _.foldl = _.inject = createReduce(1);
+
+  // The right-associative version of reduce, also known as `foldr`.
+  _.reduceRight = _.foldr = createReduce(-1);
+
+  // Return the first value which passes a truth test. Aliased as `detect`.
+  _.find = _.detect = function(obj, predicate, context) {
+    var key;
+    if (isArrayLike(obj)) {
+      key = _.findIndex(obj, predicate, context);
+    } else {
+      key = _.findKey(obj, predicate, context);
+    }
+    if (key !== void 0 && key !== -1) return obj[key];
+  };
+
+  // Return all the elements that pass a truth test.
+  // Aliased as `select`.
+  _.filter = _.select = function(obj, predicate, context) {
+    var results = [];
+    predicate = cb(predicate, context);
+    _.each(obj, function(value, index, list) {
+      if (predicate(value, index, list)) results.push(value);
+    });
+    return results;
+  };
+
+  // Return all the elements for which a truth test fails.
+  _.reject = function(obj, predicate, context) {
+    return _.filter(obj, _.negate(cb(predicate)), context);
+  };
+
+  // Determine whether all of the elements match a truth test.
+  // Aliased as `all`.
+  _.every = _.all = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (!predicate(obj[currentKey], currentKey, obj)) return false;
+    }
+    return true;
+  };
+
+  // Determine if at least one element in the object matches a truth test.
+  // Aliased as `any`.
+  _.some = _.any = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+      var currentKey = keys ? keys[index] : index;
+      if (predicate(obj[currentKey], currentKey, obj)) return true;
+    }
+    return false;
+  };
+
+  // Determine if the array or object contains a given item (using `===`).
+  // Aliased as `includes` and `include`.
+  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+    if (!isArrayLike(obj)) obj = _.values(obj);
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return _.indexOf(obj, item, fromIndex) >= 0;
+  };
+
+  // Invoke a method (with arguments) on every item in a collection.
+  _.invoke = function(obj, method) {
+    var args = slice.call(arguments, 2);
+    var isFunc = _.isFunction(method);
+    return _.map(obj, function(value) {
+      var func = isFunc ? method : value[method];
+      return func == null ? func : func.apply(value, args);
+    });
+  };
+
+  // Convenience version of a common use case of `map`: fetching a property.
+  _.pluck = function(obj, key) {
+    return _.map(obj, _.property(key));
+  };
+
+  // Convenience version of a common use case of `filter`: selecting only objects
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs) {
+    return _.filter(obj, _.matcher(attrs));
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.find(obj, _.matcher(attrs));
+  };
+
+  // Return the maximum element (or element-based computation).
+  _.max = function(obj, iteratee, context) {
+    var result = -Infinity, lastComputed = -Infinity,
+        value, computed;
+    if (iteratee == null && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value > result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index, list) {
+        computed = iteratee(value, index, list);
+        if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
+          result = value;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Return the minimum element (or element-based computation).
+  _.min = function(obj, iteratee, context) {
+    var result = Infinity, lastComputed = Infinity,
+        value, computed;
+    if (iteratee == null && obj != null) {
+      obj = isArrayLike(obj) ? obj : _.values(obj);
+      for (var i = 0, length = obj.length; i < length; i++) {
+        value = obj[i];
+        if (value < result) {
+          result = value;
+        }
+      }
+    } else {
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index, list) {
+        computed = iteratee(value, index, list);
+        if (computed < lastComputed || computed === Infinity && result === Infinity) {
+          result = value;
+          lastComputed = computed;
+        }
+      });
+    }
+    return result;
+  };
+
+  // Shuffle a collection, using the modern version of the
+  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+  _.shuffle = function(obj) {
+    var set = isArrayLike(obj) ? obj : _.values(obj);
+    var length = set.length;
+    var shuffled = Array(length);
+    for (var index = 0, rand; index < length; index++) {
+      rand = _.random(0, index);
+      if (rand !== index) shuffled[index] = shuffled[rand];
+      shuffled[rand] = set[index];
+    }
+    return shuffled;
+  };
+
+  // Sample **n** random values from a collection.
+  // If **n** is not specified, returns a single random element.
+  // The internal `guard` argument allows it to work with `map`.
+  _.sample = function(obj, n, guard) {
+    if (n == null || guard) {
+      if (!isArrayLike(obj)) obj = _.values(obj);
+      return obj[_.random(obj.length - 1)];
+    }
+    return _.shuffle(obj).slice(0, Math.max(0, n));
+  };
+
+  // Sort the object's values by a criterion produced by an iteratee.
+  _.sortBy = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    return _.pluck(_.map(obj, function(value, index, list) {
+      return {
+        value: value,
+        index: index,
+        criteria: iteratee(value, index, list)
+      };
+    }).sort(function(left, right) {
+      var a = left.criteria;
+      var b = right.criteria;
+      if (a !== b) {
+        if (a > b || a === void 0) return 1;
+        if (a < b || b === void 0) return -1;
+      }
+      return left.index - right.index;
+    }), 'value');
+  };
+
+  // An internal function used for aggregate "group by" operations.
+  var group = function(behavior) {
+    return function(obj, iteratee, context) {
+      var result = {};
+      iteratee = cb(iteratee, context);
+      _.each(obj, function(value, index) {
+        var key = iteratee(value, index, obj);
+        behavior(result, value, key);
+      });
+      return result;
+    };
+  };
+
+  // Groups the object's values by a criterion. Pass either a string attribute
+  // to group by, or a function that returns the criterion.
+  _.groupBy = group(function(result, value, key) {
+    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+  });
+
+  // Indexes the object's values by a criterion, similar to `groupBy`, but for
+  // when you know that your index values will be unique.
+  _.indexBy = group(function(result, value, key) {
+    result[key] = value;
+  });
+
+  // Counts instances of an object that group by a certain criterion. Pass
+  // either a string attribute to count by, or a function that returns the
+  // criterion.
+  _.countBy = group(function(result, value, key) {
+    if (_.has(result, key)) result[key]++; else result[key] = 1;
+  });
+
+  // Safely create a real, live array from anything iterable.
+  _.toArray = function(obj) {
+    if (!obj) return [];
+    if (_.isArray(obj)) return slice.call(obj);
+    if (isArrayLike(obj)) return _.map(obj, _.identity);
+    return _.values(obj);
+  };
+
+  // Return the number of elements in an object.
+  _.size = function(obj) {
+    if (obj == null) return 0;
+    return isArrayLike(obj) ? obj.length : _.keys(obj).length;
+  };
+
+  // Split a collection into two arrays: one whose elements all satisfy the given
+  // predicate, and one whose elements all do not satisfy the predicate.
+  _.partition = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var pass = [], fail = [];
+    _.each(obj, function(value, key, obj) {
+      (predicate(value, key, obj) ? pass : fail).push(value);
+    });
+    return [pass, fail];
+  };
+
+  // Array Functions
+  // ---------------
+
+  // Get the first element of an array. Passing **n** will return the first N
+  // values in the array. Aliased as `head` and `take`. The **guard** check
+  // allows it to work with `_.map`.
+  _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null) return void 0;
+    if (n == null || guard) return array[0];
+    return _.initial(array, array.length - n);
+  };
+
+  // Returns everything but the last entry of the array. Especially useful on
+  // the arguments object. Passing **n** will return all the values in
+  // the array, excluding the last N.
+  _.initial = function(array, n, guard) {
+    return slice.call(array, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
+  };
+
+  // Get the last element of an array. Passing **n** will return the last N
+  // values in the array.
+  _.last = function(array, n, guard) {
+    if (array == null) return void 0;
+    if (n == null || guard) return array[array.length - 1];
+    return _.rest(array, Math.max(0, array.length - n));
+  };
+
+  // Returns everything but the first entry of the array. Aliased as `tail` and `drop`.
+  // Especially useful on the arguments object. Passing an **n** will return
+  // the rest N values in the array.
+  _.rest = _.tail = _.drop = function(array, n, guard) {
+    return slice.call(array, n == null || guard ? 1 : n);
+  };
+
+  // Trim out all falsy values from an array.
+  _.compact = function(array) {
+    return _.filter(array, _.identity);
+  };
+
+  // Internal implementation of a recursive `flatten` function.
+  var flatten = function(input, shallow, strict, startIndex) {
+    var output = [], idx = 0;
+    for (var i = startIndex || 0, length = getLength(input); i < length; i++) {
+      var value = input[i];
+      if (isArrayLike(value) && (_.isArray(value) || _.isArguments(value))) {
+        //flatten current level of array or arguments object
+        if (!shallow) value = flatten(value, shallow, strict);
+        var j = 0, len = value.length;
+        output.length += len;
+        while (j < len) {
+          output[idx++] = value[j++];
+        }
+      } else if (!strict) {
+        output[idx++] = value;
+      }
+    }
+    return output;
+  };
+
+  // Flatten out an array, either recursively (by default), or just one level.
+  _.flatten = function(array, shallow) {
+    return flatten(array, shallow, false);
+  };
+
+  // Return a version of the array that does not contain the specified value(s).
+  _.without = function(array) {
+    return _.difference(array, slice.call(arguments, 1));
+  };
+
+  // Produce a duplicate-free version of the array. If the array has already
+  // been sorted, you have the option of using a faster algorithm.
+  // Aliased as `unique`.
+  _.uniq = _.unique = function(array, isSorted, iteratee, context) {
+    if (!_.isBoolean(isSorted)) {
+      context = iteratee;
+      iteratee = isSorted;
+      isSorted = false;
+    }
+    if (iteratee != null) iteratee = cb(iteratee, context);
+    var result = [];
+    var seen = [];
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var value = array[i],
+          computed = iteratee ? iteratee(value, i, array) : value;
+      if (isSorted) {
+        if (!i || seen !== computed) result.push(value);
+        seen = computed;
+      } else if (iteratee) {
+        if (!_.contains(seen, computed)) {
+          seen.push(computed);
+          result.push(value);
+        }
+      } else if (!_.contains(result, value)) {
+        result.push(value);
+      }
+    }
+    return result;
+  };
+
+  // Produce an array that contains the union: each distinct element from all of
+  // the passed-in arrays.
+  _.union = function() {
+    return _.uniq(flatten(arguments, true, true));
+  };
+
+  // Produce an array that contains every item shared between all the
+  // passed-in arrays.
+  _.intersection = function(array) {
+    var result = [];
+    var argsLength = arguments.length;
+    for (var i = 0, length = getLength(array); i < length; i++) {
+      var item = array[i];
+      if (_.contains(result, item)) continue;
+      for (var j = 1; j < argsLength; j++) {
+        if (!_.contains(arguments[j], item)) break;
+      }
+      if (j === argsLength) result.push(item);
+    }
+    return result;
+  };
+
+  // Take the difference between one array and a number of other arrays.
+  // Only the elements present in just the first array will remain.
+  _.difference = function(array) {
+    var rest = flatten(arguments, true, true, 1);
+    return _.filter(array, function(value){
+      return !_.contains(rest, value);
+    });
+  };
+
+  // Zip together multiple lists into a single array -- elements that share
+  // an index go together.
+  _.zip = function() {
+    return _.unzip(arguments);
+  };
+
+  // Complement of _.zip. Unzip accepts an array of arrays and groups
+  // each array's elements on shared indices
+  _.unzip = function(array) {
+    var length = array && _.max(array, getLength).length || 0;
+    var result = Array(length);
+
+    for (var index = 0; index < length; index++) {
+      result[index] = _.pluck(array, index);
+    }
+    return result;
+  };
+
+  // Converts lists into objects. Pass either a single array of `[key, value]`
+  // pairs, or two parallel arrays of the same length -- one of keys, and one of
+  // the corresponding values.
+  _.object = function(list, values) {
+    var result = {};
+    for (var i = 0, length = getLength(list); i < length; i++) {
+      if (values) {
+        result[list[i]] = values[i];
+      } else {
+        result[list[i][0]] = list[i][1];
+      }
+    }
+    return result;
+  };
+
+  // Generator function to create the findIndex and findLastIndex functions
+  function createPredicateIndexFinder(dir) {
+    return function(array, predicate, context) {
+      predicate = cb(predicate, context);
+      var length = getLength(array);
+      var index = dir > 0 ? 0 : length - 1;
+      for (; index >= 0 && index < length; index += dir) {
+        if (predicate(array[index], index, array)) return index;
+      }
+      return -1;
+    };
+  }
+
+  // Returns the first index on an array-like that passes a predicate test
+  _.findIndex = createPredicateIndexFinder(1);
+  _.findLastIndex = createPredicateIndexFinder(-1);
+
+  // Use a comparator function to figure out the smallest index at which
+  // an object should be inserted so as to maintain order. Uses binary search.
+  _.sortedIndex = function(array, obj, iteratee, context) {
+    iteratee = cb(iteratee, context, 1);
+    var value = iteratee(obj);
+    var low = 0, high = getLength(array);
+    while (low < high) {
+      var mid = Math.floor((low + high) / 2);
+      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
+    }
+    return low;
+  };
+
+  // Generator function to create the indexOf and lastIndexOf functions
+  function createIndexFinder(dir, predicateFind, sortedIndex) {
+    return function(array, item, idx) {
+      var i = 0, length = getLength(array);
+      if (typeof idx == 'number') {
+        if (dir > 0) {
+            i = idx >= 0 ? idx : Math.max(idx + length, i);
+        } else {
+            length = idx >= 0 ? Math.min(idx + 1, length) : idx + length + 1;
+        }
+      } else if (sortedIndex && idx && length) {
+        idx = sortedIndex(array, item);
+        return array[idx] === item ? idx : -1;
+      }
+      if (item !== item) {
+        idx = predicateFind(slice.call(array, i, length), _.isNaN);
+        return idx >= 0 ? idx + i : -1;
+      }
+      for (idx = dir > 0 ? i : length - 1; idx >= 0 && idx < length; idx += dir) {
+        if (array[idx] === item) return idx;
+      }
+      return -1;
+    };
+  }
+
+  // Return the position of the first occurrence of an item in an array,
+  // or -1 if the item is not included in the array.
+  // If the array is large and already in sort order, pass `true`
+  // for **isSorted** to use binary search.
+  _.indexOf = createIndexFinder(1, _.findIndex, _.sortedIndex);
+  _.lastIndexOf = createIndexFinder(-1, _.findLastIndex);
+
+  // Generate an integer Array containing an arithmetic progression. A port of
+  // the native Python `range()` function. See
+  // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  _.range = function(start, stop, step) {
+    if (stop == null) {
+      stop = start || 0;
+      start = 0;
+    }
+    step = step || 1;
+
+    var length = Math.max(Math.ceil((stop - start) / step), 0);
+    var range = Array(length);
+
+    for (var idx = 0; idx < length; idx++, start += step) {
+      range[idx] = start;
+    }
+
+    return range;
+  };
+
+  // Function (ahem) Functions
+  // ------------------
+
+  // Determines whether to execute a function as a constructor
+  // or a normal function with the provided arguments
+  var executeBound = function(sourceFunc, boundFunc, context, callingContext, args) {
+    if (!(callingContext instanceof boundFunc)) return sourceFunc.apply(context, args);
+    var self = baseCreate(sourceFunc.prototype);
+    var result = sourceFunc.apply(self, args);
+    if (_.isObject(result)) return result;
+    return self;
+  };
+
+  // Create a function bound to a given object (assigning `this`, and arguments,
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = function(func, context) {
+    if (nativeBind && func.bind === nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
+    if (!_.isFunction(func)) throw new TypeError('Bind must be called on a function');
+    var args = slice.call(arguments, 2);
+    var bound = function() {
+      return executeBound(func, bound, context, this, args.concat(slice.call(arguments)));
+    };
+    return bound;
+  };
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context. _ acts
+  // as a placeholder, allowing any combination of arguments to be pre-filled.
+  _.partial = function(func) {
+    var boundArgs = slice.call(arguments, 1);
+    var bound = function() {
+      var position = 0, length = boundArgs.length;
+      var args = Array(length);
+      for (var i = 0; i < length; i++) {
+        args[i] = boundArgs[i] === _ ? arguments[position++] : boundArgs[i];
+      }
+      while (position < arguments.length) args.push(arguments[position++]);
+      return executeBound(func, bound, this, this, args);
+    };
+    return bound;
+  };
+
+  // Bind a number of an object's methods to that object. Remaining arguments
+  // are the method names to be bound. Useful for ensuring that all callbacks
+  // defined on an object belong to it.
+  _.bindAll = function(obj) {
+    var i, length = arguments.length, key;
+    if (length <= 1) throw new Error('bindAll must be passed function names');
+    for (i = 1; i < length; i++) {
+      key = arguments[i];
+      obj[key] = _.bind(obj[key], obj);
+    }
+    return obj;
+  };
+
+  // Memoize an expensive function by storing its results.
+  _.memoize = function(func, hasher) {
+    var memoize = function(key) {
+      var cache = memoize.cache;
+      var address = '' + (hasher ? hasher.apply(this, arguments) : key);
+      if (!_.has(cache, address)) cache[address] = func.apply(this, arguments);
+      return cache[address];
+    };
+    memoize.cache = {};
+    return memoize;
+  };
+
+  // Delays a function for the given number of milliseconds, and then calls
+  // it with the arguments supplied.
+  _.delay = function(func, wait) {
+    var args = slice.call(arguments, 2);
+    return setTimeout(function(){
+      return func.apply(null, args);
+    }, wait);
+  };
+
+  // Defers a function, scheduling it to run after the current call stack has
+  // cleared.
+  _.defer = _.partial(_.delay, _, 1);
+
+  // Returns a function, that, when invoked, will only be triggered at most once
+  // during a given window of time. Normally, the throttled function will run
+  // as much as it can, without ever going more than once per `wait` duration;
+  // but if you'd like to disable the execution on the leading edge, pass
+  // `{leading: false}`. To disable execution on the trailing edge, ditto.
+  _.throttle = function(func, wait, options) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    var later = function() {
+      previous = options.leading === false ? 0 : _.now();
+      timeout = null;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    };
+    return function() {
+      var now = _.now();
+      if (!previous && options.leading === false) previous = now;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0 || remaining > wait) {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        previous = now;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      } else if (!timeout && options.trailing !== false) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
+
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  _.debounce = function(func, wait, immediate) {
+    var timeout, args, context, timestamp, result;
+
+    var later = function() {
+      var last = _.now() - timestamp;
+
+      if (last < wait && last >= 0) {
+        timeout = setTimeout(later, wait - last);
+      } else {
+        timeout = null;
+        if (!immediate) {
+          result = func.apply(context, args);
+          if (!timeout) context = args = null;
+        }
+      }
+    };
+
+    return function() {
+      context = this;
+      args = arguments;
+      timestamp = _.now();
+      var callNow = immediate && !timeout;
+      if (!timeout) timeout = setTimeout(later, wait);
+      if (callNow) {
+        result = func.apply(context, args);
+        context = args = null;
+      }
+
+      return result;
+    };
+  };
+
+  // Returns the first function passed as an argument to the second,
+  // allowing you to adjust arguments, run code before and after, and
+  // conditionally execute the original function.
+  _.wrap = function(func, wrapper) {
+    return _.partial(wrapper, func);
+  };
+
+  // Returns a negated version of the passed-in predicate.
+  _.negate = function(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    };
+  };
+
+  // Returns a function that is the composition of a list of functions, each
+  // consuming the return value of the function that follows.
+  _.compose = function() {
+    var args = arguments;
+    var start = args.length - 1;
+    return function() {
+      var i = start;
+      var result = args[start].apply(this, arguments);
+      while (i--) result = args[i].call(this, result);
+      return result;
+    };
+  };
+
+  // Returns a function that will only be executed on and after the Nth call.
+  _.after = function(times, func) {
+    return function() {
+      if (--times < 1) {
+        return func.apply(this, arguments);
+      }
+    };
+  };
+
+  // Returns a function that will only be executed up to (but not including) the Nth call.
+  _.before = function(times, func) {
+    var memo;
+    return function() {
+      if (--times > 0) {
+        memo = func.apply(this, arguments);
+      }
+      if (times <= 1) func = null;
+      return memo;
+    };
+  };
+
+  // Returns a function that will be executed at most one time, no matter how
+  // often you call it. Useful for lazy initialization.
+  _.once = _.partial(_.before, 2);
+
+  // Object Functions
+  // ----------------
+
+  // Keys in IE < 9 that won't be iterated by `for key in ...` and thus missed.
+  var hasEnumBug = !{toString: null}.propertyIsEnumerable('toString');
+  var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+                      'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
+
+  function collectNonEnumProps(obj, keys) {
+    var nonEnumIdx = nonEnumerableProps.length;
+    var constructor = obj.constructor;
+    var proto = (_.isFunction(constructor) && constructor.prototype) || ObjProto;
+
+    // Constructor is a special case.
+    var prop = 'constructor';
+    if (_.has(obj, prop) && !_.contains(keys, prop)) keys.push(prop);
+
+    while (nonEnumIdx--) {
+      prop = nonEnumerableProps[nonEnumIdx];
+      if (prop in obj && obj[prop] !== proto[prop] && !_.contains(keys, prop)) {
+        keys.push(prop);
+      }
+    }
+  }
+
+  // Retrieve the names of an object's own properties.
+  // Delegates to **ECMAScript 5**'s native `Object.keys`
+  _.keys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    if (nativeKeys) return nativeKeys(obj);
+    var keys = [];
+    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve all the property names of an object.
+  _.allKeys = function(obj) {
+    if (!_.isObject(obj)) return [];
+    var keys = [];
+    for (var key in obj) keys.push(key);
+    // Ahem, IE < 9.
+    if (hasEnumBug) collectNonEnumProps(obj, keys);
+    return keys;
+  };
+
+  // Retrieve the values of an object's properties.
+  _.values = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var values = Array(length);
+    for (var i = 0; i < length; i++) {
+      values[i] = obj[keys[i]];
+    }
+    return values;
+  };
+
+  // Returns the results of applying the iteratee to each element of the object
+  // In contrast to _.map it returns an object
+  _.mapObject = function(obj, iteratee, context) {
+    iteratee = cb(iteratee, context);
+    var keys =  _.keys(obj),
+          length = keys.length,
+          results = {},
+          currentKey;
+      for (var index = 0; index < length; index++) {
+        currentKey = keys[index];
+        results[currentKey] = iteratee(obj[currentKey], currentKey, obj);
+      }
+      return results;
+  };
+
+  // Convert an object into a list of `[key, value]` pairs.
+  _.pairs = function(obj) {
+    var keys = _.keys(obj);
+    var length = keys.length;
+    var pairs = Array(length);
+    for (var i = 0; i < length; i++) {
+      pairs[i] = [keys[i], obj[keys[i]]];
+    }
+    return pairs;
+  };
+
+  // Invert the keys and values of an object. The values must be serializable.
+  _.invert = function(obj) {
+    var result = {};
+    var keys = _.keys(obj);
+    for (var i = 0, length = keys.length; i < length; i++) {
+      result[obj[keys[i]]] = keys[i];
+    }
+    return result;
+  };
+
+  // Return a sorted list of the function names available on the object.
+  // Aliased as `methods`
+  _.functions = _.methods = function(obj) {
+    var names = [];
+    for (var key in obj) {
+      if (_.isFunction(obj[key])) names.push(key);
+    }
+    return names.sort();
+  };
+
+  // Extend a given object with all the properties in passed-in object(s).
+  _.extend = createAssigner(_.allKeys);
+
+  // Assigns a given object with all the own properties in the passed-in object(s)
+  // (https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
+  _.extendOwn = _.assign = createAssigner(_.keys);
+
+  // Returns the first key on an object that passes a predicate test
+  _.findKey = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = _.keys(obj), key;
+    for (var i = 0, length = keys.length; i < length; i++) {
+      key = keys[i];
+      if (predicate(obj[key], key, obj)) return key;
+    }
+  };
+
+  // Return a copy of the object only containing the whitelisted properties.
+  _.pick = function(object, oiteratee, context) {
+    var result = {}, obj = object, iteratee, keys;
+    if (obj == null) return result;
+    if (_.isFunction(oiteratee)) {
+      keys = _.allKeys(obj);
+      iteratee = optimizeCb(oiteratee, context);
+    } else {
+      keys = flatten(arguments, false, false, 1);
+      iteratee = function(value, key, obj) { return key in obj; };
+      obj = Object(obj);
+    }
+    for (var i = 0, length = keys.length; i < length; i++) {
+      var key = keys[i];
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
+    }
+    return result;
+  };
+
+   // Return a copy of the object without the blacklisted properties.
+  _.omit = function(obj, iteratee, context) {
+    if (_.isFunction(iteratee)) {
+      iteratee = _.negate(iteratee);
+    } else {
+      var keys = _.map(flatten(arguments, false, false, 1), String);
+      iteratee = function(value, key) {
+        return !_.contains(keys, key);
+      };
+    }
+    return _.pick(obj, iteratee, context);
+  };
+
+  // Fill in a given object with default properties.
+  _.defaults = createAssigner(_.allKeys, true);
+
+  // Creates an object that inherits from the given prototype object.
+  // If additional properties are provided then they will be added to the
+  // created object.
+  _.create = function(prototype, props) {
+    var result = baseCreate(prototype);
+    if (props) _.extendOwn(result, props);
+    return result;
+  };
+
+  // Create a (shallow-cloned) duplicate of an object.
+  _.clone = function(obj) {
+    if (!_.isObject(obj)) return obj;
+    return _.isArray(obj) ? obj.slice() : _.extend({}, obj);
+  };
+
+  // Invokes interceptor with the obj, and then returns obj.
+  // The primary purpose of this method is to "tap into" a method chain, in
+  // order to perform operations on intermediate results within the chain.
+  _.tap = function(obj, interceptor) {
+    interceptor(obj);
+    return obj;
+  };
+
+  // Returns whether an object has a given set of `key:value` pairs.
+  _.isMatch = function(object, attrs) {
+    var keys = _.keys(attrs), length = keys.length;
+    if (object == null) return !length;
+    var obj = Object(object);
+    for (var i = 0; i < length; i++) {
+      var key = keys[i];
+      if (attrs[key] !== obj[key] || !(key in obj)) return false;
+    }
+    return true;
+  };
+
+
+  // Internal recursive comparison function for `isEqual`.
+  var eq = function(a, b, aStack, bStack) {
+    // Identical objects are equal. `0 === -0`, but they aren't identical.
+    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    if (a === b) return a !== 0 || 1 / a === 1 / b;
+    // A strict comparison is necessary because `null == undefined`.
+    if (a == null || b == null) return a === b;
+    // Unwrap any wrapped objects.
+    if (a instanceof _) a = a._wrapped;
+    if (b instanceof _) b = b._wrapped;
+    // Compare `[[Class]]` names.
+    var className = toString.call(a);
+    if (className !== toString.call(b)) return false;
+    switch (className) {
+      // Strings, numbers, regular expressions, dates, and booleans are compared by value.
+      case '[object RegExp]':
+      // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+      case '[object String]':
+        // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
+        // equivalent to `new String("5")`.
+        return '' + a === '' + b;
+      case '[object Number]':
+        // `NaN`s are equivalent, but non-reflexive.
+        // Object(NaN) is equivalent to NaN
+        if (+a !== +a) return +b !== +b;
+        // An `egal` comparison is performed for other numeric values.
+        return +a === 0 ? 1 / +a === 1 / b : +a === +b;
+      case '[object Date]':
+      case '[object Boolean]':
+        // Coerce dates and booleans to numeric primitive values. Dates are compared by their
+        // millisecond representations. Note that invalid dates with millisecond representations
+        // of `NaN` are not equivalent.
+        return +a === +b;
+    }
+
+    var areArrays = className === '[object Array]';
+    if (!areArrays) {
+      if (typeof a != 'object' || typeof b != 'object') return false;
+
+      // Objects with different constructors are not equivalent, but `Object`s or `Array`s
+      // from different frames are.
+      var aCtor = a.constructor, bCtor = b.constructor;
+      if (aCtor !== bCtor && !(_.isFunction(aCtor) && aCtor instanceof aCtor &&
+                               _.isFunction(bCtor) && bCtor instanceof bCtor)
+                          && ('constructor' in a && 'constructor' in b)) {
+        return false;
+      }
+    }
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+
+    // Initializing stack of traversed objects.
+    // It's done here since we only need them for objects and arrays comparison.
+    aStack = aStack || [];
+    bStack = bStack || [];
+    var length = aStack.length;
+    while (length--) {
+      // Linear search. Performance is inversely proportional to the number of
+      // unique nested structures.
+      if (aStack[length] === a) return bStack[length] === b;
+    }
+
+    // Add the first object to the stack of traversed objects.
+    aStack.push(a);
+    bStack.push(b);
+
+    // Recursively compare objects and arrays.
+    if (areArrays) {
+      // Compare array lengths to determine if a deep comparison is necessary.
+      length = a.length;
+      if (length !== b.length) return false;
+      // Deep compare the contents, ignoring non-numeric properties.
+      while (length--) {
+        if (!eq(a[length], b[length], aStack, bStack)) return false;
+      }
+    } else {
+      // Deep compare objects.
+      var keys = _.keys(a), key;
+      length = keys.length;
+      // Ensure that both objects contain the same number of properties before comparing deep equality.
+      if (_.keys(b).length !== length) return false;
+      while (length--) {
+        // Deep compare each member
+        key = keys[length];
+        if (!(_.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false;
+      }
+    }
+    // Remove the first object from the stack of traversed objects.
+    aStack.pop();
+    bStack.pop();
+    return true;
+  };
+
+  // Perform a deep comparison to check if two objects are equal.
+  _.isEqual = function(a, b) {
+    return eq(a, b);
+  };
+
+  // Is a given array, string, or object empty?
+  // An "empty" object has no enumerable own-properties.
+  _.isEmpty = function(obj) {
+    if (obj == null) return true;
+    if (isArrayLike(obj) && (_.isArray(obj) || _.isString(obj) || _.isArguments(obj))) return obj.length === 0;
+    return _.keys(obj).length === 0;
+  };
+
+  // Is a given value a DOM element?
+  _.isElement = function(obj) {
+    return !!(obj && obj.nodeType === 1);
+  };
+
+  // Is a given value an array?
+  // Delegates to ECMA5's native Array.isArray
+  _.isArray = nativeIsArray || function(obj) {
+    return toString.call(obj) === '[object Array]';
+  };
+
+  // Is a given variable an object?
+  _.isObject = function(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+  };
+
+  // Add some isType methods: isArguments, isFunction, isString, isNumber, isDate, isRegExp, isError.
+  _.each(['Arguments', 'Function', 'String', 'Number', 'Date', 'RegExp', 'Error'], function(name) {
+    _['is' + name] = function(obj) {
+      return toString.call(obj) === '[object ' + name + ']';
+    };
+  });
+
+  // Define a fallback version of the method in browsers (ahem, IE < 9), where
+  // there isn't any inspectable "Arguments" type.
+  if (!_.isArguments(arguments)) {
+    _.isArguments = function(obj) {
+      return _.has(obj, 'callee');
+    };
+  }
+
+  // Optimize `isFunction` if appropriate. Work around some typeof bugs in old v8,
+  // IE 11 (#1621), and in Safari 8 (#1929).
+  if (typeof /./ != 'function' && typeof Int8Array != 'object') {
+    _.isFunction = function(obj) {
+      return typeof obj == 'function' || false;
+    };
+  }
+
+  // Is a given object a finite number?
+  _.isFinite = function(obj) {
+    return isFinite(obj) && !isNaN(parseFloat(obj));
+  };
+
+  // Is the given value `NaN`? (NaN is the only number which does not equal itself).
+  _.isNaN = function(obj) {
+    return _.isNumber(obj) && obj !== +obj;
+  };
+
+  // Is a given value a boolean?
+  _.isBoolean = function(obj) {
+    return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
+  };
+
+  // Is a given value equal to null?
+  _.isNull = function(obj) {
+    return obj === null;
+  };
+
+  // Is a given variable undefined?
+  _.isUndefined = function(obj) {
+    return obj === void 0;
+  };
+
+  // Shortcut function for checking if an object has a given property directly
+  // on itself (in other words, not on a prototype).
+  _.has = function(obj, key) {
+    return obj != null && hasOwnProperty.call(obj, key);
+  };
+
+  // Utility Functions
+  // -----------------
+
+  // Run Underscore.js in *noConflict* mode, returning the `_` variable to its
+  // previous owner. Returns a reference to the Underscore object.
+  _.noConflict = function() {
+    root._ = previousUnderscore;
+    return this;
+  };
+
+  // Keep the identity function around for default iteratees.
+  _.identity = function(value) {
+    return value;
+  };
+
+  // Predicate-generating functions. Often useful outside of Underscore.
+  _.constant = function(value) {
+    return function() {
+      return value;
+    };
+  };
+
+  _.noop = function(){};
+
+  _.property = property;
+
+  // Generates a function for a given object that returns a given property.
+  _.propertyOf = function(obj) {
+    return obj == null ? function(){} : function(key) {
+      return obj[key];
+    };
+  };
+
+  // Returns a predicate for checking whether an object has a given set of
+  // `key:value` pairs.
+  _.matcher = _.matches = function(attrs) {
+    attrs = _.extendOwn({}, attrs);
+    return function(obj) {
+      return _.isMatch(obj, attrs);
+    };
+  };
+
+  // Run a function **n** times.
+  _.times = function(n, iteratee, context) {
+    var accum = Array(Math.max(0, n));
+    iteratee = optimizeCb(iteratee, context, 1);
+    for (var i = 0; i < n; i++) accum[i] = iteratee(i);
+    return accum;
+  };
+
+  // Return a random integer between min and max (inclusive).
+  _.random = function(min, max) {
+    if (max == null) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  };
+
+  // A (possibly faster) way to get the current timestamp as an integer.
+  _.now = Date.now || function() {
+    return new Date().getTime();
+  };
+
+   // List of HTML entities for escaping.
+  var escapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+  };
+  var unescapeMap = _.invert(escapeMap);
+
+  // Functions for escaping and unescaping strings to/from HTML interpolation.
+  var createEscaper = function(map) {
+    var escaper = function(match) {
+      return map[match];
+    };
+    // Regexes for identifying a key that needs to be escaped
+    var source = '(?:' + _.keys(map).join('|') + ')';
+    var testRegexp = RegExp(source);
+    var replaceRegexp = RegExp(source, 'g');
+    return function(string) {
+      string = string == null ? '' : '' + string;
+      return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+    };
+  };
+  _.escape = createEscaper(escapeMap);
+  _.unescape = createEscaper(unescapeMap);
+
+  // If the value of the named `property` is a function then invoke it with the
+  // `object` as context; otherwise, return it.
+  _.result = function(object, property, fallback) {
+    var value = object == null ? void 0 : object[property];
+    if (value === void 0) {
+      value = fallback;
+    }
+    return _.isFunction(value) ? value.call(object) : value;
+  };
+
+  // Generate a unique integer id (unique within the entire client session).
+  // Useful for temporary DOM ids.
+  var idCounter = 0;
+  _.uniqueId = function(prefix) {
+    var id = ++idCounter + '';
+    return prefix ? prefix + id : id;
+  };
+
+  // By default, Underscore uses ERB-style template delimiters, change the
+  // following template settings to use alternative delimiters.
+  _.templateSettings = {
+    evaluate    : /<%([\s\S]+?)%>/g,
+    interpolate : /<%=([\s\S]+?)%>/g,
+    escape      : /<%-([\s\S]+?)%>/g
+  };
+
+  // When customizing `templateSettings`, if you don't want to define an
+  // interpolation, evaluation or escaping regex, we need one that is
+  // guaranteed not to match.
+  var noMatch = /(.)^/;
+
+  // Certain characters need to be escaped so that they can be put into a
+  // string literal.
+  var escapes = {
+    "'":      "'",
+    '\\':     '\\',
+    '\r':     'r',
+    '\n':     'n',
+    '\u2028': 'u2028',
+    '\u2029': 'u2029'
+  };
+
+  var escaper = /\\|'|\r|\n|\u2028|\u2029/g;
+
+  var escapeChar = function(match) {
+    return '\\' + escapes[match];
+  };
+
+  // JavaScript micro-templating, similar to John Resig's implementation.
+  // Underscore templating handles arbitrary delimiters, preserves whitespace,
+  // and correctly escapes quotes within interpolated code.
+  // NB: `oldSettings` only exists for backwards compatibility.
+  _.template = function(text, settings, oldSettings) {
+    if (!settings && oldSettings) settings = oldSettings;
+    settings = _.defaults({}, settings, _.templateSettings);
+
+    // Combine delimiters into one regular expression via alternation.
+    var matcher = RegExp([
+      (settings.escape || noMatch).source,
+      (settings.interpolate || noMatch).source,
+      (settings.evaluate || noMatch).source
+    ].join('|') + '|$', 'g');
+
+    // Compile the template source, escaping string literals appropriately.
+    var index = 0;
+    var source = "__p+='";
+    text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
+      source += text.slice(index, offset).replace(escaper, escapeChar);
+      index = offset + match.length;
+
+      if (escape) {
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+      } else if (interpolate) {
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+      } else if (evaluate) {
+        source += "';\n" + evaluate + "\n__p+='";
+      }
+
+      // Adobe VMs need the match returned to produce the correct offest.
+      return match;
+    });
+    source += "';\n";
+
+    // If a variable is not specified, place data values in local scope.
+    if (!settings.variable) source = 'with(obj||{}){\n' + source + '}\n';
+
+    source = "var __t,__p='',__j=Array.prototype.join," +
+      "print=function(){__p+=__j.call(arguments,'');};\n" +
+      source + 'return __p;\n';
+
+    try {
+      var render = new Function(settings.variable || 'obj', '_', source);
+    } catch (e) {
+      e.source = source;
+      throw e;
+    }
+
+    var template = function(data) {
+      return render.call(this, data, _);
+    };
+
+    // Provide the compiled source as a convenience for precompilation.
+    var argument = settings.variable || 'obj';
+    template.source = 'function(' + argument + '){\n' + source + '}';
+
+    return template;
+  };
+
+  // Add a "chain" function. Start chaining a wrapped Underscore object.
+  _.chain = function(obj) {
+    var instance = _(obj);
+    instance._chain = true;
+    return instance;
+  };
+
+  // OOP
+  // ---------------
+  // If Underscore is called as a function, it returns a wrapped object that
+  // can be used OO-style. This wrapper holds altered versions of all the
+  // underscore functions. Wrapped objects may be chained.
+
+  // Helper function to continue chaining intermediate results.
+  var result = function(instance, obj) {
+    return instance._chain ? _(obj).chain() : obj;
+  };
+
+  // Add your own custom functions to the Underscore object.
+  _.mixin = function(obj) {
+    _.each(_.functions(obj), function(name) {
+      var func = _[name] = obj[name];
+      _.prototype[name] = function() {
+        var args = [this._wrapped];
+        push.apply(args, arguments);
+        return result(this, func.apply(_, args));
+      };
+    });
+  };
+
+  // Add all of the Underscore functions to the wrapper object.
+  _.mixin(_);
+
+  // Add all mutator Array functions to the wrapper.
+  _.each(['pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      var obj = this._wrapped;
+      method.apply(obj, arguments);
+      if ((name === 'shift' || name === 'splice') && obj.length === 0) delete obj[0];
+      return result(this, obj);
+    };
+  });
+
+  // Add all accessor Array functions to the wrapper.
+  _.each(['concat', 'join', 'slice'], function(name) {
+    var method = ArrayProto[name];
+    _.prototype[name] = function() {
+      return result(this, method.apply(this._wrapped, arguments));
+    };
+  });
+
+  // Extracts the result from a wrapped and chained object.
+  _.prototype.value = function() {
+    return this._wrapped;
+  };
+
+  // Provide unwrapping proxy for some methods used in engine operations
+  // such as arithmetic and JSON stringification.
+  _.prototype.valueOf = _.prototype.toJSON = _.prototype.value;
+
+  _.prototype.toString = function() {
+    return '' + this._wrapped;
+  };
+
+  // AMD registration happens at the end for compatibility with AMD loaders
+  // that may not enforce next-turn semantics on modules. Even though general
+  // practice for AMD registration is to be anonymous, underscore registers
+  // as a named module because, like jQuery, it is a base library that is
+  // popular enough to be bundled in a third party lib, but not be part of
+  // an AMD load request. Those cases could generate an error when an
+  // anonymous define() is called outside of a loader request.
+  if (true) {
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
+      return _;
+    }.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  }
+}.call(this));
+
+
+/***/ }),
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(8);
-module.exports = __webpack_require__(9);
+module.exports = __webpack_require__(10);
 
 
 /***/ })

@@ -1,11 +1,19 @@
 
 /**
  * First we will load all of this project's JavaScript dependencies which
- * includes javascript, bootstrap, axios, other libraries.
+ * includes jquery, bootstrap, axios, other libraries.
+ *
+ * These are the main core big deal libraries
  */
 require('./bootstrap');
 
 /**
- * Then we fire up the kernel to run tasks depending what page we are on
+ * Other libraries
  */
-require('./kernel');
+window.bootbox = require('bootbox');
+require('jquery-steps/build/jquery.steps.js');
+
+/**
+ * Components
+ */
+require('./components/btn-confirm.js');
