@@ -35,7 +35,7 @@ class ApplicationServiceProvider extends ServiceProvider
     {
 
         $this->app->bind('App\Models\Application', function($app) {
-            $request = $this->app['request'];
+            $request = $app['request'];
             $applicationId = $request->route('application');
 
             try {

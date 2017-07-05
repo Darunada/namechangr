@@ -309,7 +309,7 @@ function saveApplication($e) {
     var data = $('#application-form').serialize();
     axios.post($form.attr('action'), data).then(function (response) {
         console.log('saved');
-        //console.log(response);
+        window.Laravel.application = response.data.application;
     }).catch(function (error) {
         //console.log(error);
         console.log('error saving');

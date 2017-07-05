@@ -27,16 +27,16 @@
                         </a>
                     </li>
                     <li class="disabled">
-                        <a href="#profile" data-toggle="tab" title="Your Personal Information">
+                        <a href="#personal" data-toggle="tab" title="Your Personal Information">
                             <span class="round-tabs two">
-                                <i class="fa fa-user"></i>
+                                <i class="fa fa-drivers-license"></i>
                             </span>
                         </a>
                     </li>
                     <li class="disabled">
-                        <a href="#messages" data-toggle="tab" title="bootsnipp goodies">
+                        <a href="#change" data-toggle="tab" title="Your Change">
                             <span class="round-tabs three">
-                                <i class="glyphicon glyphicon-gift"></i>
+                                <i class="fa fa-child"></i>
                             </span>
                         </a>
                     </li>
@@ -69,10 +69,10 @@
                         </ul>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="profile">
+                <div class="tab-pane fade" id="personal">
                     <div class="col-xs-12">
-                        <h3 class="head text-center">Your Personal Information</h3>
-                        
+                        <h3 class="head text-center">Your Personal Information <small>dun dun dunn....</small></h3>
+                        @include('states.UT.partials.personal-information')
 
                         <ul class="list-inline pull-right">
                             <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
@@ -81,18 +81,10 @@
                     </div>
 
                 </div>
-                <div class="tab-pane fade" id="messages">
+                <div class="tab-pane fade" id="change">
                     <div class="col-xs-12">
-                        <h3 class="head text-center">Bootsnipp goodies</h3>
-                        <p class="narrow text-center">
-                            Lorem ipsum dolor sit amet, his ea mollis fabellas principes. Quo mazim facilis tincidunt ut, utinam
-                            saperet facilisi an vim.
-                        </p>
-
-                        <p class="text-center">
-                            <a href="" class="btn btn-success btn-outline-rounded green"> start using bootsnipp <span
-                                        style="margin-left:10px;" class="glyphicon glyphicon-send"></span></a>
-                        </p>
+                        <h3 class="head text-center">Change Info</h3>
+                        @include('states.UT.partials.change-information')
 
                         <ul class="list-inline pull-right">
                             <li><button type="button" class="btn btn-default prev-step">Previous</button></li>

@@ -7,6 +7,7 @@ use App\Concerns\GuardsApplicationRequests;
 use App\Http\Controllers\Controller;
 use App\Models\Application;
 use App\Models\Location\State;
+use App\Scopes\ActiveScope;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -37,9 +38,10 @@ class UtController extends Controller
             return $redirect;
         }
 
+        $states = State::withoutGlobalScope(ActiveScope::class)->pluck('name', 'id');
         $counties = $application->state->counties->pluck('name', 'id');
         $locations = $application->state->locations->all();
-        return view('states.UT.index', compact('locations', 'counties', 'application'));
+        return view('states.UT.index', compact('locations', 'counties', 'states', 'application'));
     }
 
     public function save(Request $request, Application $application = null) {
