@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "6.11"
+  },
   "private": true,
   "scripts": {
     "dev": "npm run development",
@@ -10,6 +13,9 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "devDependencies": {
+
+  },
+  "dependencies": {
     "axios": "^0.15.3",
     "bootbox": "^4.4.0",
     "bootstrap-sass": "^3.3.7",
@@ -17,11 +23,9 @@
     "fontawesome": "^4.7.2",
     "cross-env": "^3.2.3",
     "jquery": "^3.1.1",
-    "laravel-mix": "0.*"
-  },
-  "dependencies": {
     "jquery-steps": "^1.1.0",
     "jquery-validation": "^1.16.0",
+    "laravel-mix": "0.*",
     "raphael": "^2.2.7",
     "underscore": "^1.8.3"
   }
