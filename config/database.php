@@ -9,7 +9,7 @@ if (getenv('DATABASE_URL')) {
         $connection = 'pgsql';
     }
 
-    putenv('DB_CONNECTION', $connection);
+    putenv('DB_CONNECTION='.$connection);
 
     putenv('DB_HOST='.$url['host']);
     putenv('DB_PORT='.$url['port']);
