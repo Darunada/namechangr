@@ -4,11 +4,18 @@
 if (getenv('DATABASE_URL')) {
     $url = parse_url(getenv("DATABASE_URL"));
 
+    $connection = $url['scheme'];
+    if($connection == 'postgres') {
+        $connection = 'pgsql';
+    }
+
+    putenv('DB_CONNECTION', $connection);
+
     putenv('DB_HOST='.$url['host']);
     putenv('DB_PORT='.$url['port']);
-    putenv('DB_USERNAME='.$url['pass']);
+    putenv('DB_DATABASE='.substr($url["path"], 1)); // remove starting /
+    putenv('DB_USERNAME='.$url['user']);
     putenv('DB_PASSWORD='.$url['pass']);
-    putenv('DB_DATABASE='.substr($url["path"], 1));
 }
 
 if (getenv('REDIS_URL')) {
