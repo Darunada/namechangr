@@ -46,6 +46,6 @@ class UserRegistered extends Notification implements ShouldQueue
             ->greeting("Hi $notifiable->name,")
             ->line('Welcome to NameChangr!  You are now ready to get started creating your legal name change paperwork.')
             ->action('Visit your Dashboard', url('dashboard'))
-            ->line('Thank you giving our application a try!');
+            ->line('Thank you for giving our application a try!');
     }
 }
