@@ -6,7 +6,7 @@ if (getenv('DATABASE_URL')) {
 
     putenv('DB_HOST='.$url['host']);
     putenv('DB_PORT='.$url['port']);
-    putenv('DB_USER='.$url['pass']);
+    putenv('DB_USERNAME='.$url['pass']);
     putenv('DB_PASSWORD='.$url['pass']);
     putenv('DB_DATABASE='.substr($url["path"], 1));
 }
