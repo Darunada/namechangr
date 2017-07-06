@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Application;
+use App\Models\Location\State;
+use App\User;
+use App\UserSocialAccount;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Intouch\LaravelNewrelic\Observers\NewrelicCountingObserver;
+use Intouch\LaravelNewrelic\Observers\NewrelicTimingObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +44,16 @@ class AppServiceProvider extends ServiceProvider
                 $view->with(compact('controller', 'action'));
             }
         });
+
+        User::observe(new NewrelicTimingObserver() );
+        User::observe(new NewrelicCountingObserver() );
+
+        UserSocialAccount::observe(new NewrelicTimingObserver() );
+        UserSocialAccount::observe(new NewrelicCountingObserver() );
+
+        Application::observe(new NewrelicTimingObserver() );
+        Application::observe(new NewrelicCountingObserver() );
+
     }
 
     /**

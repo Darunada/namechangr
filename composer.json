@@ -12,6 +12,7 @@
         "fideloper/proxy": "^3.3",
         "greggilbert/recaptcha": "^2.2",
         "guzzlehttp/guzzle": "^6.3",
+        "intouch/laravel-newrelic": "~2.0",
         "laracasts/flash": "3.0.2",
         "laravel/framework": "5.4.*",
         "laravel/passport": "^2.0",
