@@ -58,6 +58,7 @@
             "php artisan optimize"
         ],
         "compile": [
+            "php artisan route:cache",
             "php artisan migrate"
         ]
     },
