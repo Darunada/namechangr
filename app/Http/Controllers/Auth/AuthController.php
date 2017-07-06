@@ -114,7 +114,7 @@ class AuthController extends Controller
             UserSocialAccount::where(['user_id'=>$user_id, 'provider'=>$provider])->delete();
         } else {
             if($provider == 'facebook') {
-                $secret = env('FACEBOOK_SECRET');
+                $secret = config('services.facebook.client_secret');
                 $signed_request = $this->parse_signed_request(Input::get('signed_request'), $secret);
                 if($signed_request) {
                     UserSocialAccount::where('provider', $provider)->where('provider_uid', $signed_request->user_id)->delete();
