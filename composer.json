@@ -58,12 +58,7 @@
             "php artisan optimize"
         ],
         "compile": [
-            "php artisan inspire",
-            "php artisan down",
-            "php artisan config:cache",
-            "php artisan route:cache",
-            "php artisan migrate",
-            "php artisan up"
+            "php artisan migrate"
         ]
     },
     "config": {
