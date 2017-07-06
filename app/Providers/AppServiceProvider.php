@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -11,12 +12,18 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
+     * @param UrlGenerator $urlGenerator
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $urlGenerator)
     {
         // fix for mysql
         Schema::defaultStringLength(191);
+
+        // force httops in production
+        if ($this->app->environment() === 'production') {
+            $urlGenerator->forceScheme('https');
+        }
 
         /**
          * Adds $controller and $action to views
