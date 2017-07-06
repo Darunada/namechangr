@@ -11,25 +11,34 @@ const { mix } = require('laravel-mix');
  |
  */
 
-// I hate this stuff but I want to use it to be cool :(
-mix.js('resources/assets/js/app.js', 'public/js');
+var versioning = [
+    'public/js/app.js',
+    'public/js/UT.js',
+    'public/css/app.css'
+];
 
-mix.js('resources/assets/js/pages/states/UT.js', 'public/js');
 
-// mix.scripts([
-//     'node_modules/jquery/dist/jquery.js',
-//     'node_modules/underscore/underscore.js',
-//     'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
-//     'node_modules/bootbox/bootbox.js',
-//     'node_modules/jquery-steps/build/jquery.steps.js'
-// ]);
+// if (mix.inProduction()) {
+//     mix.version();
+// } else {
+//
+// }
+
+
+
+mix.js('resources/assets/js/app.js', 'public/js')
+    .js('resources/assets/js/pages/states/UT.js', 'public/js');
+
 
 mix.sass('resources/assets/sass/app.scss', 'public/css');
 
 
-if (mix.inProduction()) {
+
+if (mix.config.inProduction) {
     mix.version();
 } else {
-    mix.sourceMaps();
+    mix.sourceMaps()
 }
+
+
 
