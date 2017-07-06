@@ -1,1 +1,2 @@
 web: php artisan config:cache; php artisan route:cache; bin/start-stunnel vendor/bin/heroku-php-apache2 public/
+queue: php artisan config:cache; php artisan route:cache; bin/start-stunnel php artisan queue:work --queue=high,default --tries=3
