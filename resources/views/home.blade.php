@@ -19,6 +19,21 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
+                    <strong>Uhoh...</strong>
+                    <span class="pull-right"><small>Published 7/7/2017</small></span>
+                </div>
+                <div class="panel-body">
+                    <p>Utah is such a funny place.</p>
+                    <p>The Salt Lake Tribune picked up a case about a denied gender change.  Apparently they are taking it to the Utah Supreme Court, which means their ruling will affect all of us Utahn's.</p>
+
+                    <p>This judge is definitely not the first one to deny a gender change, but as I understand it most people have no problems at all.</p>
+                    <p><a href="http://www.sltrib.com/news/5470281-155/two-utahns-denied-legal-sex-designation">Read the article.</a></p>
+
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
                     <strong>Some Quick Answers...</strong>
                     <span class="pull-right"><small>Published 6/26/2017</small></span>
                 </div>
