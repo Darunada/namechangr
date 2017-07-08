@@ -4,8 +4,10 @@ namespace App\Http\Controllers\States;
 
 
 use App\Concerns\GuardsApplicationRequests;
+use App\Generators\UtApplicationGenerator;
 use App\Http\Controllers\Controller;
-use App\Models\Application;
+use App\Jobs\GenerateApplication;
+use App\Models\Application\Application;
 use App\Models\Location\State;
 use App\Scopes\ActiveScope;
 use Auth;
@@ -62,6 +64,32 @@ class UtController extends Controller
         } else {
             return redirect('states.UT', $application->id);
         }
+    }
+
+    public function generate(Request $request, Application $application = null) {
+        $redirect = $this->guard($application);
+        if ($redirect) {
+            return $redirect;
+        }
+
+        /**
+         * TODO: broadcast channel for guest users
+         * This needs to be evaluated...
+         */
+        $channel = null;
+//        if(Auth::guest()) {
+//            $channel = uniqid('generate-');
+//        } else {
+//            $channel = $application->id;
+//        }
+
+        $type = $request->input('type');
+
+        // start generating...
+        $job = new GenerateApplication($application, new UtApplicationGenerator(), $type, $channel);
+        dispatch($job);
+
+        return response()->json(['success'=>true, 'channel'=>$channel, 'type', $type]);
     }
 
     public function generateSexOffenderRegistryForm() {
@@ -147,5 +175,6 @@ class UtController extends Controller
 
         return view('docs.UT.cover_page.full'/*, $data*/);
     }
+
 
 }

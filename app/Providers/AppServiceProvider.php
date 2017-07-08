@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Application;
+use App\Models\Application\Application;
 use App\Models\Location\State;
 use App\User;
 use App\UserSocialAccount;
@@ -26,10 +26,20 @@ class AppServiceProvider extends ServiceProvider
         // fix for mysql
         Schema::defaultStringLength(191);
 
-        // force httops in production
+        // force https in production
         if ($this->app->environment() === 'production') {
             $urlGenerator->forceScheme('https');
         }
+
+        /*
+         * Tell the queue to rollback transactions leftover by failed jobs
+         * This is a callback that happens before the worker fetches a job from the queue
+         */
+//        Queue::looping(function () {
+//            while (DB::transactionLevel() > 0) {
+//                DB::rollBack();
+//            }
+//        });
 
         /**
          * Adds $controller and $action to views
@@ -45,12 +55,11 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
+        // tie some interesting things into newrelic
         User::observe(new NewrelicTimingObserver() );
         User::observe(new NewrelicCountingObserver() );
-
         UserSocialAccount::observe(new NewrelicTimingObserver() );
         UserSocialAccount::observe(new NewrelicCountingObserver() );
-
         Application::observe(new NewrelicTimingObserver() );
         Application::observe(new NewrelicCountingObserver() );
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Application;
 
 use App\Models\Location\State;
 use Illuminate\Database\Eloquent\Model;
@@ -38,6 +38,13 @@ class Application extends Model
      */
     function state() {
         return $this->belongsTo('App\Models\Location\State');
+    }
+
+    /**
+     * An application can have many files
+     */
+    function files() {
+        return $this->hasMany('App\Models\Application\Application');
     }
 
 }

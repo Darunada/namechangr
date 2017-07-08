@@ -41,7 +41,7 @@ class User extends Authenticatable
      * Users may have many applications
      */
     public function applications() {
-        return $this->hasMany('App\Models\Application');
+        return $this->hasMany('App\Models\Application\Application');
     }
 
     public function socialAccount($provider) {

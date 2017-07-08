@@ -19,6 +19,7 @@
         "laravel/socialite": "^3.0",
         "laravel/tinker": "~1.0",
         "mikehaertl/phpwkhtmltopdf": "^2.2",
+        "phpoffice/phpword": "^0.13.0",
         "predis/predis": "^1.1"
     },
     "require-dev": {

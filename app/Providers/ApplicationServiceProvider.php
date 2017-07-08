@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Application;
+use App\Models\Application\Application;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\ServiceProvider;
 
@@ -34,7 +34,7 @@ class ApplicationServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->app->bind('App\Models\Application', function($app) {
+        $this->app->bind('App\Models\Application\Application', function($app) {
             $request = $app['request'];
             $applicationId = $request->route('application');
 
