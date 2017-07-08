@@ -12,7 +12,7 @@
 
             @component('partials.form-input-row', [
                 'label'=>'Full Legal Name',
-                'name'=>'data[header][legal_name]',
+                'name'=>'garbage',
                 'value'=>'',
                 'help'=>'Your full and legal name, including middle name'
             ])@endcomponent
