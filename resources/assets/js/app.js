@@ -19,3 +19,7 @@ require('jquery-steps/build/jquery.steps.js');
 require('./components/btn-confirm.js');
 require('./components/duplicatable-input-group.js');
 require('./components/lovely.js');
+
+$(function() {
+    $('[data-toggle="popover"]').popover();
+});

@@ -1,3 +1,5 @@
+@import "../variables";
+
 .callout {
   padding: 20px;
   margin: 20px 0;
@@ -37,33 +39,33 @@
 }
 
 .callout-success {
-  border-left-color: $alert-success-text;
+  border-left-color: $brand-success;
 
   h4 {
-    color: $alert-success-text;
+    color: $brand-success;
   }
 }
 
 .callout-danger {
-  border-left-color: $alert-danger-text;
+  border-left-color: $brand-danger;
 
   h4 {
-    color: $alert-danger-text;
+    color: $brand-danger;
   }
 }
 
 .callout-warning {
-  border-left-color: $alert-warning-text;
+  border-left-color: $brand-warning;
 
   h4 {
-    color: $alert-warning-text;
+    color: $brand-warning;
   }
 }
 
 .callout-info {
-  border-left-color: $alert-info-text;
+  border-left-color: $brand-info;
 
   h4 {
-    color: $alert-info-text;
+    color: $brand-info;
   }
 }

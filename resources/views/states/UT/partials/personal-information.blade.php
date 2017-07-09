@@ -38,7 +38,7 @@
         <div class="callout callout-info">
             <h4>Certification Regarding Sex Offender Registry</h4>
             <p>The Certification Regarding Sex Offender Registry form is mailed to the Utah BCI and returned with a signature indicating whether or not you are listed on the sex offender registry.  It is required that you submit this form to the court with your name/gender change petition.</p>
-            <span class="label label-danger">Notice!</span> If you are listed as a sex offender, you may wish to seek legal counsel.  Name changes for registered sex offenders are forbidden by the state.
+            <span class="label label-danger">Danger!</span> If you are listed as a sex offender, you may wish to seek legal counsel.  Name changes for registered sex offenders are forbidden by the state.
         </div>
         @component('partials.form-date-row', [
             'label'=>'Date of Birth',
