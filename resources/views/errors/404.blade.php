@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @include('partials.favicons')
 
-<!-- Latest compiled and minified CSS -->
+    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
     <style type="text/css">
@@ -24,10 +24,10 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="error-template">
-                    <h1>Oh no!</h1>
-                    <h2>503 Service Unavailable</h2>
+                    <h1>Oops!</h1>
+                    <h2>404 Not Found</h2>
                     <div class="error-details">
-                        It seems our system is overloaded.  Please try again later.
+                        Sorry, an error has occurred, Requested page not found!
                     </div>
                     <div class="error-actions">
                         <a href="{{ route('home') }}" class="btn btn-primary btn-lg">
