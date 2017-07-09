@@ -61,8 +61,8 @@
                         <label for="current-gender-other" class="sr-only">Other</label>
                         <input type="radio" name="current_gender" value="other" id="current-gender-other">
 
-                        <label for="current-gender-other" class="sr-only">Explain</label>
-                        <input type="text" class="form-control" name="current_gender_other" value="" placeholder="Other">
+                        <label for="current-gender-other-desc" class="sr-only">Explain</label>
+                        <input type="text" id="current-gender-other-desc" class="form-control" name="current_gender_other" value="" placeholder="Other">
                     </label>
                 </div>
             </div>
