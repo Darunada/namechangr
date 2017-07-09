@@ -11,28 +11,13 @@ const { mix } = require('laravel-mix');
  |
  */
 
-var versioning = [
-    'public/js/app.js',
-    'public/js/UT.js',
-    'public/css/app.css'
-];
-
-
-// if (mix.inProduction()) {
-//     mix.version();
-// } else {
-//
-// }
-
-
-
 mix.js('resources/assets/js/app.js', 'public/js')
     .js('resources/assets/js/pages/states/UT.js', 'public/js');
 
 
 mix.sass('resources/assets/sass/app.scss', 'public/css');
 
-
+mix.copyDirectory('resources/assets/favicons', 'public/favicons');
 
 if (mix.config.inProduction) {
     mix.version();

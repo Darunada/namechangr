@@ -115,7 +115,7 @@ $(function() {
                         '<label class="radio">' +
                         '<input type="radio" class="court-location" name="data[location_id]" value="'+location.id+'" '+(defaults.location_id==location.id?'checked="checked"':'')+'/>' +
                         '<address>' +
-                        '<pre>'+location.address+'<br/><a href="https://www.google.com/maps/place/'+encodeURIComponent(location.address)+'" target="_blank"><i class="fa fa-map-marker"></i> View On Map</a></pre>' +
+                        '<pre>'+location.address+'<br/><a href="https://www.google.com/maps/place/'+encodeURIComponent(location.address)+'" target="_blank" rel="noopener"><i class="fa fa-map-marker"></i> View On Map</a></pre>' +
                         '</address>' +
                         '</label>' +
                         '</div>';
