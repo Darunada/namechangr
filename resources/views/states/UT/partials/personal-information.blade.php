@@ -6,14 +6,14 @@
 
         @component('partials.form-input-row', [
             'label'=>'Full Legal Name',
-            'name'=>'data[header][legal_name]',
+            'name'=>'data[current_legal_name]',
             'value'=>'',
-            'help'=>'Your full and legal name, including middle name'
+            'help'=>'Your full and current legal name, including middle name'
         ])@endcomponent
 
         @component('partials.form-address-row', [
             'label'=>'Your Current Address',
-            'name'=>'data[header][address]',
+            'name'=>'data[current_address]',
             'states'=>$states,
             'value'=>'',
             'help'=>'You must be able to receive mail at this address'
@@ -21,14 +21,14 @@
 
         @component('partials.form-phone-row', [
             'label'=>'Phone Number',
-            'name'=>'data[header][phone]',
+            'name'=>'data[current_phone]',
             'value'=>'',
             'help'=>''
         ])@endcomponent
 
         @component('partials.form-email-row', [
             'label'=>'Email Address',
-            'name'=>'data[header][email]',
+            'name'=>'data[current_email]',
             'value'=>'',
             'help'=>''
         ])@endcomponent
@@ -42,23 +42,23 @@
         </div>
         @component('partials.form-date-row', [
             'label'=>'Date of Birth',
-            'name'=>'data[certification][dob]',
+            'name'=>'data[date_of_birth]',
             'value'=>'',
             'help'=>'MM/DD/YYYY format please!'
         ])@endcomponent
 
         @component('partials.form-input-row', [
             'label'=>'Driver\'s License/ID Number',
-            'name'=>'data[certification][dl_number]',
+            'name'=>'data[drivers_license_number]',
             'value'=>'',
             'help'=>''
         ])@endcomponent
 
         @component('partials.form-select-row', [
             'label'=>'Driver\'s License/ID Issuing State',
-            'name'=>'data[certification][dl_state_id]',
+            'name'=>'data[drivers_license_state]',
             'values'=>$states,
-            'help'=>''
+            'help'=>'An ID or driver\'s license is required for this form.  I am not sure what to do if you do not have one; please let me know!'
         ])@endcomponent
     </div>
 </div>

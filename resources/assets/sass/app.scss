@@ -12,7 +12,9 @@
 
 // Vendor Libraries
 @import "components/steps";
+@import "components/lovely";
 @import "components/callout";
+@import "components/duplicatable-input-group";
 
 //.form-row [class^="col-"]:not(:last-of-type) .form-group {
 //  margin-right: -$form-group-margin-bottom / 2;
@@ -21,6 +23,10 @@
 //.form-row [class^="col-"]:not(:first-of-type) .form-group {
 //  margin-left: -$form-group-margin-bottom / 2;
 //}
+
+.text-very-muted {
+  color: darken($gray-lighter, 15%); // #c7c7c7
+}
 
 body.application {
   background-color: white;
@@ -116,3 +122,6 @@ ul#applications-list {
 
   }
 }
+
+
+

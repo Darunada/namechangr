@@ -1,0 +1,79 @@
+/**
+ * When the change event is fired on a lovely box,
+ *  - it will show a spinner for 1.5 seconds
+ *  - then it will show a heart for 0.5 seconds
+ *  - then it will scroll the word "LOVELY" in from the side
+ *
+ * TODO: turn this into a jquery plugin like bootstrap components?
+ *
+ * Attributes:
+ *  - none yet!
+ *
+ * Example
+ * <div class="form-group">
+ *     <label class="form-label">Your Requested Name</label>
+ *     <div class="controls">
+ *         <div class="input-group lovely">
+ *             <input class="form-control" name="data" type="text"/>
+ *             <div class="input-group-addon">
+ *                 <span class="text-muted"><i class="fa fa-remove"></i></span>
+ *             </div>
+ *         </div>
+ *     </div>
+ * </div>
+ */
+
+.lovely {
+
+  .input-group-addon {
+    overflow:hidden;
+  }
+
+  .text-lovely {
+    color: red;
+  }
+
+  .text-lovely-slider {
+    display: inline-block;
+    font-weight: 900;
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.57);
+
+    width: 123px;
+    -webkit-transition: width 3s linear;
+    -ms-transition: width 3s linear;
+    -o-transition: width 3s linear;
+    transition: width 3s linear;
+
+    &.closed {
+      width: 0px;
+      -webkit-transition: width 3s linear;
+      -ms-transition: width 3s linear;
+      -o-transition: width 3s linear;
+      transition: width 3s linear;
+    }
+
+    .text-lovely-l {
+      color: red;
+    }
+
+    .text-lovely-o {
+      color: orange;
+    }
+
+    .text-lovely-v {
+      color: gold
+    }
+
+    .text-lovely-e {
+      color: green;
+    }
+
+    .text-lovely-l2 {
+      color: blue;
+    }
+
+    .text-lovely-y {
+      color: violet;
+    }
+  }
+}

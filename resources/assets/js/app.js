@@ -17,3 +17,5 @@ require('jquery-steps/build/jquery.steps.js');
  * Components
  */
 require('./components/btn-confirm.js');
+require('./components/duplicatable-input-group.js');
+require('./components/lovely.js');
