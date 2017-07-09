@@ -48,7 +48,7 @@ $(function() {
                 $icon.html(lovely);
                 setTimeout(function() {
                     $icon.find('.text-lovely-slider:first').removeClass('closed');
-                }, 500);
+                }, 100);
             }, 1000);
         });
     });

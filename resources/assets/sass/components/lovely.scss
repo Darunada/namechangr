@@ -39,17 +39,13 @@
     text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.57);
 
     width: 123px;
-    -webkit-transition: width 3s linear;
-    -ms-transition: width 3s linear;
-    -o-transition: width 3s linear;
-    transition: width 3s linear;
+    -webkit-transition: width 1.5s cubic-bezier(0.6, 1.15, 1, 1);
+    -ms-transition: width 1.5s cubic-bezier(0.6, 1.15, 1, 1);
+    -o-transition: width 1.5s cubic-bezier(0.6, 1.15, 1, 1);
+    transition: width 1.5s cubic-bezier(0.6, 1.15, 1, 1);
 
     &.closed {
       width: 0px;
-      -webkit-transition: width 3s linear;
-      -ms-transition: width 3s linear;
-      -o-transition: width 3s linear;
-      transition: width 3s linear;
     }
 
     .text-lovely-l {
