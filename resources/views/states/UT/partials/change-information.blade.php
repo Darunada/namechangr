@@ -25,7 +25,7 @@
             <label class="form-label">Your Requested Name</label>
             <div class="controls">
                 <div class="input-group lovely {{ !empty($application->data['requested_legal_name'])?'lovely-open':'' }}">
-                    <input class="form-control" name="data[requested_legal_name]" type="text" placeholder="Check the spelling! :-)" value="{{ $application->data['requested_legal_name'] }}" />
+                    <input class="form-control" name="data[requested_legal_name]" type="text" placeholder="Check the spelling! :-)" value="{{ array_key_exists('requested_legal_name', $application->data)?$application->data['requested_legal_name']:'' }}" />
                     <div class="input-group-addon">
                         <span class="text-very-muted"><i class="fa fa-remove"></i></span>
                     </div>
@@ -49,17 +49,17 @@
                 <label class="form-label">Current Legal Gender</label>
                 <div class="controls">
                     <label class="radio">
-                        <input type="radio" name="data[current_gender]" value="male" {{ $application->data['current_gender'] == 'male'?'checked="checked"':'' }}> Male
+                        <input type="radio" name="data[current_gender]" value="male" {{ array_key_exists('current_gender', $application->data) && $application->data['current_gender'] == 'male'?'checked="checked"':'' }}> Male
                     </label>
                     <label class="radio">
-                        <input type="radio" name="data[current_gender]" value="female" {{ $application->data['current_gender'] == 'female'?'checked="checked"':'' }}> Female
+                        <input type="radio" name="data[current_gender]" value="female" {{ array_key_exists('current_gender', $application->data) && $application->data['current_gender'] == 'female'?'checked="checked"':'' }}> Female
                     </label>
                     <label class="radio">
                         <label for="current-gender-other" class="sr-only">Other</label>
-                        <input type="radio" name="data[current_gender]" value="other" {{ $application->data['current_gender'] == 'other'?'checked="checked"':'' }} id="current-gender-other">
+                        <input type="radio" name="data[current_gender]" value="other" {{ array_key_exists('current_gender', $application->data) && $application->data['current_gender'] == 'other'?'checked="checked"':'' }} id="current-gender-other">
 
                         <label for="current-gender-other-desc" class="sr-only">Explain</label>
-                        <input type="text" id="current-gender-other-desc" class="form-control" name="data[current_gender_other]" value="{{ $application->data['current_gender_other'] }}" placeholder="Other">
+                        <input type="text" id="current-gender-other-desc" class="form-control" name="data[current_gender_other]" value="{{ array_key_exists('current_gender_other', $application->data)?$application->data['current_gender_other']:'' }}" placeholder="Other">
                     </label>
                 </div>
             </div>
@@ -67,17 +67,17 @@
                 <label class="form-label">Requested Gender</label>
                 <div class="controls">
                     <label class="radio">
-                        <input type="radio" name="data[requested_gender]" value="male" {{ $application->data['requested_gender'] == 'male'?'checked="checked"':'' }}> Male
+                        <input type="radio" name="data[requested_gender]" value="male" {{ array_key_exists('requested_gender', $application->data) && $application->data['requested_gender'] == 'male'?'checked="checked"':'' }}> Male
                     </label>
                     <label class="radio">
-                        <input type="radio" name="data[requested_gender]" value="female"  {{ $application->data['requested_gender'] == 'female'?'checked="checked"':'' }}> Female
+                        <input type="radio" name="data[requested_gender]" value="female"  {{ array_key_exists('requested_gender', $application->data) && $application->data['requested_gender'] == 'female'?'checked="checked"':'' }}> Female
                     </label>
                     <label class="radio">
                         <label for="requested-gender-other" class="sr-only">Other</label>
-                        <input type="radio" name="data[requested_gender]" value="other" {{ $application->data['requested_gender'] == 'other'?'checked="checked"':'' }} id="current-gender-other">
+                        <input type="radio" name="data[requested_gender]" value="other" {{ array_key_exists('requested_gender', $application->data) && $application->data['requested_gender'] == 'other'?'checked="checked"':'' }} id="current-gender-other">
 
                         <label for="current-gender-other" class="sr-only">Explain</label>
-                        <input type="text" class="form-control" name="data[requested_gender_other]" value="{{ $application->data['requested_gender_other'] }}" placeholder="Other">
+                        <input type="text" class="form-control" name="data[requested_gender_other]" value="{{ array_key_exists('requested_gender_other', $application->data)?$application->data['requested_gender_other']:'' }}" placeholder="Other">
                     </label>
                 </div>
             </div>
@@ -87,7 +87,7 @@
         <div class="form-group">
             <label class="control-label">Reason</label>
             <div class="controls">
-                <textarea class="form-control" name="data[gender_change_reason]">{{ $application->data['gender_change_reason'] }}</textarea>
+                <textarea class="form-control" name="data[gender_change_reason]">{{ array_key_exists('gender_change_reason', $application->data)?$application->data['gender_change_reason']:'' }}</textarea>
             </div>
         </div>
     </div>

@@ -48,11 +48,6 @@ return [
             'root' => storage_path('app'),
         ],
 
-        'temp' => [
-            'driver' => 'local',
-            'root' => storage_path('temp'),
-        ],
-
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -66,6 +61,9 @@ return [
             'secret' => env('AWS_SECRET'),
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
+            'options' => [
+                'ServerSideEncryption' => 'AES256',
+            ]
         ],
 
     ],
