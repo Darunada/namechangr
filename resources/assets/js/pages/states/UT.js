@@ -9,7 +9,7 @@ window.delete_file = function(file_id) {
     var $btn = $('.delete-file-btn[data-file-id="'+file_id+'"]');
     $btn.button('loading');
 
-    axios.delete($btn.attr('href')).then(function (response) {
+    axios.delete('/applications/'+window.Laravel.application.id+'/delete/'+file_id).then(function (response) {
         if(response.data.success == true) {
             $btn.closest('tr').remove();
         } else {
@@ -28,11 +28,42 @@ function showGenerationError(returned) {
     $('#documents-error-row').show();
 }
 
+function pollForGenerationStatus(seconds, tries) {
+    console.log('starting interval for '+seconds+' seconds.  Try '+tries);
+
+    setTimeout(function() {
+        console.log('checking!');
+        axios.get('/applications/'+window.Laravel.application.id)
+            .then(function (response) {
+                console.log(response.data);
+                if(response.data.success == true) {
+                    if(response.data.application.is_generating_documents) {
+                        var time = 15; // seconds
+                        if(tries > 12) {
+                            time = 60;
+                        }
+                        pollForGenerationStatus(time, tries+1);
+                    } else {
+                        $('#generated-documents-section').html(response.data.html);
+                        $('#documents-generating-row').hide();
+                        $('.generate-application-btn[disabled]').removeClass('disabled').removeAttr('disabled').html('<i class="fa fa-envelope-o"></i> Email my Docs');
+                    }
+                } else {
+                    console.log('error polling for generation status', response);
+                }
+            }).catch(function (error) {
+            });
+
+
+    }, seconds*1000);
+
+}
+
 function saveApplication(e) {
     var $form = $('#application-form');
 
     var data = $('#application-form').serialize();
-    axios.post($form.attr('action'), data)
+    axios.put('/applications/'+window.Laravel.application.id, data)
         .then(function (response) {
             window.Laravel.application = response.data.application;
         }).catch(function (error) {
@@ -67,10 +98,7 @@ $(document).ready(function () {
         var $btn = $(this);
         $btn.button('loading');
 
-        var data = $('#application-form').serialize();
-        data += '&type='+$btn.data('type');
-
-        axios.post($btn.attr('href'), data)
+        axios.get('/applications/'+window.Laravel.application.id+'/generate/'+$btn.data('type'))
             .then(function (response) {
                 window.Laravel.application = response.data.application;
                 if(response.data.success == true) {
@@ -78,6 +106,8 @@ $(document).ready(function () {
                     $('#documents-error-row').hide();
 
                     $btn.html('<i class="fa fa-spinner fa-spin"></i> Documents are generating...');
+
+                    pollForGenerationStatus(5);
                 } else {
                     showGenerationError(true);
                     $btn.button('reset');

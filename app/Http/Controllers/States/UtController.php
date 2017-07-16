@@ -36,7 +36,6 @@ class UtController extends Controller
         });
     }
 
-
     public function index(Request $request, Application $application)
     {
         $states = State::withoutGlobalScope(ActiveScope::class)->pluck('name', 'id');
@@ -44,33 +43,6 @@ class UtController extends Controller
         $locations = $application->state->locations->all();
 
         return view('states.UT.index', compact('locations', 'counties', 'states', 'application'));
-    }
-
-    public function save(Request $request, Application $application) {
-        $this->saveApplication($request, $application);
-
-        if($request->expectsJson()) {
-            return response()->json(['application'=>$application]);
-        } else {
-            return redirect('states.UT', $application->id);
-        }
-    }
-
-    private function saveApplication(Request $request, Application &$application) {
-        $application->fill($request->input());
-        $application->save();
-    }
-
-    public function generate(Request $request, Application $application) {
-        //$this->saveApplication($request, $application);
-
-        $type = $request->input('type');
-
-        // start generating...
-        $job = new GenerateApplication($application, new UtApplicationGenerator(), $type);
-        dispatch($job);
-
-        return response()->json(['success'=>true, 'type'=>$type, 'application'=>$application]);
     }
 
     public function download_file(Request $request, Application $application, ApplicationFile $applicationFile) {
@@ -89,11 +61,5 @@ class UtController extends Controller
         ]);
     }
 
-    public function delete_file(Request $request, Application $application, ApplicationFile $applicationFile) {
 
-        $job = new DeleteApplicationFile($applicationFile);
-        dispatch($job);
-
-        return response()->json(['success'=>true, 'queued'=>true]);
-    }
 }
