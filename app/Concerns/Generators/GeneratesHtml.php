@@ -2,15 +2,15 @@
 
 namespace App\Concerns\Generators;
 
+use App\Models\Application\Application;
 use App\Models\Application\File;
 
 trait GeneratesHtml
 {
-    use ConvertsWordTemplates, StoresGeneratedFiles;
 
     /**
      * @param Application $application
-     * @return File;
+     * @return File
      */
     public function html(Application $application)
     {

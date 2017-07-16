@@ -27,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // force https in production
+        // because of cloudflare (flexible ssl) and heroku headers, https is not detected
+        // by laravel at the server.
+        // TODO: this is sort of a hack, would be better to figure out trustedproxies or create another middleware to handle it correctly
         if ($this->app->environment() === 'production') {
             $urlGenerator->forceScheme('https');
         }

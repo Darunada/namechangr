@@ -2,10 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Contracts\Generators\Application AS ApplicationGenerator;
-use App\Events\FileGenerated;
+use App\Contracts\Generators\ApplicationGenerator;
+use App\Events\ApplicationFileGenerated AS ApplicationFileGeneratedEvent;
+use App\Notifications\ApplicationFileGenerated AS ApplicationFileGeneratedNotification;
 use App\Models\Application\Application;
 use App\Models\Application\File;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,25 +34,18 @@ class GenerateApplication implements ShouldQueue
     protected $type;
 
     /**
-     * @var string
-     */
-    protected $broadcastOn;
-
-    /**
      * Create a new job instance.
      *
      * @param Application $application
      * @param ApplicationGenerator $generator
      * @param null|string $type pdf|html|docx
-     * @param null|string $broadcastOn
      * @internal param string $type
      */
-    public function __construct(Application $application, ApplicationGenerator $generator, $type=null, $broadcastOn = null)
+    public function __construct(Application $application, ApplicationGenerator $generator, $type=null)
     {
         $this->application = $application;
         $this->applicationGenerator = $generator;
         $this->type = $type;
-        $this->broadcastOn = $broadcastOn;
     }
 
     /**
@@ -63,14 +58,14 @@ class GenerateApplication implements ShouldQueue
         $applicationFile = $this->runGenerator();
 
         /**
-         * TODO: evaluate this
+         * Spawn an event to hook later
          */
-        if($this->broadcastOn) {
-            $applicationFile->channel = $this->broadcastOn;
-            $applicationFile->save();
-        }
+        event(new ApplicationFileGeneratedEvent($applicationFile, $this->application));
 
-        event(new FileGenerated($applicationFile, $this->broadcastOn));
+        /**
+         * Notify the user
+         */
+        $this->application->user->notify(new ApplicationFileGeneratedNotification($applicationFile, $this->application));
     }
 
     protected function runGenerator() {

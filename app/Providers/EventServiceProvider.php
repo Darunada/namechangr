@@ -24,6 +24,10 @@ class EventServiceProvider extends ServiceProvider
         'Laravel\Passport\Events\RefreshTokenCreated' => [
             'App\Listeners\PruneOldTokens',
         ],
+
+        'App\Events\ApplicationFileDeleted' => [
+            'App\Listeners\RemoveFileRecord',
+        ],
     ];
 
     /**

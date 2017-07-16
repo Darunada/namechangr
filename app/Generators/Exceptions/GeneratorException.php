@@ -7,7 +7,7 @@
  * Time: 6:24 PM
  */
 
-namespace App\Exceptions\Generator;
+namespace App\Generators\Exceptions;
 
 
 class GeneratorException extends \UnexpectedValueException

@@ -13,7 +13,7 @@
                     <p>I think changing your legal name is way too difficult, so I made this tool to help you along the process.  This platform has been designed with trans people in mind, but it should work for anyone changing their legal name and/or gender!</p>
 
                     <h2>Ready to get started?</h2>
-                    <p><a class="btn btn-primary" href="{{ route('register') }}">Register Now</a> or <a class="btn btn-default" href="{{ route('dashboard') }}">Get Started Anonymously</a> and register later.</p>
+                    <p><a class="btn btn-primary" href="{{ route('register') }}">Register Now</a></p>
                 </div>
             </div>
 

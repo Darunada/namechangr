@@ -6,14 +6,18 @@ namespace App\Http\Controllers\States;
 use App\Concerns\GuardsApplicationRequests;
 use App\Generators\UtApplicationGenerator;
 use App\Http\Controllers\Controller;
+use App\Jobs\DeleteApplicationFile;
 use App\Jobs\GenerateApplication;
 use App\Models\Application\Application;
+use App\Models\Application\File AS ApplicationFile;
 use App\Models\Location\State;
 use App\Scopes\ActiveScope;
 use Auth;
+use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use mikehaertl\pdftk\Pdf;
+use Storage;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class UtController extends Controller
@@ -25,39 +29,25 @@ class UtController extends Controller
 
     public function __construct()
     {
+        $this->middleware('auth');
 
-        $this->middleware('guest-notification');
-
-        $this->state = State::where('name', 'Utah')->first();
-
+        $this->state = Cache::remember('state-ut', 60*24, function() {
+            return State::where('name', 'Utah')->first();
+        });
     }
 
 
-    public function index(Request $request, Application $application = null)
+    public function index(Request $request, Application $application)
     {
-        $redirect = $this->guard($application);
-        if ($redirect) {
-            return $redirect;
-        }
-
         $states = State::withoutGlobalScope(ActiveScope::class)->pluck('name', 'id');
         $counties = $application->state->counties->pluck('name', 'id');
         $locations = $application->state->locations->all();
+
         return view('states.UT.index', compact('locations', 'counties', 'states', 'application'));
     }
 
-    public function save(Request $request, Application $application = null) {
-        $redirect = $this->guard($application);
-        if ($redirect) {
-            return $redirect;
-        }
-
-        $application->fill($request->input());
-        if(Auth::check()) {
-            $application->save();
-        } else {
-            $request->session()->put('activeApplication', $application);
-        }
+    public function save(Request $request, Application $application) {
+        $this->saveApplication($request, $application);
 
         if($request->expectsJson()) {
             return response()->json(['application'=>$application]);
@@ -66,115 +56,44 @@ class UtController extends Controller
         }
     }
 
-    public function generate(Request $request, Application $application = null) {
-        $redirect = $this->guard($application);
-        if ($redirect) {
-            return $redirect;
-        }
+    private function saveApplication(Request $request, Application &$application) {
+        $application->fill($request->input());
+        $application->save();
+    }
 
-        /**
-         * TODO: broadcast channel for guest users
-         * This needs to be evaluated...
-         */
-        $channel = null;
-//        if(Auth::guest()) {
-//            $channel = uniqid('generate-');
-//        } else {
-//            $channel = $application->id;
-//        }
+    public function generate(Request $request, Application $application) {
+        //$this->saveApplication($request, $application);
 
         $type = $request->input('type');
 
         // start generating...
-        $job = new GenerateApplication($application, new UtApplicationGenerator(), $type, $channel);
+        $job = new GenerateApplication($application, new UtApplicationGenerator(), $type);
         dispatch($job);
 
-        return response()->json(['success'=>true, 'channel'=>$channel, 'type', $type]);
+        return response()->json(['success'=>true, 'type'=>$type, 'application'=>$application]);
     }
 
-    public function generateSexOffenderRegistryForm() {
-        /*
-        legal_name:Lea Rae Fairbanks
-        dob:06/11/1989
-        phone:262-370-4052
-        email:lea.rae.fairbanks@gmail.com
-        dl_number:1234567890
-        dl_state:52
-        address[address1]:43 E 8800 S
-        address[city]:Sandy
-        address[state]:52
-        address[zipcode]:84070
-      */
-        $states = new States();
-        $address_city = Input::post('address.city');
-        $address_state = $states->getOne(Input::post('address.state'))['iso_3166_2'];
-        $address_zipcode = Input::post('address.zipcode');
-        $address2 = "$address_city, $address_state $address_zipcode";
+    public function download_file(Request $request, Application $application, ApplicationFile $applicationFile) {
+        $fileContents = Storage::get($applicationFile->path);
 
-        $dl_number = Input::get('dl_number');
-        $dl_state = $states->getOne(Input::post('dl_state'))['iso_3166_2'];
-
-        $county = County::findOrFail(Input::post('county_id'));
-        $district = District::findOrFail(Input::post('district_id'));
-        $location = Location::findOrFail(Input::post('location_id'));
-
-        $data = array(
-            'name' => Input::post('legal_name'),
-            'address1' => Input::post('address.address1'),
-            'address2' => $address2,
-            'phone' => Input::post('phone'),
-            'email' => Input::post('email'),
-            'district' => $district->name,
-            'county' => $county->name,
-            'location' => $location->address,
-            'dob' => Input::post('dob'),
-            'dl_number' => "$dl_number $dl_state"
-        );
-
-        return view('docs.UT.sex_offender_registry.full', $data);
+        return response()->stream(function () use ($fileContents) {
+            // grab the raw file and echo it out
+            echo $fileContents;
+        }, 200, [
+            // other headers could be added
+            'Cache-Control' => 'no-cache',
+            'Content-Description' => 'File Download of document-package.docx',
+            'Content-Disposition' => 'attachment; filename="document-package.docx"',
+            'Expires' => '0',
+            'Pragma' => 'no-cache'
+        ]);
     }
 
-    public function generateCoverSheetForm() {
-        /*
-        legal_name:Lea Rae Fairbanks
-        dob:06/11/1989
-        phone:262-370-4052
-        email:lea.rae.fairbanks@gmail.com
-        dl_number:1234567890
-        dl_state:52
-        address[address1]:43 E 8800 S
-        address[city]:Sandy
-        address[state]:52
-        address[zipcode]:84070
-      */
-//        $states = new States();
-//        $address_city = Input::get('address.city');
-//        $address_state = $states->getOne(Input::get('address.state'))['iso_3166_2'];
-//        $address_zipcode = Input::get('address.zipcode');
-//        $address2 = "$address_city, $address_state $address_zipcode";
-//
-//        $dl_number = Input::get('dl_number');
-//        $dl_state = $states->getOne(Input::get('dl_state'))['iso_3166_2'];
-//
-//        $county = County::findOrFail(Input::get('county_id'));
-//        $district = District::findOrFail(Input::get('district_id'));
-//        $location = Location::findOrFail(Input::get('location_id'));
-//
-//        $data = array(
-//            'name' => Input::get('legal_name'),
-//            'address1' => Input::get('address.address1'),
-//            'address2' => $address2,
-//            'phone' => Input::get('phone'),
-//            'email' => Input::get('email'),
-//            'district' => $district->name,
-//            'county' => $county->name,
-//            'location' => $location->address,
-//            'dob' => Input::get('dob'),
-//            'dl_number' => "$dl_number $dl_state"
-//        );
+    public function delete_file(Request $request, Application $application, ApplicationFile $applicationFile) {
 
-        return view('docs.UT.cover_page.full'/*, $data*/);
+        $job = new DeleteApplicationFile($applicationFile);
+        dispatch($job);
+
+        return response()->json(['success'=>true, 'queued'=>true]);
     }
-
-
 }

@@ -10,19 +10,17 @@
                     <div class="bs-callout bs-callout-info">
                         <h4>Common Sense Privacy Policy</h4>
                         <p>
-                            You can use this service without creating an account.  We write a cookie or two here and there to help out with the forms, but other than that we don't store anything about you unless you choose to create an account.
+                            You can use this service free of charge.  We use cookies to track your user account and login information.  We store your name and gender change application data in an encrypted format in our database.  You are safe with us.
                         </p>
                         <p>
-                            If you choose to create an account, you'll have the option to save your application
-                            and come back later.  But that doesn't work yet. :-)
+                            You may audit the security of this site yourself by visiting me on <a href="https://github.com/Darunada/namechangr">Github</a>.
+                            If you find a security issue, please <a href="mailto:hello@namechangr.com">Email Me</a>
                         </p>
                     </div>
 
                     <legend>Now the legal bit...</legend>
 
-
-
-                    <p>This Privacy Policy governs the manner in which Name Changr collects, uses, maintains and
+                    <p>This Privacy Policy governs the manner in which NameChangr collects, uses, maintains and
                         discloses information collected from users (each, a "User") of the https://www.namechangr.com
                         website ("Site").</p>
 
@@ -49,7 +47,7 @@
                         If they do so, note that some parts of the Site may not function properly.</p>
 
                     <h3>How we use collected information</h3>
-                    <p>Name Changr may collect and use Users personal information for the following purposes:</p>
+                    <p>NameChangr may collect and use Users personal information for the following purposes:</p>
                     <ul>
                         <li>
                             <i>To run and operate our Site</i><br/>
@@ -76,7 +74,7 @@
                     <p>We may share or sell information with third parties for marketing or other purposes.</p>
 
                     <h3>Sharing your personal information</h3>
-                    <p>This Privacy Policy governs the manner in which Name Changr collects, uses, maintains and
+                    <p>This Privacy Policy governs the manner in which NameChangr collects, uses, maintains and
                         discloses information collected from users (each, a "User") of the https://www.namechangr.com
                         website ("Site").</p>
 
@@ -103,7 +101,7 @@
                         If they do so, note that some parts of the Site may not function properly.</p>
 
                     <h3>How we use collected information</h3>
-                    <p>Name Changr may collect and use Users personal information for the following purposes:</p>
+                    <p>NameChangr may collect and use Users personal information for the following purposes:</p>
                     <ul>
                         <li>
                             <i>To run and operate our Site</i><br/>
@@ -140,7 +138,7 @@
                         terms and policies.</p>
 
                     <h3>Changes to this privacy policy</h3>
-                    <p>Name Changr has the discretion to update this privacy policy at any time. When we do, we will
+                    <p>NameChangr has the discretion to update this privacy policy at any time. When we do, we will
                         post a notification on the main page of our Site. We encourage Users to frequently check this
                         page for any changes to stay informed about how we are helping to protect the personal
                         information we collect. You acknowledge and agree that it is your responsibility to review this
@@ -157,8 +155,10 @@
                     <p>If you have any questions about this Privacy Policy, the practices of this site, or your dealings
                         with this site, please contact us.</p>
 
-                    <p>This document was last updated on June 15, 2017</p>
-                    <p>As of June 15, 2017, Name Changr has never received a National Security Letter, an order under the Foreign Intelligence Surveillance Act, or any other classified request for user information. If we ever receive such a request, we would seek to let the public know it existed.</p>
+                    <p>You may contact us via email at <a href="hello@namechangr.com">hello@namechangr.com</a>.  For issues with the site, please open a <a href="https://github.com/Darunada/namechangr">Github Issue</a> instead.</p>
+
+                    <p>This document was last updated on July 16, 2017</p>
+                    <p>As of July 16, 2017, NameChangr has never received a National Security Letter, an order under the Foreign Intelligence Surveillance Act, or any other classified request for user information. If we ever receive such a request, we would seek to let the public know it existed.</p>
                 </div>
             </div>
         </div>

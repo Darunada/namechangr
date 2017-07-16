@@ -23,32 +23,40 @@
  * </div>
  */
 
+function makeLovely($icon) {
+    var lovely = '<span class="text-lovely">'+
+        '    <i class="fa fa-heart"></i>'+
+        '</span>'+
+        '<span class="text-lovely-slider closed">'+
+        '    &nbsp;&nbsp;'+
+        '    <span class="text-lovely-l">Ｌ</span>'+
+        '    <span class="text-lovely-o">Ｏ</span>'+
+        '    <span class="text-lovely-v">Ｖ</span>'+
+        '    <span class="text-lovely-e">Ｅ</span>'+
+        '    <span class="text-lovely-l2">Ｌ</span>'+
+        '    <span class="text-lovely-y">Ｙ</span>';
+    '</span>';
+
+    $icon.html(lovely);
+    setTimeout(function() {
+        $icon.find('.text-lovely-slider:first').removeClass('closed');
+    }, 100);
+}
+
 $(function() {
 
     $('.lovely').each(function(index, input) {
         var $input = $(input).find('input:last');
         var $icon = $(input).find('.input-group-addon:first');
 
+        if($(this).hasClass('lovely-open')) {
+            makeLovely($icon, 0);
+        }
+
         $input.change(function() {
             $icon.html('<span class=""><i class="fa fa-spinner fa-spin"></i></span>');
             setTimeout(function() {
-                var lovely = '<span class="text-lovely">'+
-                             '    <i class="fa fa-heart"></i>'+
-                             '</span>'+
-                             '<span class="text-lovely-slider closed">'+
-                             '    &nbsp;&nbsp;'+
-                             '    <span class="text-lovely-l">Ｌ</span>'+
-                             '    <span class="text-lovely-o">Ｏ</span>'+
-                             '    <span class="text-lovely-v">Ｖ</span>'+
-                             '    <span class="text-lovely-e">Ｅ</span>'+
-                             '    <span class="text-lovely-l2">Ｌ</span>'+
-                             '    <span class="text-lovely-y">Ｙ</span>';
-                             '</span>';
-
-                $icon.html(lovely);
-                setTimeout(function() {
-                    $icon.find('.text-lovely-slider:first').removeClass('closed');
-                }, 100);
+                makeLovely($icon, 100);
             }, 1000);
         });
     });

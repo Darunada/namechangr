@@ -8,7 +8,11 @@
 
 namespace App\Concerns\Generators;
 
+use App\Models\Application\Application;
 use App\Models\Application\File;
+use Carbon\Carbon;
+use Illuminate\Http\File as SystemFile;
+use Storage;
 
 trait StoresGeneratedFiles
 {
@@ -20,7 +24,7 @@ trait StoresGeneratedFiles
      */
     protected function createFileFromTemplate($template, $type, Application $application)
     {
-        $path = Storage::putFile('applications', new File($template), 'private');
+        $path = Storage::putFile('applications', new SystemFile($template), 'private');
 
         $file =  new File();
         $file->user_id = $application->user_id;

@@ -2,6 +2,7 @@
 
 namespace App\Concerns\Generators;
 
+use App\Generators\Exceptions\TypeNotSupportedException;
 use App\Models\Application\Application;
 
 trait GeneratesApplications

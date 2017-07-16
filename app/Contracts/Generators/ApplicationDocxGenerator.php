@@ -9,7 +9,7 @@ interface ApplicationDocxGenerator
 {
     /**
      * @param Application $application
-     * @return File;
+     * @return File
      */
     public function docx(Application $application);
 }

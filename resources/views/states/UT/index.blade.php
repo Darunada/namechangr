@@ -11,6 +11,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
+
     <form role="form" method="POST" action="{{ route('states.UT.save', $application->id) }}" id="application-form">
         {{ csrf_field() }}
 
@@ -26,31 +27,31 @@
                             </span>
                         </a>
                     </li>
-                    <li class="disabled">
+                    <li class="">
                         <a href="#personal" data-toggle="tab" title="Your Personal Information">
                             <span class="round-tabs two">
                                 <i class="fa fa-drivers-license"></i>
                             </span>
                         </a>
                     </li>
-                    <li class="disabled">
-                        <a href="#change" data-toggle="tab" title="Your Change">
+                    <li class="">
+                        <a href="#change" data-toggle="tab" title="Change Info">
                             <span class="round-tabs three">
                                 <i class="fa fa-child"></i>
                             </span>
                         </a>
                     </li>
-                    <li class="disabled">
-                        <a href="#settings" data-toggle="tab" title="blah blah">
+                    <li class="">
+                        <a href="#documents" data-toggle="tab" title="Get Your Documents">
                            <span class="round-tabs four">
-                               <i class="glyphicon glyphicon-comment"></i>
+                               <i class="fa fa-download"></i>
                            </span>
                         </a>
                     </li>
-                    <li class="disabled">
-                        <a href="#doner" data-toggle="tab" title="completed">
+                    <li class="">
+                        <a href="#judges" data-toggle="tab" title="Judges">
                             <span class="round-tabs five">
-                                <i class="glyphicon glyphicon-ok"></i>
+                                <i class="fa fa-gavel"></i>
                             </span>
                         </a>
                     </li>
@@ -92,18 +93,10 @@
                         </ul>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="settings">
+                <div class="tab-pane fade" id="documents">
                     <div class="col-xs-12">
-                        <h3 class="head text-center">Drop comments!</h3>
-                        <p class="narrow text-center">
-                            Lorem ipsum dolor sit amet, his ea mollis fabellas principes. Quo mazim facilis tincidunt ut, utinam
-                            saperet facilisi an vim.
-                        </p>
-
-                        <p class="text-center">
-                            <a href="" class="btn btn-success btn-outline-rounded green"> start using bootsnipp <span
-                                        style="margin-left:10px;" class="glyphicon glyphicon-send"></span></a>
-                        </p>
+                        <h3 class="head text-center">Get your Documents!</h3>
+                        @include('states.UT.partials.documents')
 
                         <ul class="list-inline pull-right">
                             <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
@@ -111,21 +104,14 @@
                         </ul>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="doner">
+                <div class="tab-pane fade" id="judges">
                     <div class="col-xs-12">
-                        <div class="text-center">
-                            <i class="img-intro icon-checkmark-circle"></i>
-                        </div>
-                        <h3 class="head text-center">thanks for staying tuned! <span style="color:#f48260;">♥</span> Bootstrap
-                        </h3>
-                        <p class="narrow text-center">
-                            Lorem ipsum dolor sit amet, his ea mollis fabellas principes. Quo mazim facilis tincidunt ut, utinam
-                            saperet facilisi an vim.
-                        </p>
+                        <h3 class="head text-center">Your Judge</h3>
+                        @include('states.UT.partials.judges')
 
                         <ul class="list-inline pull-right">
                             <li><button type="button" class="btn btn-default prev-step">Previous</button></li>
-                            <li><button type="button" class="btn btn-primary btn-info-full next-step">Submit</button></li>
+                            {{--<li><button type="button" class="btn btn-primary btn-info-full next-step">Submit</button></li>--}}
                         </ul>
 
                     </div>

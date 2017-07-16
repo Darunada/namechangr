@@ -8,23 +8,26 @@
 
 namespace App\Concerns\Generators;
 
+use App\Generators\Exceptions\GeneratorException;
 use App\Models\Application\Application;
+use Illuminate\Support\Arr;
 use PhpOffice\PhpWord\TemplateProcessor;
 
 trait LoadsWordTemplates
 {
-    protected $templates = [
-        'name_and_gender_change'=>'',
-        'name_change'=>'',
-        'gender_change'=>''
-    ];
+
+//    protected $templates = [
+//        'name_and_gender_change'=>'',
+//        'name_change'=>'',
+//        'gender_change'=>''
+//    ];
 
     /**
      * @param Application $application
      * @return array
      */
     protected function getTemplateVars(Application &$application) {
-        return array_flatten($application->data);
+        return Arr::dot($application->getParsedData());
     }
 
     /**

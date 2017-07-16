@@ -2,15 +2,15 @@
 
 namespace App\Concerns\Generators;
 
+use App\Models\Application\Application;
 use App\Models\Application\File;
 
 trait GeneratesDocx
 {
-    use LoadsWordTemplates, StoresGeneratedFiles;
 
     /**
      * @param Application $application
-     * @return File;
+     * @return File
      */
     public function docx(Application $application)
     {

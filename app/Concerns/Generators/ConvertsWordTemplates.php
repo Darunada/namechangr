@@ -2,10 +2,18 @@
 
 namespace App\Concerns\Generators;
 
+use App\Models\Application\Application;
+use PhpOffice\PhpWord\IOFactory;
+
 trait ConvertsWordTemplates
 {
-    use LoadsWordTemplates;
 
+
+    /**
+     * @param Application $application
+     * @param string $type
+     * @return string
+     */
     protected function getParsedTemplateAs($application, $type) {
         $template = $this->getParsedTemplate($application);
 

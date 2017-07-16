@@ -2,7 +2,10 @@
 
 namespace App\Models\Application;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class File extends Model
 {
@@ -26,6 +29,20 @@ class File extends Model
         'deleted_at',
         'expired_at'
     ];
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('expired', function (Builder $builder) {
+            $builder->whereDate('expired_at', '>', Carbon::now());
+        });
+    }
 
     /**
      * All files belong to a user

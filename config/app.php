@@ -187,7 +187,6 @@ return [
         // Other service providers...
         Laracasts\Flash\FlashServiceProvider::class,
         AdrianMejias\States\StatesServiceProvider::class,
-        App\Providers\ApplicationServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
     ],
 

@@ -7,7 +7,7 @@
         @component('partials.form-input-row', [
             'label'=>'Full Legal Name',
             'name'=>'data[current_legal_name]',
-            'value'=>'',
+            'value'=>$application->data['current_legal_name'],
             'help'=>'Your full and current legal name, including middle name'
         ])@endcomponent
 
@@ -15,22 +15,29 @@
             'label'=>'Your Current Address',
             'name'=>'data[current_address]',
             'states'=>$states,
-            'value'=>'',
+            'value'=>$application->data['current_address'],
             'help'=>'You must be able to receive mail at this address'
         ])@endcomponent
 
         @component('partials.form-phone-row', [
             'label'=>'Phone Number',
             'name'=>'data[current_phone]',
-            'value'=>'',
+            'value'=>$application->data['current_phone'],
             'help'=>''
         ])@endcomponent
 
         @component('partials.form-email-row', [
             'label'=>'Email Address',
             'name'=>'data[current_email]',
-            'value'=>'',
+            'value'=>$application->data['current_email'],
             'help'=>''
+        ])@endcomponent
+
+        @component('partials.form-date-row', [
+            'label'=>'In County Since',
+            'name'=>'data[in_county_since]',
+            'value'=>$application->data['in_county_since'],
+            'help'=>'In order to change your name in Utah, you must have lived in the county you are filing in for greater than one year.'
         ])@endcomponent
     </div>
     <div class="col-sm-6">
@@ -43,21 +50,22 @@
         @component('partials.form-date-row', [
             'label'=>'Date of Birth',
             'name'=>'data[date_of_birth]',
-            'value'=>'',
+            'value'=>$application->data['date_of_birth'],
             'help'=>'MM/DD/YYYY format please!'
         ])@endcomponent
 
         @component('partials.form-input-row', [
             'label'=>'Driver\'s License/ID Number',
-            'name'=>'data[drivers_license_number]',
-            'value'=>'',
+            'name'=>'data[drivers_license][number]',
+            'value'=>$application->data['drivers_license']['number'],
             'help'=>''
         ])@endcomponent
 
         @component('partials.form-select-row', [
             'label'=>'Driver\'s License/ID Issuing State',
-            'name'=>'data[drivers_license_state]',
+            'name'=>'data[drivers_license][state_id]',
             'values'=>$states,
+            'value'=>$application->data['drivers_license']['state_id'],
             'help'=>'An ID or driver\'s license is required for this form.  I am not sure what to do if you do not have one; please let me know!'
         ])@endcomponent
     </div>
