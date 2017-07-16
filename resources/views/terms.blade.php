@@ -24,7 +24,7 @@
                     <p>You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.</p>
                     <p><strong>Links To Other Web Sites</strong></p>
                     <p>Our Service may contain links to third-party web sites or services that are not owned or controlled by NameChangr.</p>
-                    <p>Name Changr has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that NameChangr shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
+                    <p>NameChangr has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that NameChangr shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
                     <p>We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit.</p>
                     <p><strong>Governing Law</strong></p>
                     <p>These Terms shall be governed and construed in accordance with the laws of Utah, United States, without regard to its conflict of law provisions.</p>
