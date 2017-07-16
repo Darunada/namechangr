@@ -39,6 +39,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-sm-offset-8 col-sm-4">
+                            <div class="pull-right">
+                                <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}"/></a>
+                            </div>
+                        </div>
+                    </div>
             </footer>
         </div>
     </div>

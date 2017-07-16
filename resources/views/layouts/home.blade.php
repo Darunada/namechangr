@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     @include('partials.favicons')
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -12,6 +13,9 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+
+    <!-- Learn more about the creators! -->
+    <link type="text/plain" rel="author" href="/humans.txt" />
 
     <!-- Scripts -->
     <script>
@@ -36,6 +40,14 @@
                     <div class="col-sm-4">
                         <div class="pull-right">
                             <a href="{{ route('privacy') }}">Privacy Policy</a> | <a href="{{ route('terms') }}">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-offset-8 col-sm-4">
+                        <div class="pull-right">
+                            <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}"/></a>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,17 @@
+/* TEAM */
+    Creator: Lea Fairbanks
+    Contact: hello [at] namechangr.com
+    Twitter: @darunada
+    From: Salt Lake City, Utah, United States
+
+/* SITE */
+    Site Name: NameChangr
+    Site URL: https://www.namechangr.com
+    Language: English
+    Standards: HTML5, CSS3
+    Architecture: Heroku, Postgres, Redis, Mailgun, Amazon S3
+    Frameworks: Laravel 5.4, jQuery, Bootstrap 3
+    IDE: PhpStorm, HeidiSQL, Git, Photoshop, HeidiSQL
+
+
+Thank you for visiting!
