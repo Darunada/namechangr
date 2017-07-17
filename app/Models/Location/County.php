@@ -53,4 +53,13 @@ class County extends Model
     {
         return $this->belongsToMany('App\Models\Court\District', 'district_counties');
     }
+
+    /**
+     * Counties have 1..n locations
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function locations()
+    {
+        return $this->hasMany('App\Models\Court\Location');
+    }
 }

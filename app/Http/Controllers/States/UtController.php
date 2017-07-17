@@ -10,6 +10,7 @@ use App\Jobs\DeleteApplicationFile;
 use App\Jobs\GenerateApplication;
 use App\Models\Application\Application;
 use App\Models\Application\File AS ApplicationFile;
+use App\Models\Location\County;
 use App\Models\Location\State;
 use App\Scopes\ActiveScope;
 use Auth;
@@ -40,9 +41,18 @@ class UtController extends Controller
     {
         $states = State::withoutGlobalScope(ActiveScope::class)->pluck('name', 'id');
         $counties = $application->state->counties->pluck('name', 'id');
-        $locations = $application->state->locations->all();
 
-        return view('states.UT.index', compact('locations', 'counties', 'states', 'application'));
+        $data = $application->data;
+        if(array_key_exists('county_id', $data)) {
+            $currentCounty = County::where('id', $data['county_id'])->get()->first();
+            $districts = $currentCounty->districts->pluck('name', 'id');
+
+            $locations = $currentCounty->locations()->whereIn('district_id', $districts->keys())->get();
+        }
+
+
+
+        return view('states.UT.index', compact('locations', 'counties', 'districts', 'states', 'application'));
     }
 
     public function download_file(Request $request, Application $application, ApplicationFile $applicationFile) {

@@ -1,26 +1,4 @@
 
-function init() {
-    setDistrictState('reset');
-
-    var application = window.Laravel.application;
-    if(application.data.location_id != undefined) {
-
-        // get the location
-        var locations = application.state.locations;
-        var locationId = application.data.location_id;
-        var location = _.find(locations, function(item) {
-            return item.id == locationId;
-        });
-
-        // select the county
-        var countyId = location.county_id;
-        $('#county-id option:selected').removeProp('selected');
-        $('#county-id option[value="'+countyId+'"]').prop('selected', 'selected');
-        $('#county-id').trigger('change', {county_id: countyId, district_id: location.district_id, location_id:location.id});
-    }
-}
-
-
 function setDistrictState(state) {
     switch(state) {
         case 'reset':
@@ -128,6 +106,4 @@ $(function() {
                 setLocationState('reset');
             });
     });
-
-    init();
 });
