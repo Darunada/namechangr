@@ -58,14 +58,15 @@ class GenerateApplication implements ShouldQueue
         $applicationFile = $this->runGenerator();
 
         /**
+         * Notify the user
+         */
+        $this->application->user->notify(new ApplicationFileGeneratedNotification($applicationFile, $this->application));
+
+        /**
          * Spawn an event to hook later
          */
         event(new ApplicationFileGeneratedEvent($applicationFile, $this->application));
 
-        /**
-         * Notify the user
-         */
-        $this->application->user->notify(new ApplicationFileGeneratedNotification($applicationFile, $this->application));
     }
 
     protected function runGenerator() {

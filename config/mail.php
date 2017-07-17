@@ -2,6 +2,8 @@
 
 return [
 
+    'email' => env('ADMIN_NOTIFICATION_EMAIL', 'notify@namechangr.com'), // this mailbox does not exist
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver
