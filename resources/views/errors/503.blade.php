@@ -15,7 +15,7 @@
         .error-actions {margin-top:15px;margin-bottom:15px;}
         .error-actions .btn:not(:last-child) { margin-right:10px; }
     </style>
-    <title>{{ config('app.name', 'Laravel') }} &mdash; 404 Page Not Found</title>
+    <title>{{ config('app.name', 'Laravel') }} &mdash; 503 Page Not Found</title>
 </head>
 <body>
 <div id="app">
