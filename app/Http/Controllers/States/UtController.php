@@ -43,10 +43,11 @@ class UtController extends Controller
         $counties = $application->state->counties->pluck('name', 'id');
 
         $data = $application->data;
+        $districts = [];
+        $locations = [];
         if(array_key_exists('county_id', $data)) {
             $currentCounty = County::where('id', $data['county_id'])->get()->first();
             $districts = $currentCounty->districts->pluck('name', 'id');
-
             $locations = $currentCounty->locations()->whereIn('district_id', $districts->keys())->get();
         }
 
