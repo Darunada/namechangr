@@ -1,3 +1,5 @@
+@section('title', 'Register')
+@section('description', "Register now and have your legal name and gender change paperwork in hand in 10 minutes flat.")
 @extends('layouts.front')
 
 @section('content')

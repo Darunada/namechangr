@@ -1,3 +1,5 @@
+@section('title', 'Login')
+@section('description', "Login to gain access to your legal name and gender change documents.")
 @extends('layouts.front')
 
 @section('content')

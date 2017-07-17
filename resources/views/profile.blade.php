@@ -1,3 +1,4 @@
+@section('title', "Your Profile")
 @extends('layouts.dashboard')
 
 @section('content')

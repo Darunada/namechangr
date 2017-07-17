@@ -1,3 +1,5 @@
+@section('title', 'Terms of Service')
+@section('description', "We generate the paperwork for your legal name and gender change in a SECURE and PRIVATE way because we believe that's how the internet should be.  Never worry about who will steal your data.")
 @extends('layouts.front')
 
 @section('content')

@@ -1,3 +1,5 @@
+@section('title', 'Utah Application')
+
 @push('objects')
 <script type="text/javascript">
     window.Laravel.application = {!! $application->toJson() !!};

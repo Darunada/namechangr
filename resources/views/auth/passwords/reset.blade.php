@@ -1,3 +1,5 @@
+@section('title', 'Reset Password')
+@section('description', "Reset your password to restore access to your account.")
 @extends('layouts.front')
 
 @section('content')

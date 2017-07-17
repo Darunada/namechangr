@@ -1,3 +1,4 @@
+@section('title', "Dashboard")
 @extends('layouts.dashboard')
 
 @section('content')
