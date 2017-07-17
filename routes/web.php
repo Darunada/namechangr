@@ -43,16 +43,8 @@ Route::delete('/profile', 'ProfileController@delete');
 /**
  * State routes
  */
-Route::get('/UT/instructions', function() {
-    $file = resource_path('templates/ut/instructions.pdf');
-    return response()->file($file);
-})->name('states.UT.instructions');
-
-Route::get('/UT/cover_sheet', function() {
-    $file = resource_path('templates/ut/cover-sheet.pdf');
-    return response()->file($file);
-})->name('states.UT.cover_sheet');
-
+Route::get('/UT/instructions', 'States\UtController@instructions')->name('states.UT.instructions');
+Route::get('/UT/cover-sheet', 'States\UtController@coverSheet')->name('states.UT.cover_sheet');
 Route::post('/UT/generate/{application}', 'States\UtController@generate')->name('states.UT.generate')->middleware('can:update,application');
 Route::get('/UT/{application}', 'States\UtController@index')->name('states.UT')->middleware('can:view,application');
 Route::post('/UT/{application}', 'States\UtController@save')->name('states.UT.save')->middleware('can:update,application');

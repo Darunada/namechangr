@@ -72,5 +72,16 @@ class UtController extends Controller
         ]);
     }
 
+    public function instructions() {
+        $file = resource_path('templates/ut/instructions.pdf');
+        return response()->file($file);
+    }
+
+    public function coverSheet() {
+        $file = resource_path('templates/ut/cover-sheet.pdf');
+        return response()->file($file);
+    }
+
+
 
 }
