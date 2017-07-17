@@ -1,5 +1,5 @@
 @section('title', 'Privacy Policy')
-@section('description, "We keep your legal name and gender change data and documents secure.  Click to learn how we handle your name change data.")
+@section('description', "We keep your legal name and gender change data and documents secure.  Click to learn how we handle your name change data.")
 @extends('layouts.front')
 
 @section('content')
