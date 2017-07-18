@@ -47,7 +47,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if  (!Auth::check()) {
+
+
+        if  (Auth::guest()) {
             if ($exception instanceof TokenMismatchException) {
                 Flash::warning('Your session has expired. Please try again.');
                 return redirect()->back();
@@ -66,11 +68,15 @@ class Handler extends ExceptionHandler
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
+        // when the user is not logged in but should be.
+        // we render the failed response
+        // NOTE: this is different than a permission denied for a logged in user!
+
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        Flash::error("You must login to access that page.");
+        Flash::info("You must login to access that page.");
         return redirect()->guest(route('login'));
     }
 }

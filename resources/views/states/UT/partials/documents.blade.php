@@ -24,20 +24,20 @@
         <legend>Your Document Package</legend>
 
         @if($application->is_generating_documents)
-            <a href="{{ route('states.UT.generate', $application->id) }}" class="btn btn-lg btn-primary generate-application-btn disabled" data-type="docx" disabled>
+            <a href="#" class="btn btn-lg btn-primary generate-application-btn disabled" data-type="docx" disabled>
                 <i class="fa fa-spinner fa-spin"></i> Documents are generating...
             </a>
         @else
-            <a href="{{ route('states.UT.generate', $application->id) }}" class="btn btn-lg btn-primary generate-application-btn" data-type="docx">
+            <a href="#" class="btn btn-lg btn-primary generate-application-btn" data-type="docx">
                 <i class="fa fa-envelope-o"></i> Email my Docs
             </a>
         @endif
 
-        {{--<a href="{{ route('states.UT.generate', $application->id) }}" class="btn btn-lg btn-default generate-application-btn disabled" data-type="pdf" disabled>--}}
+        {{--<a href="#" class="btn btn-lg btn-default generate-application-btn disabled" data-type="pdf" disabled>--}}
             {{--<i class="fa fa-file-pdf-o"></i> Download PDF--}}
         {{--</a>--}}
 
-        {{--<a href="{{ route('states.UT.generate', $application->id) }}" class="btn btn-lg btn-default generate-application-btn disabled" data-type="html" disabled>--}}
+        {{--<a href="#" class="btn btn-lg btn-default generate-application-btn disabled" data-type="html" disabled>--}}
             {{--<i class="fa fa-html5"></i> Download HTML--}}
         {{--</a>--}}
 

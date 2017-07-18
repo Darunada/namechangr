@@ -22,3 +22,18 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Models\Application\Application::class, function (Faker\Generator $faker) {
+    return [
+        'user_id' => function() {
+            return factory(App\User::class)->create()->id;
+        },
+        'state_id' => function() {
+            return App\Models\Location\State::where('iso_3166_2', 'UT')->first()->id;
+        },
+        'name_change' => $faker->boolean(),
+        'gender_change' => $faker->boolean(),
+        'data' => [],
+    ];
+});
+

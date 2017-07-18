@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class LoginTest extends TestCase
 {
-    use DatabaseTransactions;
+    use DatabaseMigrations;
 
     public function testUserCanVisitLogin()
     {

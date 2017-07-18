@@ -16,7 +16,8 @@ class ApplicationController extends Controller
 {
 
     public function __construct() {
-        $this->middleware('can:view,application')->except('index');
+        // view application is already applied in the route
+        $this->middleware('can:update,application')->only(['update', 'delete_file']);
     }
 
     /**
