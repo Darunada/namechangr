@@ -37,7 +37,7 @@
             <footer class="footer">
                 <div class="row">
                     <div class="col-sm-8">
-                        Made with <3 by <a href="https://twitter.com/Darunada">@darunada</a>.  Want to help me support more states?  <a href="https://github.com/Darunada/namechangr">Join me on Github</a>
+                        Made with &lt;3 by <a href="https://twitter.com/Darunada">@darunada</a>.  Want to help me support more states?  <a href="https://github.com/Darunada/namechangr">Join me on Github</a>
                     </div>
                     <div class="col-sm-4">
                         <div class="pull-right">
@@ -49,7 +49,7 @@
                 <div class="row">
                     <div class="col-sm-offset-8 col-sm-4">
                         <div class="pull-right">
-                            <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}"/></a>
+                            <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}" alt="Certified Humans"/></a>
                         </div>
                     </div>
                 </div>
