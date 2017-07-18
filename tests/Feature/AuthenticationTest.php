@@ -166,6 +166,7 @@ class AuthenticationTest extends TestCase
 
     public function testInvalidProvidersAreProtected()
     {
+        $this->get('/login');
         $this->get('/auth/invalid')->assertRedirect('/login')->assertSessionHasErrors();
         $this->get('/auth/invalid/callback')->assertRedirect('/login')->assertSessionHasErrors();
     }

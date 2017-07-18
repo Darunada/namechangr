@@ -41,7 +41,7 @@ class DashboardController extends Controller
 
     public function spawnApplication(Request $request) {
         $this->validate($request, [
-            'g-recaptcha-response' => 'required|recaptcha',
+            'g-recaptcha-response' => 'required|captcha',
             'state_id' => 'required|exists:states,id',
         ]);
 

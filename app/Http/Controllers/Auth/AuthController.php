@@ -36,8 +36,7 @@ class AuthController extends Controller
 
             return Socialite::driver($provider)->redirect();
         } catch(\InvalidArgumentException $e) {
-            flash('Unable to authenticate via that provider.  Sorry!')->error();
-            return back();
+            return back()->withErrors('Unable to authenticate via that provider.  Sorry!');
         }
     }
 

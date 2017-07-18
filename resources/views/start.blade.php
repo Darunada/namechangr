@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="form-group">
-                            {!! Recaptcha::render() !!}
+                            {!! app('captcha')->display(); !!}
                         </div>
 
                         <div class="form-group">
