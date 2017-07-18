@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Laracasts\Flash\Flash;
 
 class RegisterController extends Controller
 {
@@ -81,5 +82,6 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         $user->notify(new UserRegistered());
+        Flash::success("Hi $user->name, Thank you for registering at NameChangr!");
     }
 }

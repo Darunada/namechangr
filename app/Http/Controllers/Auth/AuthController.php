@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Notifications\UserRegistered;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -50,13 +51,14 @@ class AuthController extends Controller
     public function handleProviderCallback(Request $request, $provider)
     {
         try {
+            /** @var \Laravel\Socialite\Two\User $socialUser */
             $socialUser = Socialite::driver($provider)->user();
         } catch(\InvalidArgumentException $e) {
             return redirect('login')->withErrors('Unable to authenticate via that provider!  Sorry!');
         }
 
         // check the database for a social account
-        $authorizedUser = UserSocialAccount::where('provider', $provider)->where('provider_uid', $socialUser->id)->first();
+        $authorizedUser = UserSocialAccount::where('provider', $provider)->where('provider_uid', $socialUser->getId())->first();
         if($authorizedUser) {
             Auth::loginUsingId($authorizedUser->user_id);
             flash('Logged in successfully!')->success();
@@ -64,7 +66,7 @@ class AuthController extends Controller
         } else {
             if (Auth::check()) {
                 // The user is logged in...
-                UserSocialAccount::create(['user_id'=>Auth::id(), 'provider'=>$provider, 'provider_uid'=>$socialUser->id]);
+                UserSocialAccount::create(['user_id'=>Auth::id(), 'provider'=>$provider, 'provider_uid'=>$socialUser->getId()]);
 
                 $redirect = 'dashboard';
                 if ($request->session()->has('oauth_redirect_url')) {
@@ -75,24 +77,28 @@ class AuthController extends Controller
                 return redirect($redirect);
             } else {
                 // check for the email?
-                if($socialUser->email) {
-                    $existingUser = User::where('email', $socialUser->email)->count();
+                if($socialUser->getEmail()) {
+                    $existingUser = User::where('email', $socialUser->getEmail())->count();
                     if($existingUser > 0) {
                         flash('It appears you have already created an account with another method.  Please log in before connecting your account to '.ucfirst($provider).'.')
                             ->error()->important();
                         return redirect('login');
                     } else {
                         // create a user
-                        $name = $socialUser->name;
-                        $email = $socialUser->email;
+                        $name = $socialUser->getName();
+                        $email = $socialUser->getEmail();
                         $newUser = User::create(compact('name', 'email'));
 
                         // store its social account
-                        UserSocialAccount::create(['user_id'=>$newUser->id, 'provider'=>$provider, 'provider_uid'=>$socialUser->id]);
+                        UserSocialAccount::create(['user_id'=>$newUser->id, 'provider'=>$provider, 'provider_uid'=>$socialUser->getId()]);
 
                         Auth::loginUsingId($newUser->id);
                         $newUser->notify(new UserRegistered());
                         flash('Account created successfully!')->success();
+
+                        event(new Registered($newUser));
+                        $newUser->notify(new UserRegistered());
+
                         return redirect('dashboard');
                     }
                 }
