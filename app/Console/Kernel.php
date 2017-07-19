@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
          */
         $schedule->call(function() {
             job(new DeleteExpiredFiles());
-        })->daily();
+        })->everyMinute(); // every minute = every time it runs
     }
 
     /**
