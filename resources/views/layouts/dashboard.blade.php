@@ -14,6 +14,9 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
+    <!-- Learn more about the creators! -->
+    <link type="text/plain" rel="author" href="/humans.txt" />
+    
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([

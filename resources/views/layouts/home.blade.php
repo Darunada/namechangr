@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     @include('partials.favicons')
-    <title>{{ config('app.name', 'Laravel') }} &mdash; @yield('title', "Pro Se Name Changes Made Easy")</title>
+    <title>{{ config('app.name', 'Laravel') }} &mdash; @yield('title', "Name And Gender Changes Made Easy")</title>
     <meta name="description" content="@yield('description', "Changing your legal name or gender has never been easier.  Sign up and generate your required paperwork for free.")">
     <meta name="keywords" content="@yield('keywords', "legal aid, how to change your name, how to legally change your name, social security name change, name change, legal name change, gender change, legal gender change, name and gender change, legal name and gender change, utah name change, utah gender change, transsexual, transgender, utah, transgender name change utah")">
 
