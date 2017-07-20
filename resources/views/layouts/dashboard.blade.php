@@ -16,7 +16,7 @@
 
     <!-- Learn more about the creators! -->
     <link type="text/plain" rel="author" href="/humans.txt" />
-    
+
     <!-- Scripts -->
     <script>
         window.Laravel = {!! json_encode([

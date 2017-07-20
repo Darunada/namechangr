@@ -4,6 +4,11 @@
     Twitter: @darunada
     From: Salt Lake City, Utah, United States
 
+/* THANK YOU */
+    Content Specialist: Emily Velasco
+    From: Los Angeles, California, United States
+    Designed UT instructions documents, Designed CA application process
+
 /* SITE */
     Site Name: NameChangr
     Site URL: https://www.namechangr.com
