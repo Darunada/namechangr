@@ -1,6 +1,12 @@
 
 @extends('layouts.home')
 
+@push('scripts')
+<script src="{{ asset('js/usmap/mapdata.js') }}"></script>
+<script src="{{ asset('js/usmap/usmap.js') }}"></script>
+@endpush
+
+
 @section('content')
     <div class="row">
         <div class="col-sm-12">
@@ -13,8 +19,25 @@
                     <p>Hi there, my name is Lea.</p>
                     <p>I think changing your legal name is way too difficult, so I made this tool to help you along the process.  This platform has been designed with trans people in mind, but it should work for anyone changing their legal name and/or gender!</p>
 
-                    <h2>Ready to get started?</h2>
-                    <p><a class="btn btn-primary" href="{{ route('register') }}">Register Now</a></p>
+                    <p>
+                        Currently we support Utah only, but are seeking collaborators to assist us in supporting additional states.
+                        If you are interested in our tool and can assist with simple data collection please contact us at <a href="mailto:hello@namechangr.com">hello@namechangr.com</a>!
+                    </p>
+
+                    <div class="text-center">
+                        <h2>States we support</h2>
+                        <figure id="supported-states-map-container">
+                            <div id="supported-states-map"></div>
+                            <figcaption>Click a supported state for more information!</figcaption>
+                        </figure>
+                        <p>Ready to get started?</p>
+                        <p>
+                            <a class="btn btn-primary" href="{{ route('register') }}">Register Now</a>
+                            <a class="btn btn-default" href="{{ route('login') }}">Log In</a>
+                        </p>
+                    </div>
+
+
                 </div>
             </div>
 

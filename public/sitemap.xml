@@ -4,11 +4,15 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
 
 <url>
   <loc>https://www.namechangr.com/</loc>
   <changefreq>daily</changefreq>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://www.namechangr.com/UT</loc>
+  <changefreq>weekly</changefreq>
   <priority>1.00</priority>
 </url>
 <url>
@@ -33,7 +37,6 @@
 </url>
 <url>
   <loc>https://www.namechangr.com/humans.txt</loc>
-  <lastmod>2017-07-16T23:22:33+00:00</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.80</priority>
 </url>

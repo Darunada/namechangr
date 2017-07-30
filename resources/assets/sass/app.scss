@@ -32,6 +32,19 @@
   color: darken($gray-lighter, 15%); // #c7c7c7
 }
 
+body[data-controller="HomeController"] {
+  #supported-states-map-container {
+    max-width:600px;
+    margin:0px auto;
+  }
+
+  #supported-states-map {
+    margin:0px auto;
+  }
+
+}
+
+
 body.application {
   background-color: white;
 }
