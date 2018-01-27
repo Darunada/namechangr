@@ -36,11 +36,20 @@ class NotifyAdminSubscriber
     }
 
     /**
+     * @return bool
+     */
+    private function shouldSend() {
+        return filter_var($this->adminEmail, FILTER_VALIDATE_EMAIL) == TRUE;
+    }
+
+    /**
      * Handle user register events.
      * @param Registered $event
      */
     public function onUserRegister(Registered $event) {
-        Mail::to($this->adminEmail)->queue(new UserRegistered($event->user));
+        if($this->shouldSend()) {
+            Mail::to($this->adminEmail)->queue(new UserRegistered($event->user));
+        }
     }
 
     /**
@@ -48,7 +57,9 @@ class NotifyAdminSubscriber
      * @param ApplicationFileGenerated $event
      */
     public function onApplicationGenerated(ApplicationFileGenerated $event) {
-        Mail::to($this->adminEmail)->queue(new ApplicationGenerated($event->file, $event->application));
+        if($this->shouldSend()) {
+            Mail::to($this->adminEmail)->queue(new ApplicationGenerated($event->file, $event->application));
+        }
     }
 
     /**

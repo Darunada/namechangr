@@ -15,10 +15,10 @@ class ApplicationFileGenerated extends Notification implements ShouldQueue
     use Queueable;
 
     /** @var Application */
-    protected $application;
+    public $application;
 
     /** @var File */
-    protected $applicationFile;
+    public $applicationFile;
 
     /**
      * Create a new notification instance.

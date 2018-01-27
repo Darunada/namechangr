@@ -19,7 +19,7 @@
                 >&times;</button>
             @endif
 
-            {!! $message['message'] !!}
+            {{ $message['message'] }}
         </div>
     @endif
 @endforeach

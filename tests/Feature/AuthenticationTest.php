@@ -114,15 +114,22 @@ class AuthenticationTest extends TestCase
     }
 
     public function testRegisteredEventSendsAdminNotification() {
+
+
         $user = factory(User::class)->create();
 
         Mail::fake();
 
         event(new Registered(($user)));
 
-        Mail::assertSent(UserRegisteredEmail::class, function (UserRegisteredEmail $mail) use ($user) {
-            return $mail->user->id === $user->id;
-        });
+        $adminEmail = config('mail.email');
+        if(filter_var($adminEmail, FILTER_VALIDATE_EMAIL) == true) {
+            Mail::assertSent(UserRegisteredEmail::class, function (UserRegisteredEmail $mail) use ($user) {
+                return $mail->user->id === $user->id;
+            });
+        } else {
+            Mail::assertNotSent(UserRegisteredEmail::class);
+        }
     }
 
     public function testUserCanVisitLogin()

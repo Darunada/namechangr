@@ -2,6 +2,7 @@
 
 namespace App\Models\Application;
 
+use App\Scopes\ActiveScope;
 use Carbon\Carbon;
 use Crypt;
 use Illuminate\Database\Eloquent\Model;
@@ -110,7 +111,7 @@ class Application extends Model
                 $class = $namespace.ucfirst($classShortName);
 
                 if(class_exists($class)) {
-                    $model = $class::where('id', $value)->first();
+                    $model = $class::withoutGlobalScope(ActiveScope::class)->where('id', $value)->first();
                     switch($classShortName) {
                         case 'county':
                         case 'district':
