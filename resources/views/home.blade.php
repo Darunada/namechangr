@@ -8,6 +8,14 @@
 
 
 @section('content')
+    <div class="alert alert-danger">
+        <h4>The Utah Sex Offender Registry form is out of date.</h4>
+        <p>
+            Do not use the form generated in the packet.  Instead, head to <a href="https://www.utcourts.gov/resources/forms/namechange/instruct.asp#forms">the Utah Court website</a> to get the updated form.
+            The forms are nearly identical but I know of at least one person who got the form back saying to try again with the updated version.
+            I will post again when the form is updated.  Sorry for the inconvenience!
+        </p>
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="panel panel-default">
