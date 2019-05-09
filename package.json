@@ -17,15 +17,15 @@
   "dependencies": {
     "axios": "^0.15.3",
     "bootbox": "^4.4.0",
-    "bootstrap-sass": "^3.3.7",
+    "bootstrap-sass": "^3.4.1",
     "bootstrap-social": "^5.1.1",
     "cross-env": "^3.2.3",
     "fontawesome": "^4.7.2",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "jquery-steps": "^1.1.0",
-    "jquery-validation": "^1.17.0",
-    "laravel-mix": "^2.0",
-    "raphael": "^2.2.7",
-    "underscore": "^1.8.3"
+    "jquery-validation": "^1.19.0",
+    "laravel-mix": "^2.1.14",
+    "raphael": "^2.2.8",
+    "underscore": "^1.9.1"
   }
 }
