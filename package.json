@@ -13,7 +13,12 @@
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "heroku-postbuild": "npm run production"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "resolve-url-loader": "^2.3.1",
+    "sass": "^1.20.1",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  },
   "dependencies": {
     "axios": "^0.15.3",
     "bootbox": "^4.4.0",
@@ -24,7 +29,7 @@
     "jquery": "^3.4.1",
     "jquery-steps": "^1.1.0",
     "jquery-validation": "^1.19.0",
-    "laravel-mix": "^2.1.14",
+    "laravel-mix": "^4.0.15",
     "raphael": "^2.2.8",
     "underscore": "^1.9.1"
   }
