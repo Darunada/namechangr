@@ -24,7 +24,6 @@
                     <span class="pull-right"><small>Published 6/26/2017</small></span>
                 </div>
                 <div class="panel-body">
-                    <p>Hi there, my name is Lea.</p>
                     <p>I think changing your legal name is way too difficult, so I made this tool to help you along the process.  This platform has been designed with trans people in mind, but it should work for anyone changing their legal name and/or gender!</p>
 
                     <p>

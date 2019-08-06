@@ -159,8 +159,8 @@
 
                     <p>You may contact us via email at <a href="hello@namechangr.com">hello@namechangr.com</a>.  For issues with the site, please open a <a href="https://github.com/Darunada/namechangr">Github Issue</a> instead.</p>
 
-                    <p>This document was last updated on July 16, 2017</p>
-                    <p>As of July 16, 2017, NameChangr has never received a National Security Letter, an order under the Foreign Intelligence Surveillance Act, or any other classified request for user information. If we ever receive such a request, we would seek to let the public know it existed.</p>
+                    <p>This document was last updated on August 5, 2019</p>
+                    <p>As of August 5, 2019, NameChangr has never received a National Security Letter, an order under the Foreign Intelligence Surveillance Act, or any other classified request for user information. If we ever receive such a request, we would seek to let the public know it existed.</p>
                 </div>
             </div>
         </div>

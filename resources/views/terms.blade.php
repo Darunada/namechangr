@@ -10,7 +10,7 @@
                 <div class="panel-body">
 
                     <h1>Terms of Service (&quot;Terms&quot;)</h1>
-                    <p>Last updated: June 16, 2017</p>
+                    <p>Last updated: August 5, 2019</p>
 
                     <h3>First and Foremost...</h3>
                     <p><strong>You recognize that I am just a friendly trazzle who cares and I am NOT A LAWYER, I do NOT represent you, and anything you learn here has no guarantee of accuracy or correctness of any kind.  That said, if you find a problem, please let me know!</strong></p>

@@ -25,6 +25,7 @@
             'csrfToken' => csrf_token()
         ]) !!};
     </script>
+    <script src="https://kit.fontawesome.com/bf314bb5d4.js"></script>
 </head>
 <body data-controller="{{ $controller }}" data-action="{{ $action }}">
     <div id="app">
@@ -33,27 +34,7 @@
         <div class="container">
             @include('partials.alerts')
             @yield('content')
-
-            <footer class="footer">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            Made with &lt;3 by <a href="https://twitter.com/Darunada">@darunada</a>.  Want to help me support more states?  <a href="https://github.com/Darunada/namechangr">Join me on Github</a>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="pull-right">
-                                <a href="{{ route('privacy') }}">Privacy Policy</a> | <a href="{{ route('terms') }}">Terms of Service</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-offset-8 col-sm-4">
-                            <div class="pull-right">
-                                <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}" alt="Certified Humans"/></a>
-                            </div>
-                        </div>
-                    </div>
-            </footer>
+            @include('partials.footer')
         </div>
     </div>
 
