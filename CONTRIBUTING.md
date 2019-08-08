@@ -2,9 +2,12 @@
 
 ### Thank you!
 
-Thank you for considering contributing to NameChangr. It's because of your help that we can support more state and document types for everyone!
+Thank you for considering contributing to NameChangr. It's because of your help that we can support more state and 
+document types for everyone!
 
-Following these guidelines helps to communicate that you respect the time of the developers managing and developing this open source project. In return, they should reciprocate that respect in addressing your issue, assessing changes, and helping you finalize your pull requests.
+Following these guidelines helps to communicate that you respect the time of the developers managing and developing 
+this open source project. In return, they should reciprocate that respect in addressing your issue, assessing changes, 
+and helping you finalize your pull requests.
 
 
 ### Where we need help
@@ -16,9 +19,11 @@ You can help by:
 * Creating State specific forms to gather data used in user interfaces [html, css knowledge]
 * Implementing back-end controller code for your state [technical]
 
-On top of this, any additional bug fixes, feature requests, or any ideas you might have are always welcome!  Just create a pull request or an issue.
+On top of this, any additional bug fixes, feature requests, or any ideas you might have are always welcome!  Just 
+create a pull request or an issue.
 
-Please, don't use the issue tracker for questions related to your specific case.  Consider asking around locally or finding an attorney for these kinds of problems.
+Please, don't use the issue tracker for questions related to your specific case.  Consider asking around locally 
+or finding an attorney for these kinds of problems.
 
 # Ground Rules
 
@@ -51,7 +56,8 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
     * Send a pull request
     * Obvious fixes may be accepted without any discussion, but larger changes may be discussed and changes requested of you.
 
-As a rule of thumb, changes are obvious fixes if they do not introduce any new functionality or creative thinking. As long as the change does not affect functionality, some likely examples include the following:
+As a rule of thumb, changes are obvious fixes if they do not introduce any new functionality or creative thinking. As 
+long as the change does not affect functionality, some likely examples include the following:
 * Spelling / grammar fixes
 * Typo correction, white space and formatting changes
 * Comment clean up
@@ -71,11 +77,13 @@ In order to determine whether you are dealing with a security issue, ask yoursel
 * Can I access something that's not mine, or something I shouldn't have access to?
 * Can I disable something for other people?
 
-If the answer to either of those two questions are "yes", then you're probably dealing with a security issue. Note that even if you answer "no" to both questions, you may still be dealing with a security issue, so if you're unsure, just email me at lea.rae.fairbanks@gmail.com.
+If the answer to either of those two questions are "yes", then you're probably dealing with a security issue. Note that 
+even if you answer "no" to both questions, you may still be dealing with a security issue, so if you're unsure, 
+just email me at lea.rae.fairbanks@gmail.com.
 
 ### Bug Reports
 
-When filing an issue, make sure to answer these five questions as relavent:
+When filing an issue, make sure to answer these five questions as relevant:
 
 1. What version of PHP are you using?
 2. What operating system and processor architecture are you using?
@@ -85,12 +93,18 @@ When filing an issue, make sure to answer these five questions as relavent:
 
 # How to suggest a feature or enhancement
 
-The goal of NameChangr is to help trans and gender-nonconforming people generate their legal name and/or gender change paperwork quickly, easily, and for free.  In addition to generating the paperwork, we provide them a better idea of what to expect with a walkthrough of the process.
+The goal of NameChangr is to help trans and gender-nonconforming people generate their legal name and/or gender 
+change paperwork quickly, easily, and for free.  In addition to generating the paperwork, we provide them a better 
+idea of what to expect with a walk-through of the process.
 
-If you find yourself wishing for a feature that doesn't exist in NameChangr, you are probably not alone. There are bound to be others out there with similar needs.  Open an issue on our issues list on GitHub which describes the feature you would like to see, why you need it, and how it should work.
+If you find yourself wishing for a feature that doesn't exist in NameChangr, you are probably not alone. There are
+bound to be others out there with similar needs.  Open an issue on our issues list on GitHub which describes the 
+feature you would like to see, why you need it, and how it should work.
 
 # Code review process
-I try to look at Pull Requests on a regular basis. If they are well tested, work, look nice, and merge easily, they will probably be released right away!
+I try to look at Pull Requests on a regular basis. If they are well tested, work, look nice, and merge easily, 
+they will probably be released right away!
 
 # Community
-NameChangr is an ambitious project and I am starting it by myself.  If you would like to become a contributor and assist with operation of the site, please contact me at lea.rae.fairbanks@gmail.com. 
+NameChangr is an ambitious project and I am starting it by myself.  If you would like to become a 
+contributor and assist with operation of the site, please contact me at lea.rae.fairbanks@gmail.com. 
