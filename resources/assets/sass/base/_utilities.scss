@@ -1,0 +1,265 @@
+// padding
+.p {
+  @include respond(phone) {
+    padding: 0.25em;
+  }
+  @include respond(tab-port) {
+    padding: 0.5em;
+  }
+  @include respond(tab-land) {
+    padding: 1em;
+  }
+  @include respond(desktop) {
+    padding: 1.5em;
+  }
+  @include respond(big-desktop) {
+    padding: 3em;
+  }
+}
+
+// padding-left-right
+.p-x {
+  @include respond(phone) {
+    padding: 0 0.25em;
+  }
+  @include respond(tab-port) {
+    padding: 0 0.5em;
+  }
+  @include respond(tab-land) {
+    padding: 0 1em;
+  }
+  @include respond(desktop) {
+    padding: 0 1.5em;
+  }
+  @include respond(big-desktop) {
+    padding: 0 3em;
+  }
+}
+
+// padding-top-bottom
+.p-y {
+  @include respond(phone) {
+    padding: 0.25em 0;
+  }
+  @include respond(tab-port) {
+    padding: 0.5em 0;
+  }
+  @include respond(tab-land) {
+    padding: 1em 0;
+  }
+  @include respond(desktop) {
+    padding: 1.5em 0;
+  }
+  @include respond(big-desktop) {
+    padding: 3em 0;
+  }
+}
+
+// padding-top
+.p-t {
+  @include respond(phone) {
+    padding-top: 0.25em;
+  }
+  @include respond(tab-port) {
+    padding-top: 0.5em;
+  }
+  @include respond(tab-land) {
+    padding-top: 1em;
+  }
+  @include respond(desktop) {
+    padding-top: 1.5em;
+  }
+  @include respond(big-desktop) {
+    padding-top: 3em;
+  }
+}
+
+// padding-right
+.p-r {
+  @include respond(phone) {
+    padding-right: 0.25em;
+  }
+  @include respond(tab-port) {
+    padding-right: 0.5em;
+  }
+  @include respond(tab-land) {
+    padding-right: 1em;
+  }
+  @include respond(desktop) {
+    padding-right: 1.5em;
+  }
+  @include respond(big-desktop) {
+    padding-right: 3em;
+  }
+}
+
+// padding-battom
+.p-b {
+  @include respond(phone) {
+    padding-bottom: 0.25em;
+  }
+  @include respond(tab-port) {
+    padding-bottom: 0.5em;
+  }
+  @include respond(tab-land) {
+    padding-bottom: 1em;
+  }
+  @include respond(desktop) {
+    padding-bottom: 1.5em;
+  }
+  @include respond(big-desktop) {
+    padding-bottom: 3em;
+  }
+}
+
+// padding-left
+.p-l {
+  @include respond(phone) {
+    padding-left: 0.25em;
+  }
+  @include respond(tab-port) {
+    padding-left: 0.5em;
+  }
+  @include respond(tab-land) {
+    padding-left: 1em;
+  }
+  @include respond(desktop) {
+    padding-left: 1.5em;
+  }
+  @include respond(big-desktop) {
+    padding-left: 3em;
+  }
+}
+
+// margin
+.m {
+  @include respond(phone) {
+    margin: 0.25em;
+  }
+  @include respond(tab-port) {
+    margin: 0.5em;
+  }
+  @include respond(tab-land) {
+    margin: 1em;
+  }
+  @include respond(desktop) {
+    margin: 1.5em;
+  }
+  @include respond(big-desktop) {
+    margin: 3em;
+  }
+}
+
+// margin-right
+.m-x {
+  @include respond(phone) {
+    margin: 0 0.25em;
+  }
+  @include respond(tab-port) {
+    margin: 0 0.5em;
+  }
+  @include respond(tab-land) {
+    margin: 0 1em;
+  }
+  @include respond(desktop) {
+    margin: 0 1.5em;
+  }
+  @include respond(big-desktop) {
+    margin: 0 3em;
+  }
+}
+
+// margin-top-bottom
+.m-y {
+  @include respond(phone) {
+    margin: 0.25em 0;
+  }
+  @include respond(tab-port) {
+    margin: 0.5em 0;
+  }
+  @include respond(tab-land) {
+    margin: 1em 0;
+  }
+  @include respond(desktop) {
+    margin: 1.5em 0;
+  }
+  @include respond(big-desktop) {
+    margin: 3em 0;
+  }
+}
+
+// margin-top
+.m-t {
+  @include respond(phone) {
+    margin-top: 0.25em;
+  }
+  @include respond(tab-port) {
+    margin-top: 0.5em;
+  }
+  @include respond(tab-land) {
+    margin-top: 1em;
+  }
+  @include respond(desktop) {
+    margin-top: 1.5em;
+  }
+  @include respond(big-desktop) {
+    margin-top: 3em;
+  }
+}
+
+// margin-right
+.m-r {
+  @include respond(phone) {
+    margin-right: 0.25em;
+  }
+  @include respond(tab-port) {
+    margin-right: 0.5em;
+  }
+  @include respond(tab-land) {
+    margin-right: 1em;
+  }
+  @include respond(desktop) {
+    margin-right: 1.5em;
+  }
+  @include respond(big-desktop) {
+    margin-right: 3em;
+  }
+}
+
+// margin-bottom
+.m-b {
+  @include respond(phone) {
+    margin-bottom: 0.25em;
+  }
+  @include respond(tab-port) {
+    margin-bottom: 0.5em;
+  }
+  @include respond(tab-land) {
+    margin-bottom: 1em;
+  }
+  @include respond(desktop) {
+    margin-bottom: 1.5em;
+  }
+  @include respond(big-desktop) {
+    margin-bottom: 3em;
+  }
+}
+
+// margin-left
+.m-l {
+  @include respond(phone) {
+    margin-left: 0.25em;
+  }
+  @include respond(tab-port) {
+    margin-left: 0.5em;
+  }
+  @include respond(tab-land) {
+    margin-left: 1em;
+  }
+  @include respond(desktop) {
+    margin-left: 1.5em;
+  }
+  @include respond(big-desktop) {
+    margin-left: 3em;
+  }
+}
