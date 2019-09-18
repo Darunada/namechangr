@@ -39,8 +39,8 @@
                         </figure>
                         <p>Ready to get started?</p>
                         <p>
-                            <a class="btn btn-primary" href="{{ route('register') }}">Register Now</a>
-                            <a class="btn btn-default" href="{{ route('login') }}">Log In</a>
+                            <a class="btn btn-primary m-x" href="{{ route('register') }}">Register Now</a>
+                            <a class="btn btn-default m-x" href="{{ route('login') }}">Log In</a>
                         </p>
                     </div>
 
