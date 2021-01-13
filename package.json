@@ -27,7 +27,7 @@
     "cross-env": "^3.2.3",
     "jquery": "^3.4.1",
     "jquery-steps": "^1.1.0",
-    "jquery-validation": "^1.19.0",
+    "jquery-validation": "^1.19.3",
     "laravel-mix": "^4.0.15",
     "raphael": "^2.2.8",
     "underscore": "^1.9.1"
