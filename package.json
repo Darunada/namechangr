@@ -30,6 +30,6 @@
     "jquery-validation": "^1.19.0",
     "laravel-mix": "^4.0.15",
     "raphael": "^2.2.8",
-    "underscore": "^1.9.1"
+    "underscore": "^1.12.1"
   }
 }
