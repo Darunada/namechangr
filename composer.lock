@@ -2657,16 +2657,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.18",
+            "version": "v2.0.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db"
+                "reference": "0f1f60250fccffeaf5dda91eea1c018aed1adc2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
-                "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/0f1f60250fccffeaf5dda91eea1c018aed1adc2a",
+                "reference": "0f1f60250fccffeaf5dda91eea1c018aed1adc2a",
                 "shasum": ""
             },
             "require": {
@@ -2702,7 +2702,12 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2019-01-03T20:59:08+00:00"
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/random_compat/issues",
+                "source": "https://github.com/paragonie/random_compat"
+            },
+            "time": "2021-04-17T09:33:01+00:00"
         },
         {
             "name": "pclzip/pclzip",
@@ -2898,16 +2903,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.21",
+            "version": "2.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "9f1287e68b3f283339a9f98f67515dd619e5bf9d"
+                "reference": "fb53b7889497ec7c1362c94e61d8127ac67ea094"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/9f1287e68b3f283339a9f98f67515dd619e5bf9d",
-                "reference": "9f1287e68b3f283339a9f98f67515dd619e5bf9d",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/fb53b7889497ec7c1362c94e61d8127ac67ea094",
+                "reference": "fb53b7889497ec7c1362c94e61d8127ac67ea094",
                 "shasum": ""
             },
             "require": {
@@ -2915,8 +2920,7 @@
             },
             "require-dev": {
                 "phing/phing": "~2.7",
-                "phpunit/phpunit": "^4.8.35|^5.7|^6.0",
-                "sami/sami": "~2.0",
+                "phpunit/phpunit": "^4.8.35|^5.7|^6.0|^9.4",
                 "squizlabs/php_codesniffer": "~2.0"
             },
             "suggest": {
@@ -2986,7 +2990,25 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2019-07-12T12:53:49+00:00"
+            "support": {
+                "issues": "https://github.com/phpseclib/phpseclib/issues",
+                "source": "https://github.com/phpseclib/phpseclib/tree/2.0.33"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/terrafrost",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/phpseclib",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpseclib/phpseclib",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-08-16T04:20:12+00:00"
         },
         {
             "name": "predis/predis",
