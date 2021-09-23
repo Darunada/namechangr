@@ -20,11 +20,6 @@ mix.sass('resources/assets/sass/app.scss', 'public/css');
 
 mix.copyDirectory('resources/assets/favicons', 'public/favicons');
 
-if (mix.config.inProduction) {
-    mix.version();
-} else {
-    mix.sourceMaps()
-}
-
+mix.version().sourceMaps(false);
 
 
