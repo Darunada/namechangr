@@ -40,10 +40,12 @@ class DashboardController extends Controller
     }
 
     public function spawnApplication(Request $request) {
-        $this->validate($request, [
-            'g-recaptcha-response' => 'required|captcha',
-            'state_id' => 'required|exists:states,id',
-        ]);
+        $rules = ['state_id' => 'required|exists:states,id'];
+        if(config('captcha.enabled', true)) {
+            $rules['g-recaptcha-response'] = 'required|captcha';
+        }
+
+        $this->validate($request, $rules);
 
         $application = new Application($request->input());
         $application->user_id = Auth::id();

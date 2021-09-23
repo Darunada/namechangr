@@ -14,6 +14,7 @@
         "greggilbert/recaptcha": "^2.2",
         "guzzlehttp/guzzle": "^6.3",
         "intouch/laravel-newrelic": "~2.0",
+        "kylekatarnls/update-helper": "^1.2.1",
         "laracasts/flash": "3.0.2",
         "laravel/framework": "5.4.*",
         "laravel/passport": "^3.0",
@@ -25,7 +26,6 @@
         "predis/predis": "^1.1"
     },
     "require-dev": {
-
         "barryvdh/laravel-ide-helper": "^2.3",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
@@ -69,6 +69,6 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": false
     }
 }
