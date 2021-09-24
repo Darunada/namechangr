@@ -5,7 +5,10 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
+        "php": ">=7.0",
+        "ext-mysqli": "*",
+        "ext-sqlite3": "*",
+        "ext-zip": "*",
         "adrianmejias/laravel-states": "^1.2",
         "anhskohbo/no-captcha": "^2.3",
         "barryvdh/laravel-debugbar": "^2.4",
@@ -69,6 +72,6 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": false
+        "optimize-autoloader": true
     }
 }
