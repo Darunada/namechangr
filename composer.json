@@ -5,8 +5,9 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.0",
-        "ext-mysqli": "*",
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-mysql": "*",
         "ext-sqlite3": "*",
         "ext-zip": "*",
         "adrianmejias/laravel-states": "^1.2",
@@ -31,7 +32,7 @@
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.3",
         "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "0.9.*",
+        "mockery/mockery": "^1.0",
         "phpunit/phpunit": "~5.7"
     },
     "autoload": {
