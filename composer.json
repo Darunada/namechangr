@@ -13,17 +13,17 @@
         "ext-zip": "*",
         "adrianmejias/laravel-states": "^1.2",
         "anhskohbo/no-captcha": "^3.3",
-        "barryvdh/laravel-debugbar": "^2.4",
+        "barryvdh/laravel-debugbar": "^3.0",
         "doctrine/dbal": "^2.13",
-        "fideloper/proxy": "~3.3",
+        "fideloper/proxy": "^4.0",
         "greggilbert/recaptcha": "^2.2",
         "guzzlehttp/guzzle": "^6.0",
         "intouch/laravel-newrelic": "~2.0",
         "laracasts/flash": "^3.0",
-        "laravel/framework": "5.5.49",
-        "laravel/passport": "~4.0",
+        "laravel/framework": "5.6.*",
+        "laravel/passport": "^6.0",
         "laravel/socialite": "^3.0",
-        "laravel/tinker": "~1.0",
+        "laravel/tinker": "^1.0",
         "league/flysystem-aws-s3-v3": "~1.0",
         "mikehaertl/phpwkhtmltopdf": "^2.5",
         "phpoffice/phpword": "^0.18.0",
@@ -32,10 +32,11 @@
     "require-dev": {
         "ext-sqlite3": "*",
         "barryvdh/laravel-ide-helper": "^2.3",
-        "filp/whoops": "~2.0",
+        "filp/whoops": "^2.0",
         "fzaninotto/faker": "~1.9",
         "mockery/mockery": "^1.0",
-        "phpunit/phpunit": "~6.0"
+        "nunomaduro/collision": "^2.0",
+        "phpunit/phpunit": "^7.0"
     },
     "autoload": {
         "classmap": [
@@ -82,5 +83,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

@@ -6,6 +6,7 @@ use App\Models\Application\Application;
 use App\User;
 use App\UserSocialAccount;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -25,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // fix for mysql
         Schema::defaultStringLength(191);
+
+        // Hold bootstrap back to version 3
+        Paginator::useBootstrapThree();
 
         // force https in production
         // because of cloudflare (flexible ssl) and heroku headers, https is not detected
