@@ -29,8 +29,6 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/dashboard';
 
-    protected $flash;
-
     /**
      * Create a new controller instance.
      */
@@ -41,6 +39,6 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        flash()->success('You have been logged in!');
+        flash('You have been logged in!')->success();
     }
 }

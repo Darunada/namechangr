@@ -12,17 +12,22 @@ use Laracasts\Flash\Flash;
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of the exception types that should not be reported.
+     * A list of the exception types that are not be reported.
      *
      * @var array
      */
     protected $dontReport = [
-        \Illuminate\Auth\AuthenticationException::class,
-        \Illuminate\Auth\Access\AuthorizationException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-        TokenMismatchException::class,
-        \Illuminate\Validation\ValidationException::class,
+        //
+    ];
+
+    /**
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array
+     */
+    protected $dontFlash = [
+        'password',
+        'password_confirmation'
     ];
 
     /**
@@ -30,7 +35,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -47,8 +52,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-
-
         if  (Auth::guest()) {
             if ($exception instanceof TokenMismatchException) {
                 Flash::warning('Your session has expired. Please try again.');
@@ -60,7 +63,7 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Convert an authentication exception into an unauthenticated response.
+     * Convert an authentication exception into a response.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Illuminate\Auth\AuthenticationException  $exception
@@ -70,7 +73,7 @@ class Handler extends ExceptionHandler
     {
         // when the user is not logged in but should be.
         // we render the failed response
-        // NOTE: this is different than a permission denied for a logged in user!
+        // NOTE: this is different from a permission denied for a logged-in user!
 
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);

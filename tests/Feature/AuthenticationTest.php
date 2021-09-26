@@ -13,12 +13,11 @@ use Notification;
 use Socialite;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthenticationTest extends TestCase
 {
-    use DatabaseMigrations;
+    use RefreshDatabase;
 
     public function testUserCanVisitRegister()
     {
@@ -124,11 +123,11 @@ class AuthenticationTest extends TestCase
 
         $adminEmail = config('mail.email');
         if(filter_var($adminEmail, FILTER_VALIDATE_EMAIL) == true) {
-            Mail::assertSent(UserRegisteredEmail::class, function (UserRegisteredEmail $mail) use ($user) {
+            Mail::assertQueued(UserRegisteredEmail::class, function (UserRegisteredEmail $mail) use ($user) {
                 return $mail->user->id === $user->id;
             });
         } else {
-            Mail::assertNotSent(UserRegisteredEmail::class);
+            Mail::assertNotQueued(UserRegisteredEmail::class);
         }
     }
 

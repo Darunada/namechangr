@@ -1,52 +1,40 @@
 
 // Fonts
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,400,600');
 
 // Variables
-@import "variables";
+@import 'variables';
 
 // Bootstrap
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
-@import "node_modules/font-awesome/scss/font-awesome.scss";
-@import "node_modules/bootstrap-social/bootstrap-social.scss";
+@import 'node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+@import 'node_modules/font-awesome/scss/font-awesome.scss';
+@import 'node_modules/bootstrap-social/bootstrap-social.scss';
 
 // Vendor Libraries
-@import "components/steps";
-@import "components/lovely";
-@import "components/callout";
-@import "components/duplicatable-input-group";
+@import 'components/steps';
+@import 'components/lovely';
+@import 'components/callout';
+@import 'components/duplicatable-input-group';
 
 // mixins
-@import "abstracts/mixins";
+@import 'abstracts/mixins';
 
 // utilities
-@import "base/utilities";
+@import 'base/utilities';
 
-
-//.form-row [class^="col-"]:not(:last-of-type) .form-group {
-//  margin-right: -$form-group-margin-bottom / 2;
-//}
-//
-//.form-row [class^="col-"]:not(:first-of-type) .form-group {
-//  margin-left: -$form-group-margin-bottom / 2;
-//}
-
-//footer.footer {
-//  margin-top:50px;
-//}
 
 .text-very-muted {
   color: darken($gray-lighter, 15%); // #c7c7c7
 }
 
-body[data-controller="HomeController"] {
+body[data-controller='HomeController'] {
   #supported-states-map-container {
     max-width:600px;
-    margin:0px auto;
+    margin:0 auto;
   }
 
   #supported-states-map {
-    margin:0px auto;
+    margin:0 auto;
   }
 
 }
@@ -62,12 +50,12 @@ footer.footer {
 
 select.loading::before {
   font-family: FontAwesome;
-  content: "\f110";
+  content: '\f110';
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
 }
 
-.location-block input[type="radio"] {
+.location-block input[type='radio'] {
   margin-top: -1px;
   vertical-align: middle;
   height: 100%;

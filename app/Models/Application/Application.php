@@ -18,7 +18,6 @@ class Application extends Model
     protected $casts = [
         'name_change' => 'boolean',
         'gender_change' => 'boolean',
-        'data' => 'array',
         'is_generating_documents' => 'boolean'
     ];
 

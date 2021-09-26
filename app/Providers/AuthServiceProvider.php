@@ -30,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // oauth token routes
-        Passport::cookie('namechangr_token');
+        Passport::cookie(config('session.token_cookie'));
         Passport::routes();
 
         //

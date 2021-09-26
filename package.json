@@ -23,7 +23,7 @@
     "bootbox": "^4.4.0",
     "bootstrap-sass": "^3.4.1",
     "bootstrap-social": "^5.1.1",
-    "cross-env": "^3.2.3",
+    "cross-env": "^5.1",
     "jquery": "^3.4.1",
     "jquery-steps": "^1.1.0",
     "jquery-validation": "^1.19.0",

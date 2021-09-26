@@ -19,7 +19,7 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            Flash::info("You are already logged in!");
+            flash("You are already logged in!")->info();
             return redirect()->route('dashboard');
         }
 
