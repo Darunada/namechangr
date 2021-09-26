@@ -47,14 +47,16 @@ class File extends Model
     /**
      * All files belong to a user
      */
-    function user() {
+    function user()
+    {
         return $this->belongsTo('App\User');
     }
 
     /**
      * all files belong to an application
      */
-    function application() {
+    function application()
+    {
         return $this->belongsTo('App\Models\Application\Application');
     }
 }

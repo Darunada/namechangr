@@ -26,7 +26,7 @@ trait StoresGeneratedFiles
     {
         $path = Storage::putFile('applications', new SystemFile($template), 'private');
 
-        $file =  new File();
+        $file = new File();
         $file->user_id = $application->user_id;
         $file->application_id = $application->id;
         $file->path = $path;

@@ -12,10 +12,12 @@
                     <div class="bs-callout bs-callout-info">
                         <h4>Common Sense Privacy Policy</h4>
                         <p>
-                            You can use this service free of charge.  We use cookies to track your user account and login information.  We store your name and gender change application data in an encrypted format in our database.  You are safe with us.
+                            You can use this service free of charge. We use cookies to track your user account and login information. We
+                            store your name and gender change application data in an encrypted format in our database. You are safe with us.
                         </p>
                         <p>
-                            You may audit the security of this site yourself by visiting me on <a href="https://github.com/Darunada/namechangr">Github</a>.
+                            You may audit the security of this site yourself by visiting me on <a
+                                href="https://github.com/Darunada/namechangr">Github</a>.
                             If you find a security issue, please <a href="mailto:hello@namechangr.com">Email Me</a>
                         </p>
                     </div>
@@ -157,10 +159,13 @@
                     <p>If you have any questions about this Privacy Policy, the practices of this site, or your dealings
                         with this site, please contact us.</p>
 
-                    <p>You may contact us via email at <a href="hello@namechangr.com">hello@namechangr.com</a>.  For issues with the site, please open a <a href="https://github.com/Darunada/namechangr">Github Issue</a> instead.</p>
+                    <p>You may contact us via email at <a href="hello@namechangr.com">hello@namechangr.com</a>. For issues with the site,
+                        please open a <a href="https://github.com/Darunada/namechangr">Github Issue</a> instead.</p>
 
                     <p>This document was last updated on August 5, 2019</p>
-                    <p>As of August 5, 2019, NameChangr has never received a National Security Letter, an order under the Foreign Intelligence Surveillance Act, or any other classified request for user information. If we ever receive such a request, we would seek to let the public know it existed.</p>
+                    <p>As of August 5, 2019, NameChangr has never received a National Security Letter, an order under the Foreign
+                        Intelligence Surveillance Act, or any other classified request for user information. If we ever receive such a
+                        request, we would seek to let the public know it existed.</p>
                 </div>
             </div>
         </div>

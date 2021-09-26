@@ -1,7 +1,8 @@
 <footer class="footer">
     <div class="row">
         <div class="col-sm-8">
-            NameChangr is an active open source project. Would you like to contribute? <a href="https://github.com/Darunada/namechangr">Join us on Github</a>
+            NameChangr is an active open source project. Would you like to contribute? <a href="https://github.com/Darunada/namechangr">Join
+                us on Github</a>
         </div>
 
         <div class="col-sm-4">
@@ -17,7 +18,8 @@
         </div>
         <div class="col-sm-4">
             <div class="pull-right">
-                <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}" alt="Certified Humans"/></a>
+                <a href="{{ url('/humans.txt') }}" title="Certified Humans"><img src="{{ asset('images/humanstxt.gif') }}"
+                                                                                 alt="Certified Humans"/></a>
             </div>
         </div>
     </div>

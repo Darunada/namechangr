@@ -6,14 +6,14 @@ use App\Models\Application\Application;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 
 class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->user = factory(User::class)->create();
@@ -21,7 +21,8 @@ class UserTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    public function testCanVisitStaticPages() {
+    public function testCanVisitStaticPages()
+    {
         $this->get('/')
             ->assertStatus(200)->assertSee('logout');
         $this->get('/privacy')
@@ -44,16 +45,17 @@ class UserTest extends TestCase
             ->assertStatus(200);
     }
 
-    public function testCanUpdateProfile() {
+    public function testCanUpdateProfile()
+    {
         $user = User::find($this->user->id); // $user = $this->user; doesn't work...
-        $newData = factory(User::class)->make(['name'=>'Different Name', 'email'=>'different@email.com']);
+        $newData = factory(User::class)->make(['name' => 'Different Name', 'email' => 'different@email.com']);
 
         $this->get('/profile');
 
         $this->post('/profile', [
-                'name' => $newData->name,
-                'email'=>$user->email
-            ])->assertRedirect('/profile')->assertSessionHas('flash_notification');
+            'name' => $newData->name,
+            'email' => $user->email
+        ])->assertRedirect('/profile')->assertSessionHas('flash_notification');
 
         $updatedUser = User::find($user->id)->first();
         self::assertNotEquals($user->name, $updatedUser->name);
@@ -61,7 +63,7 @@ class UserTest extends TestCase
 
         $this->post('/profile', [
             'name' => $user->name,
-            'email'=>$newData->email
+            'email' => $newData->email
         ])->assertRedirect('/profile')->assertSessionHas('flash_notification');
 
         $updatedUser = User::find($user->id);
@@ -70,23 +72,24 @@ class UserTest extends TestCase
 
         $this->post('/profile', [
             'name' => $user->name,
-            'email'=>$user->email,
-            'password'=>'newpassword',
-            'password_confirmation'=>'newpassword'
+            'email' => $user->email,
+            'password' => 'newpassword',
+            'password_confirmation' => 'newpassword'
         ])->assertRedirect('/profile')->assertSessionHas('flash_notification');
 
         $updatedUser = User::find($user->id);
         self::assertNotEquals($user->password, $updatedUser->password);
     }
 
-    public function testInvalidProfileUpdatesAreBlocked() {
+    public function testInvalidProfileUpdatesAreBlocked()
+    {
         $user = User::find($this->user->id); // $user = $this->user; doesn't work...
 
         $this->get('/profile');
 
         $this->post('/profile', [
             'name' => '',
-            'email'=>$user->email
+            'email' => $user->email
         ])->assertRedirect('/profile')->assertSessionHasErrors();
 
         $updatedUser = User::find($user->id);
@@ -94,7 +97,7 @@ class UserTest extends TestCase
 
         $this->post('/profile', [
             'name' => $user->name,
-            'email'=> 'invalid'
+            'email' => 'invalid'
         ])->assertRedirect('/profile')->assertSessionHasErrors();
 
         $updatedUser = User::find($user->id);
@@ -102,7 +105,7 @@ class UserTest extends TestCase
 
         $this->post('/profile', [
             'name' => $user->name,
-            'email'=> $user->email,
+            'email' => $user->email,
             'password' => 'thispassword',
             'password_confirmation' => 'doesntmatch'
         ])->assertRedirect('/profile')->assertSessionHasErrors();
@@ -112,12 +115,13 @@ class UserTest extends TestCase
     }
 
 
-    public function testCanVisitTheirApplication() {
+    public function testCanVisitTheirApplication()
+    {
         $this->seed('TestingDatabaseSeeder');
 
-        $application = factory(Application::class)->create(['user_id'=>$this->user->id]);
+        $application = factory(Application::class)->create(['user_id' => $this->user->id]);
 
-        $this->get('/UT/'.$application->id)
+        $this->get('/UT/' . $application->id)
             ->assertStatus(200);
     }
 }

@@ -3,12 +3,12 @@
 namespace App\Jobs;
 
 use App\Events\ApplicationFileDeleted;
-use App\Models\Application\File AS ApplicationFile;
+use App\Models\Application\File as ApplicationFile;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Storage;
 
 class DeleteApplicationFile implements ShouldQueue

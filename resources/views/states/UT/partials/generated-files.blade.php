@@ -20,7 +20,8 @@
                 {{ $file->expired_at->format('m/d/Y g:i a') }}</td>
             </td>
             <td>
-                <a href="{{ route('states.UT.download', ['application'=>$application, 'application_file'=>$file]) }}" title="Download" download><i class="fa fa-download"></i> Download</a>
+                <a href="{{ route('states.UT.download', ['application'=>$application, 'application_file'=>$file]) }}" title="Download"
+                   download><i class="fa fa-download"></i> Download</a>
                 <a href="#" title="Delete" class="btn-confirm delete-file-btn" data-file-id="{{ $file->id }}"
                    data-after-confirm="window.delete_file({{ $file->id }});"><i class="fa fa-remove"></i> Delete</a>
             </td>

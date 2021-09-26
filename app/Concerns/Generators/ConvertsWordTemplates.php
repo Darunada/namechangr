@@ -14,7 +14,8 @@ trait ConvertsWordTemplates
      * @param string $type
      * @return string
      */
-    protected function getParsedTemplateAs($application, $type) {
+    protected function getParsedTemplateAs($application, $type)
+    {
         $template = $this->getParsedTemplate($application);
 
         $phpWord = IOFactory::load($template);

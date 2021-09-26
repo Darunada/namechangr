@@ -56,7 +56,8 @@ class State extends Model
     /**
      * States have 1..n locations through counties
      */
-    public function locations() {
+    public function locations()
+    {
         return $this->hasManyThrough('App\Models\Court\Location', 'App\Models\Location\County');
     }
 
@@ -64,7 +65,8 @@ class State extends Model
      *
      * @return string
      */
-    public function code() {
+    public function code()
+    {
         return $this->iso_3166_2;
     }
 }

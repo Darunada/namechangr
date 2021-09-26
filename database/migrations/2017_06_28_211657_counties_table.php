@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CountiesTable extends Migration
 {
@@ -14,8 +14,7 @@ class CountiesTable extends Migration
     public function up()
     {
         // Creates the counties table
-        Schema::create('counties', function($table)
-        {
+        Schema::create('counties', function ($table) {
             /** @var $table Blueprint */
             $table->increments('id');
             $table->integer('state_id')->unsigned()->index();

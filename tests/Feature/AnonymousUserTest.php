@@ -3,17 +3,16 @@
 namespace Tests\Feature;
 
 use App\Models\Application\Application;
-use App\User;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AnonymousUserTest extends TestCase
 {
 
     use RefreshDatabase;
 
-    public function testCanVisitStaticPages() {
+    public function testCanVisitStaticPages()
+    {
         $this->get('/')->assertStatus(200);
         $this->get('/privacy')->assertStatus(200);
         $this->get('/terms')->assertStatus(200);
@@ -32,15 +31,15 @@ class AnonymousUserTest extends TestCase
             ->assertRedirect('/login')->assertSessionHas('flash_notification');
     }
 
-    public function testCantVisitApplication() {
+    public function testCantVisitApplication()
+    {
         $this->seed('TestingDatabaseSeeder');
 
         $application = factory(Application::class)->create();
 
-        $this->get('/UT/'.$application->id)
+        $this->get('/UT/' . $application->id)
             ->assertRedirect('/login')->assertSessionHas('flash_notification');
     }
-
 
 
 }

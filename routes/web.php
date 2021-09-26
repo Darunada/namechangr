@@ -34,8 +34,7 @@ Route::get('/UT', 'States\UtController@index')->name('states.UT');
 /**
  * User Must Log In For These
  */
-Route::group(['middleware'=>'auth'], function() {
-
+Route::group(['middleware' => 'auth'], function () {
     /**
      * The heart of the site
      */
@@ -56,10 +55,8 @@ Route::group(['middleware'=>'auth'], function() {
      */
 
 
-
-
     // must be able to view applications
-    Route::group(['middleware'=>'can:view,application'], function() {
+    Route::group(['middleware' => 'can:view,application'], function () {
         // instructions document
         Route::get('/UT/instructions', 'States\UtController@instructions')
             ->name('states.UT.instructions');
@@ -76,6 +73,4 @@ Route::group(['middleware'=>'auth'], function() {
         Route::get('/UT/{application}/download/{application_file}', 'States\UtController@download_file')
             ->name('states.UT.download');
     });
-
-
 }); // end of user must be logged in

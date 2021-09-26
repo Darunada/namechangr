@@ -1,4 +1,3 @@
-
 @section('title', 'Start Your Application')
 @extends('layouts.dashboard')
 

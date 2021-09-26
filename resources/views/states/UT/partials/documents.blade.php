@@ -1,4 +1,3 @@
-
 <hr/>
 
 
@@ -15,7 +14,7 @@
             <i class="fa fa-file-o"></i> Download Cover Sheet
         </a>
 
-        <p>Sorry, you need to print and fill out the cover sheet separately from the generator.  I am working on it...</p>
+        <p>Sorry, you need to print and fill out the cover sheet separately from the generator. I am working on it...</p>
     </div>
 </div>
 
@@ -34,11 +33,11 @@
         @endif
 
         {{--<a href="#" class="btn btn-lg btn-default generate-application-btn disabled" data-type="pdf" disabled>--}}
-            {{--<i class="fa fa-file-pdf-o"></i> Download PDF--}}
+        {{--<i class="fa fa-file-pdf-o"></i> Download PDF--}}
         {{--</a>--}}
 
         {{--<a href="#" class="btn btn-lg btn-default generate-application-btn disabled" data-type="html" disabled>--}}
-            {{--<i class="fa fa-html5"></i> Download HTML--}}
+        {{--<i class="fa fa-html5"></i> Download HTML--}}
         {{--</a>--}}
 
     </div>
@@ -47,7 +46,7 @@
 <div class="row form-row" id="documents-generating-row" {!! $application->is_generating_documents?'':'style="display:none;"' !!}>
     <div class="col-xs-12">
         <h4><i class="fa fa-spinner fa-spin"></i> Please wait...</h4>
-        <p>Your documents are generating.  They will be emailed to you at {{ Auth::user()->email }} when they are ready!</p>
+        <p>Your documents are generating. They will be emailed to you at {{ Auth::user()->email }} when they are ready!</p>
         <p>Of course, you will be able to see them here when they are ready, too!</p>
         <br/>
         <p><strong>Please feel free to continue to the next step...</strong></p>

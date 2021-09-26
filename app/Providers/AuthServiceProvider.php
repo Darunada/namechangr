@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Models\Application\Application;
 use App\Policies\ApplicationPolicy;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -32,7 +31,6 @@ class AuthServiceProvider extends ServiceProvider
         // oauth token routes
         Passport::cookie(config('session.token_cookie'));
         Passport::routes();
-
         //
     }
 }

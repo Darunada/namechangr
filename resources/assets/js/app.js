@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes jquery, bootstrap, axios, other libraries.
@@ -20,7 +19,7 @@ require('./components/btn-confirm.js');
 require('./components/duplicatable-input-group.js');
 require('./components/lovely.js');
 
-$(function() {
+$(function () {
     $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
 });

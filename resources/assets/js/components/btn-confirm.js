@@ -18,17 +18,17 @@ $('.btn-confirm').on('click', function (e) {
     var $btn = $(this);
 
     var text = $btn.data('confirm-text');
-    if (text === undefined || text.length == 0) {
+    if (text===undefined || text.length==0) {
         text = "Are you sure?";
     }
 
     var callback = $btn.data('after-confirm')
-    if(callback == undefined && $btn.has('href')) {
-        callback = 'window.location = "'+$btn.attr('href')+'";';
+    if (callback==undefined && $btn.has('href')) {
+        callback = 'window.location = "' + $btn.attr('href') + '";';
     }
 
     window.bootbox.confirm(text, function (result) {
-        if (result == true) {
+        if (result==true) {
             eval(callback);
         }
     });

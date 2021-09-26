@@ -5,6 +5,7 @@ namespace App\Models\Application;
 use App\Scopes\ActiveScope;
 use Carbon\Carbon;
 use Crypt;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class Application extends Model
@@ -32,34 +33,110 @@ class Application extends Model
     /**
      * All applications belong to a user
      */
-    function user() {
+    function user()
+    {
         return $this->belongsTo('App\User');
     }
 
     /**
      * An application occurs within a state
      */
-    function state() {
+    function state()
+    {
         return $this->belongsTo('App\Models\Location\State');
     }
 
     /**
      * An application can have many files
      */
-    function files() {
+    function files()
+    {
         return $this->hasMany('App\Models\Application\File');
     }
 
-    function getParsedData() {
+    function getParsedData()
+    {
         $data = $this->data; // array right?
         $data = $this->adjustGenders($data);
         return $this->parseData($data);
     }
 
     /**
+     * @param array $arr
+     * @return array
+     */
+    protected function adjustGenders(array $arr)
+    {
+        $genders = [
+            'current_gender' => 'current_gender_other',
+            'requested_gender' => 'requested_gender_other',
+        ];
+
+        foreach ($genders as $gender => $other) {
+            if (array_key_exists($gender, $arr) && array_key_exists($other, $arr)) {
+                if ($arr[$gender] == 'other') {
+                    $arr[$gender] = $arr[$other];
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    private function parseData(array &$arr)
+    {
+        foreach ($arr as $key => &$value) {
+            if (is_array($value)) {
+                $arr[$key] = $this->parseData($value);
+            } else {
+                if (is_null($value)) {
+                    $arr[$key] = '';
+                } elseif ($value instanceof Carbon) {
+                    $arr[$key] = $value->format('m/d/Y');
+                } else {
+                    if (substr_compare($key, '_id', strlen($key) - 3, 3) === 0) {
+                        // ends in _id
+                        $classShortName = substr($key, 0, -3);
+                        switch ($classShortName) {
+                            case 'county':
+                            case 'state':
+                                $namespace = 'App\\Models\\Location\\';
+                                break;
+                            case 'district':
+                            case 'location':
+                                $namespace = "App\\Models\\Court\\";
+                                break;
+                        }
+
+                        $class = $namespace . ucfirst($classShortName);
+
+                        if (class_exists($class)) {
+                            $model = $class::withoutGlobalScope(ActiveScope::class)->where('id', $value)->first();
+                            switch ($classShortName) {
+                                case 'county':
+                                case 'district':
+                                    $arr[$classShortName] = $model->name;
+                                    break;
+                                case 'state':
+                                    $arr[$classShortName] = $model->iso_3166_2;
+                                    break;
+                                case 'location':
+                                    $arr[$classShortName] = str_replace("\n", ' ', $model->address);
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $arr;
+    }
+
+    /**
      * Set data
      *
-     * @param  string  $value
+     * @param string $value
      * @return void
      */
     public function setDataAttribute($value)
@@ -70,84 +147,18 @@ class Application extends Model
     /**
      * Get data
      *
-     * @param  string  $value
+     * @param string $value
      * @return string
      */
-    public function getDataAttribute($value) {
+    public function getDataAttribute($value)
+    {
         try {
             $value = Crypt::decrypt($value);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // do nothing
             // perhaps the stored value is still plain text
         }
 
         return $value;
-    }
-
-    private function parseData(array &$arr) {
-
-        foreach($arr as $key=>&$value) {
-            if(is_array($value)) {
-                $arr[$key] = $this->parseData($value);
-            } else if(is_null($value)) {
-                $arr[$key] = '';
-            } elseif($value instanceof Carbon) {
-                $arr[$key] = $value->format('m/d/Y');
-            } else if(substr_compare($key, '_id', strlen($key)-3, 3) === 0) {
-                // ends in _id
-                $classShortName = substr($key, 0, -3);
-                switch($classShortName) {
-                    case 'county':
-                    case 'state':
-                        $namespace = 'App\\Models\\Location\\';
-                        break;
-                    case 'district':
-                    case 'location':
-                        $namespace = "App\\Models\\Court\\";
-                        break;
-                }
-
-                $class = $namespace.ucfirst($classShortName);
-
-                if(class_exists($class)) {
-                    $model = $class::withoutGlobalScope(ActiveScope::class)->where('id', $value)->first();
-                    switch($classShortName) {
-                        case 'county':
-                        case 'district':
-                            $arr[$classShortName] = $model->name;
-                            break;
-                        case 'state':
-                            $arr[$classShortName] = $model->iso_3166_2;
-                            break;
-                        case 'location':
-                            $arr[$classShortName] = str_replace("\n", ' ', $model->address);
-                            break;
-                    }
-                }
-            }
-        }
-
-        return $arr;
-    }
-
-    /**
-     * @param array $arr
-     * @return array
-     */
-    protected function adjustGenders(array $arr) {
-        $genders = [
-            'current_gender'=>'current_gender_other',
-            'requested_gender'=>'requested_gender_other',
-        ];
-
-        foreach($genders AS $gender=>$other) {
-            if (array_key_exists($gender, $arr) && array_key_exists($other, $arr)) {
-                if ($arr[$gender] == 'other') {
-                    $arr[$gender] = $arr[$other];
-                }
-            }
-        }
-
-        return $arr;
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
 use App\Models\Location\State;
+use App\Scopes\ActiveScope;
 use Illuminate\Database\Seeder;
 
-class UtSeeder extends Seeder {
+class UtSeeder extends Seeder
+{
 
     /**
      * Run the database seeds.
@@ -15,8 +17,8 @@ class UtSeeder extends Seeder {
         // load in the data file
         $file = File::get(__DIR__ . '/data/UT.json');
 
-        $state = State::withoutGlobalScope(\App\Scopes\ActiveScope::class)->where('iso_3166_2', 'UT')->first();
-        return $state->active OR $this->populateData($file, $state);
+        $state = State::withoutGlobalScope(ActiveScope::class)->where('iso_3166_2', 'UT')->first();
+        return $state->active or $this->populateData($file, $state);
     }
 
     /**
@@ -34,44 +36,42 @@ class UtSeeder extends Seeder {
         $districts = $contents->districts;
 
         foreach ($districts as $name => $district) {
-
             // don't double add districts
             if (isset($district_list[$name])) {
                 $districtId = $district_list[$name];
             } else {
                 $districtId = DB::table('districts')->insertGetId(array(
-                    'state_id' => $stateId,
-                    'name' => $name
-                ));
+                                                                      'state_id' => $stateId,
+                                                                      'name' => $name
+                                                                  ));
 
                 $district_list[$name] = $districtId;
             }
 
             foreach ($district->counties as $county => $locations) {
-
                 // don't double add counties
                 if (isset($county_list[$county])) {
                     $countyId = $county_list[$county];
                 } else {
                     $countyId = DB::table('counties')->insertGetId(array(
-                        'state_id' => $stateId,
-                        'name' => $county
-                    ));
+                                                                       'state_id' => $stateId,
+                                                                       'name' => $county
+                                                                   ));
 
                     $county_list[$county] = $countyId;
 
                     DB::table('district_counties')->insert(array(
-                        'district_id' => $districtId,
-                        'county_id' => $countyId
-                    ));
+                                                               'district_id' => $districtId,
+                                                               'county_id' => $countyId
+                                                           ));
                 }
 
                 foreach ($locations as $location) {
                     DB::table('locations')->insert(array(
-                        'district_id' => $districtId,
-                        'county_id' => $countyId,
-                        'address' => $location
-                    ));
+                                                       'district_id' => $districtId,
+                                                       'county_id' => $countyId,
+                                                       'address' => $location
+                                                   ));
                 }
             }
         }

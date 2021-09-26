@@ -3,16 +3,15 @@
 namespace App\Jobs;
 
 use App\Contracts\Generators\ApplicationGenerator;
-use App\Events\ApplicationFileGenerated AS ApplicationFileGeneratedEvent;
-use App\Notifications\ApplicationFileGenerated AS ApplicationFileGeneratedNotification;
+use App\Events\ApplicationFileGenerated as ApplicationFileGeneratedEvent;
 use App\Models\Application\Application;
 use App\Models\Application\File;
-
+use App\Notifications\ApplicationFileGenerated as ApplicationFileGeneratedNotification;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class GenerateApplication implements ShouldQueue
 {
@@ -41,7 +40,7 @@ class GenerateApplication implements ShouldQueue
      * @param null|string $type pdf|html|docx
      * @internal param string $type
      */
-    public function __construct(Application $application, ApplicationGenerator $generator, $type=null)
+    public function __construct(Application $application, ApplicationGenerator $generator, $type = null)
     {
         $this->application = $application;
         $this->applicationGenerator = $generator;
@@ -66,12 +65,12 @@ class GenerateApplication implements ShouldQueue
          * Spawn an event to hook later
          */
         event(new ApplicationFileGeneratedEvent($applicationFile, $this->application));
-
     }
 
-    protected function runGenerator() {
+    protected function runGenerator()
+    {
         $applicationFile = null;
-        if(method_exists($this->applicationGenerator, $this->type)) {
+        if (method_exists($this->applicationGenerator, $this->type)) {
             $applicationFile = $this->applicationGenerator->{$this->type}($this->application);
         } else {
             $applicationFile = $this->applicationGenerator->generate($this->application, $this->type);

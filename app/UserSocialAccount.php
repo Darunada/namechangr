@@ -9,7 +9,8 @@ class UserSocialAccount extends Model
 
     protected $guarded = array();
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models\Location;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -56,7 +57,7 @@ class County extends Model
 
     /**
      * Counties have 1..n locations
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function locations()
     {

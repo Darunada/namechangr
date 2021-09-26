@@ -7,13 +7,12 @@ use App\Notifications\UserRegistered;
 use App\User;
 use Event;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Mockery;
 use Notification;
 use Socialite;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthenticationTest extends TestCase
 {
@@ -24,12 +23,13 @@ class AuthenticationTest extends TestCase
         $this->get('/register')->assertStatus(200);
     }
 
-    public function testDuplicateRegistration() {
+    public function testDuplicateRegistration()
+    {
         $user = factory(User::class)->create();
 
         Notification::fake();
         Event::fake();
-        foreach(['/', '/register'] AS $url) {
+        foreach (['/', '/register'] as $url) {
             $this->get($url);
 
             $this->post('/register', [
@@ -44,7 +44,8 @@ class AuthenticationTest extends TestCase
         }
     }
 
-    public function testInvalidRegistration() {
+    public function testInvalidRegistration()
+    {
         $user = factory(User::class)->make();
 
         Notification::fake();
@@ -84,7 +85,8 @@ class AuthenticationTest extends TestCase
         Event::assertNotDispatched(Registered::class);
     }
 
-    public function testSuccessfulRegistration() {
+    public function testSuccessfulRegistration()
+    {
         $user = factory(User::class)->make();
         $password = 'fake password';
 
@@ -102,19 +104,18 @@ class AuthenticationTest extends TestCase
 
         // Assert a notification was sent to the given user...
         Notification::assertSentTo(
-            [$createdUser], UserRegistered::class
+            [$createdUser],
+            UserRegistered::class
         );
 
         // Assert a Registered event was dispatched
         Event::assertDispatched(Registered::class, function ($e) use ($createdUser) {
             return $e->user->id === $createdUser->id;
         });
-
     }
 
-    public function testRegisteredEventSendsAdminNotification() {
-
-
+    public function testRegisteredEventSendsAdminNotification()
+    {
         $user = factory(User::class)->create();
 
         Mail::fake();
@@ -122,7 +123,7 @@ class AuthenticationTest extends TestCase
         event(new Registered(($user)));
 
         $adminEmail = config('mail.email');
-        if(filter_var($adminEmail, FILTER_VALIDATE_EMAIL) == true) {
+        if (filter_var($adminEmail, FILTER_VALIDATE_EMAIL) == true) {
             Mail::assertQueued(UserRegisteredEmail::class, function (UserRegisteredEmail $mail) use ($user) {
                 return $mail->user->id === $user->id;
             });
@@ -136,7 +137,8 @@ class AuthenticationTest extends TestCase
         $this->get('/login')->assertStatus(200);
     }
 
-    public function testLoginPageHasForgotPasswordLink() {
+    public function testLoginPageHasForgotPasswordLink()
+    {
         $this->get('/login')->assertSee('Forgot Your Password?');
     }
 
@@ -165,8 +167,9 @@ class AuthenticationTest extends TestCase
      */
     public function testCanSignInWithSocial($driver)
     {
-        $this->get('login')->assertSee('Sign in with '.ucfirst($driver));
-        $this->get('/auth/'.$driver)->assertRedirect(); // can I enforce where to? 'https://www.facebook.com/v2.9/dialog/oauth?scope=email&response_type=code&state=...'
+        $this->get('login')->assertSee('Sign in with ' . ucfirst($driver));
+        $this->get('/auth/' . $driver)->assertRedirect(
+        ); // can I enforce where to? 'https://www.facebook.com/v2.9/dialog/oauth?scope=email&response_type=code&state=...'
     }
 
 
@@ -180,7 +183,8 @@ class AuthenticationTest extends TestCase
     /**
      * @dataProvider socialDriverProvider
      */
-    public function testRegisterWithSocial($driver) {
+    public function testRegisterWithSocial($driver)
+    {
         Notification::fake();
         Event::fake();
 
@@ -204,25 +208,26 @@ class AuthenticationTest extends TestCase
 
         // Assert a notification was sent to the given user...
         Notification::assertSentTo(
-            [$createdUser], UserRegistered::class
+            [$createdUser],
+            UserRegistered::class
         );
 
         // Assert a Registered event was dispatched
         Event::assertDispatched(Registered::class, function ($e) use ($createdUser) {
             return $e->user->id === $createdUser->id;
         });
-
     }
 
     /**
      * @dataProvider socialDriverProvider
      */
-    public function testLoginWithSocial($driver) {
+    public function testLoginWithSocial($driver)
+    {
         $user = factory(User::class)->create();
         $user->socialAccounts()->create([
-            'provider'=>$driver,
-            'provider_uid'=>1234567890
-        ]);
+                                            'provider' => $driver,
+                                            'provider_uid' => 1234567890
+                                        ]);
 
         $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
         $abstractUser->shouldReceive('getId')
@@ -245,7 +250,8 @@ class AuthenticationTest extends TestCase
     /**
      * @dataProvider socialDriverProvider
      */
-    public function testCanLinkSocialWithExistingUser($driver) {
+    public function testCanLinkSocialWithExistingUser($driver)
+    {
         $user = factory(User::class)->create();
 
         $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
@@ -266,7 +272,8 @@ class AuthenticationTest extends TestCase
             ->assertRedirect('/dashboard')->assertSessionHas('flash_notification');
     }
 
-    public function socialDriverProvider() {
+    public function socialDriverProvider()
+    {
         return [
             ['facebook'],
             ['twitter'],

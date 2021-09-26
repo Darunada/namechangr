@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class UserSocialAccounts extends Migration
 {
@@ -13,8 +13,7 @@ class UserSocialAccounts extends Migration
      */
     public function up()
     {
-        Schema::create('user_social_accounts', function(Blueprint $table)
-        {
+        Schema::create('user_social_accounts', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('provider'); // Facebook etc.
@@ -22,7 +21,7 @@ class UserSocialAccounts extends Migration
             $table->timestamps();
         });
 
-        Schema::table('user_social_accounts', function(Blueprint $table) {
+        Schema::table('user_social_accounts', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

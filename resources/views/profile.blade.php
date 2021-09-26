@@ -76,7 +76,8 @@
                                    class="btn btn-social btn-facebook">
                                     <span class="fa fa-facebook"></span> Disconnect From Facebook
                                 </a>
-                                <form id="facebook-disconnect-form" action="/auth/facebook/deauthorize" method="POST" style="display: none;">
+                                <form id="facebook-disconnect-form" action="/auth/facebook/deauthorize" method="POST"
+                                      style="display: none;">
                                     {{ csrf_field() }}
                                 </form>
                             @else
@@ -92,9 +93,9 @@
                                    class="btn btn-social btn-twitter">
                                     <span class="fa fa-twitter"></span> Disconnect From Twitter
                                 </a>
-                                    <form id="twitter-disconnect-form" action="/auth/twitter/deauthorize" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
+                                <form id="twitter-disconnect-form" action="/auth/twitter/deauthorize" method="POST" style="display: none;">
+                                    {{ csrf_field() }}
+                                </form>
                             @else
                                 <a href="/auth/twitter" class="btn btn-social btn-twitter">
                                     <span class="fa fa-twitter"></span> Link With Twitter
@@ -107,7 +108,8 @@
                         <div class="col-md-6 col-md-offset-4">
                             <hr/>
                             <p>The Danger Zone</p>
-                            <a href="/profile" class="btn btn-danger btn-confirm btn-xs" data-after-confirm="document.getElementById('destroy-account-form').submit();">Destroy my Account</a>
+                            <a href="/profile" class="btn btn-danger btn-confirm btn-xs"
+                               data-after-confirm="document.getElementById('destroy-account-form').submit();">Destroy my Account</a>
                             <form id="destroy-account-form" action="/profile" method="POST" style="display: none;">
                                 <input type="hidden" name="_method" value="DELETE"/>
                                 {{ csrf_field() }}

@@ -13,11 +13,11 @@ trait GeneratesApplications
      */
     public function generate(Application $application, $type)
     {
-        if(method_exists($this, $type)) {
+        if (method_exists($this, $type)) {
             $this->$type($application);
         }
 
-        throw new TypeNotSupportedException("Type '$type' is not supported by ".get_class($this));
+        throw new TypeNotSupportedException("Type '$type' is not supported by " . get_class($this));
     }
 
 

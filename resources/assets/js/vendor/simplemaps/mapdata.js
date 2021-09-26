@@ -1,4 +1,4 @@
-var simplemaps_usmap_mapdata={
+var simplemaps_usmap_mapdata = {
     main_settings: {
         //General settings
         width: "responsive", //or 'responsive'

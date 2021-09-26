@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Application\Application;
-use App\Models\Location\State;
 use App\User;
 use App\UserSocialAccount;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Intouch\LaravelNewrelic\Observers\NewrelicCountingObserver;
 use Intouch\LaravelNewrelic\Observers\NewrelicTimingObserver;
@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
          */
         View::composer('*', function ($view) {
             $route = app('request')->route();
-            if($route) {
+            if ($route) {
                 $action = $route->getAction();
                 $controller = class_basename($action['controller']);
                 list($controller, $action) = explode('@', $controller);
@@ -59,13 +59,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // tie some interesting things into newrelic
-        User::observe(new NewrelicTimingObserver() );
-        User::observe(new NewrelicCountingObserver() );
-        UserSocialAccount::observe(new NewrelicTimingObserver() );
-        UserSocialAccount::observe(new NewrelicCountingObserver() );
-        Application::observe(new NewrelicTimingObserver() );
-        Application::observe(new NewrelicCountingObserver() );
-
+        User::observe(new NewrelicTimingObserver());
+        User::observe(new NewrelicCountingObserver());
+        UserSocialAccount::observe(new NewrelicTimingObserver());
+        UserSocialAccount::observe(new NewrelicCountingObserver());
+        Application::observe(new NewrelicTimingObserver());
+        Application::observe(new NewrelicCountingObserver());
     }
 
     /**
@@ -77,7 +76,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // IDE helper should not be available in production
         if ($this->app->environment() !== 'production') {
-            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            $this->app->register(IdeHelperServiceProvider::class);
         }
     }
 }

@@ -10,7 +10,9 @@
 namespace App\Generators\Exceptions;
 
 
-class GeneratorException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class GeneratorException extends UnexpectedValueException
 {
 
 }

@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     <!-- Learn more about the creators! -->
-    <link type="text/plain" rel="author" href="/humans.txt" />
+    <link type="text/plain" rel="author" href="/humans.txt"/>
 
     <!-- Scripts -->
     <script>
@@ -27,21 +27,21 @@
     @stack('objects')
 </head>
 <body data-controller="{{ $controller }}" data-action="{{ $action }}">
-    <div id="app">
-        @include('partials.navbar')
+<div id="app">
+    @include('partials.navbar')
 
-        <div class="container">
-            @include('partials.alerts')
-            @yield('content')
-            @include('partials.footer')
-        </div>
+    <div class="container">
+        @include('partials.alerts')
+        @yield('content')
+        @include('partials.footer')
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="{{ mix('js/app.js') }}"></script>
-    @stack('scripts')
+<!-- Scripts -->
+<script src="{{ mix('js/app.js') }}"></script>
+@stack('scripts')
 
-    <!-- Google Analytics -->
-    @include('partials.google_analytics')
+<!-- Google Analytics -->
+@include('partials.google_analytics')
 </body>
 </html>

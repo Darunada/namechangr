@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class HomeController extends Controller
 {
@@ -13,24 +13,25 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-
     }
 
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
         return view('home');
     }
 
-    public function privacy() {
+    public function privacy()
+    {
         return view('privacy');
     }
 
-    public function terms() {
+    public function terms()
+    {
         return view('terms');
     }
 }

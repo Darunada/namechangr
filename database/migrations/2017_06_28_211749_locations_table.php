@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class LocationsTable extends Migration
 {
@@ -13,7 +12,7 @@ class LocationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('locations', function($table) {
+        Schema::create('locations', function ($table) {
             $table->increments('id')->index();
             $table->integer('district_id')->unsigned();
             $table->integer('county_id')->unsigned();

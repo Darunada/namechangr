@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Application\Application;
 use App\Models\Location\State;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 class DashboardController extends Controller
 {
@@ -18,14 +17,13 @@ class DashboardController extends Controller
      */
     public function __construct()
     {
-
     }
 
     /**
      * Show the application dashboard.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -34,14 +32,16 @@ class DashboardController extends Controller
         return view('dashboard', compact('applications'));
     }
 
-    public function start(Request $request) {
+    public function start(Request $request)
+    {
         $states = State::pluck('name', 'id');
-        return view ('start', compact('states'));
+        return view('start', compact('states'));
     }
 
-    public function spawnApplication(Request $request) {
+    public function spawnApplication(Request $request)
+    {
         $rules = ['state_id' => 'required|exists:states,id'];
-        if(config('captcha.enabled', true)) {
+        if (config('captcha.enabled', true)) {
             $rules['g-recaptcha-response'] = 'required|captcha';
         }
 

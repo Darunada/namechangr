@@ -1,4 +1,3 @@
-
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -10,7 +9,8 @@ try {
 
     require('bootstrap-sass');
 
-} catch (e) {}
+} catch (e) {
+}
 
 /**
  * Load in jquery validator and set some common sense defaults
@@ -50,7 +50,7 @@ window.axios.defaults.baseURL = '/api/v1';
 window.axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
-    if(error.response.status == 401) {
+    if (error.response.status==401) {
         bootbox.dialog({
             // boy would it be great to put a login form here!
             message: "Your session has expired.  Please log in to continue.",
@@ -58,10 +58,10 @@ window.axios.interceptors.response.use(function (response) {
             backdrop: true,
             closeButton: false,
             buttons: {
-                okButton : {
+                okButton: {
                     label: 'Ok',
                     className: "btn-primary",
-                    callback: function(result) {
+                    callback: function (result) {
                         window.location = '/login';
                     }
                 }

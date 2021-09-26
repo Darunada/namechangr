@@ -20,9 +20,9 @@ class UtApplicationGenerator implements ApplicationGenerator, ApplicationDocxGen
     use LoadsWordTemplates, ConvertsWordTemplates, StoresGeneratedFiles;
 
     protected $templates = [
-        'name_and_gender_change'=>'ut/name-and-gender-change.docx',
-        'name_change'=>'ut/name-change.docx',
-        'gender_change'=>'ut/gender-change.docx'
+        'name_and_gender_change' => 'ut/name-and-gender-change.docx',
+        'name_change' => 'ut/name-change.docx',
+        'gender_change' => 'ut/gender-change.docx'
     ];
 
 }

@@ -6,6 +6,8 @@ use Auth;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Session\TokenMismatchException;
 use Laracasts\Flash\Flash;
 
@@ -35,7 +37,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param \Exception $exception
+     * @param Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -46,13 +48,13 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Exception $exception
+     * @return Response
      */
     public function render($request, Exception $exception)
     {
-        if  (Auth::guest()) {
+        if (Auth::guest()) {
             if ($exception instanceof TokenMismatchException) {
                 Flash::warning('Your session has expired. Please try again.');
                 return redirect()->back();
@@ -65,9 +67,9 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into a response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {

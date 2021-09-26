@@ -4,16 +4,15 @@ namespace App\Mail;
 
 use App\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
 
 class UserRegistered extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /** @var User  */
+    /** @var User */
     public $user;
 
     /**
@@ -38,16 +37,16 @@ class UserRegistered extends Mailable implements ShouldQueue
         return $this->from('donotreply@namechangr.com', 'NameChangr Notify')
             ->subject("A User Has Registered!")
             ->markdown('vendor.notifications.email')->with([
-                "level" => "default",
-                "greeting" => "Hello!",
-                "introLines" => [
-                    "Please welcome $user->name!"
-                ],
-                "actionText" => "See the site!",
-                "actionUrl" => url('/'),
-                "outroLines" => [
-                    "Their email is $user->email"
-                ]
-            ]);
+                                                               "level" => "default",
+                                                               "greeting" => "Hello!",
+                                                               "introLines" => [
+                                                                   "Please welcome $user->name!"
+                                                               ],
+                                                               "actionText" => "See the site!",
+                                                               "actionUrl" => url('/'),
+                                                               "outroLines" => [
+                                                                   "Their email is $user->email"
+                                                               ]
+                                                           ]);
     }
 }

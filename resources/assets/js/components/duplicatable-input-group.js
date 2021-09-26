@@ -31,42 +31,42 @@
 
 function duplicatableInputGroupOptions(inputGroup) {
     var options = {
-        add_icon:$(inputGroup).data('add-icon') || 'fa fa-plus',
-        add_class:$(inputGroup).data('add-class') || 'btn btn-success',
-        remove_icon:$(inputGroup).data('remove-icon') || 'fa fa-minus',
-        remove_class:$(inputGroup).data('remove-class') || 'btn btn-danger',
-        animate:$(inputGroup).data('animate') == null? true : $(inputGroup).data('animate'),
-        animation_speed:$(inputGroup).data('animation-speed') || '400',
-        animation_easing:$(inputGroup).data('animation-easing') || 'linear'
+        add_icon: $(inputGroup).data('add-icon') || 'fa fa-plus',
+        add_class: $(inputGroup).data('add-class') || 'btn btn-success',
+        remove_icon: $(inputGroup).data('remove-icon') || 'fa fa-minus',
+        remove_class: $(inputGroup).data('remove-class') || 'btn btn-danger',
+        animate: $(inputGroup).data('animate')==null ? true:$(inputGroup).data('animate'),
+        animation_speed: $(inputGroup).data('animation-speed') || '400',
+        animation_easing: $(inputGroup).data('animation-easing') || 'linear'
     };
 
     return options;
 }
 
-$(function() {
-   $('.input-group.duplicatable-input-group').each(function(index, inputGroup) {
-       var options = duplicatableInputGroupOptions(inputGroup);
+$(function () {
+    $('.input-group.duplicatable-input-group').each(function (index, inputGroup) {
+        var options = duplicatableInputGroupOptions(inputGroup);
 
-       var btn = '<span class="input-group-btn">'+
-           '    <button class="'+options.add_class+' btn-add" type="button">'+
-           '        <i class="'+options.add_icon+'"></i>'+
-           '    </button>'+
-           '</span>';
+        var btn = '<span class="input-group-btn">' +
+                '    <button class="' + options.add_class + ' btn-add" type="button">' +
+                '        <i class="' + options.add_icon + '"></i>' +
+                '    </button>' +
+                '</span>';
 
-       $(inputGroup).append(btn);
-   });
+        $(inputGroup).append(btn);
+    });
 });
 
-$(document).on('click', '.duplicatable-input-group .btn-add', function(e) {
+$(document).on('click', '.duplicatable-input-group .btn-add', function (e) {
     e.preventDefault();
 
     var groupContainer = $(this).parents('.duplicatable-input-group:first').parent(),
-        currentEntry = $(this).parents('.duplicatable-input-group:first'),
-        newEntry = $(currentEntry.clone()).hide().appendTo(groupContainer);
+            currentEntry = $(this).parents('.duplicatable-input-group:first'),
+            newEntry = $(currentEntry.clone()).hide().appendTo(groupContainer);
 
     var options = duplicatableInputGroupOptions(currentEntry);
 
-    if(options.animate) {
+    if (options.animate) {
         newEntry.slideDown(options.animation_speed, options.animation_easing);
     } else {
         newEntry.show();
@@ -74,10 +74,10 @@ $(document).on('click', '.duplicatable-input-group .btn-add', function(e) {
 
     newEntry.find('input').val('');
     groupContainer.find('.duplicatable-input-group:not(:last) .btn-add')
-        .removeClass('btn-add').addClass('btn-remove')
-        .removeClass(options.add_class).addClass(options.remove_class)
-        .html('<i class="'+options.remove_icon+'"></i>');
-}).on('click', '.duplicatable-input-group .btn-remove', function(e) {
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass(options.add_class).addClass(options.remove_class)
+            .html('<i class="' + options.remove_icon + '"></i>');
+}).on('click', '.duplicatable-input-group .btn-remove', function (e) {
     e.preventDefault();
     $(this).parents('.duplicatable-input-group:first').remove();
     return false;

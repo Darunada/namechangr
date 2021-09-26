@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    
+
     //Wizard
     $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 
@@ -13,10 +13,10 @@ $(document).ready(function () {
     $(".next-step").click(function (e) {
 
         var curStep = $(this).closest('.tab-pane'),
-            curInputs = curStep.find('input, select'),
-            isValid = true;
+                curInputs = curStep.find('input, select'),
+                isValid = true;
 
-        if (window.validator !== undefined) {
+        if (window.validator!==undefined) {
             for (var i = 0; i < curInputs.length; i++) {
                 if (!window.validator.element(curInputs[i])) {
                     isValid = false;
@@ -39,12 +39,12 @@ $(document).ready(function () {
 
         var $btn = $(this);
         var callback = $btn.data('callback');
-        if(callback != undefined) {
+        if (callback!=undefined) {
             $btn.button('loading');
             var result = {callback}($btn);
             $btn.button('reset');
 
-            if(result === false) {
+            if (result===false) {
                 return false;
             }
         }

@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\Laravel\Passport\Events\AccessTokenCreated;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RevokeOldTokens
 {
@@ -21,7 +19,7 @@ class RevokeOldTokens
     /**
      * Handle the event.
      *
-     * @param  AccessTokenCreated  $event
+     * @param AccessTokenCreated $event
      * @return void
      */
     public function handle(AccessTokenCreated $event)

@@ -3,9 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\ApplicationFileDeleted;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Models\Application\File AS ApplicationFile;
 
 
 class RemoveFileRecord
@@ -22,7 +19,7 @@ class RemoveFileRecord
     /**
      * Handle the event.
      *
-     * @param  ApplicationFileDeleted  $event
+     * @param ApplicationFileDeleted $event
      * @return void
      */
     public function handle(ApplicationFileDeleted $event)

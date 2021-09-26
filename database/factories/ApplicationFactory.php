@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Location\State;
 use Faker\Generator as Faker;
 
 /*
@@ -16,7 +17,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\Application\Application::class, function (Faker $faker) {
     return [
         'user_id' => fn() => factory(App\User::class)->create()->id,
-        'state_id' => fn() => \App\Models\Location\State::where('name', 'Utah')->first()->id,
+        'state_id' => fn() => State::where('name', 'Utah')->first()->id,
         'name_change' => true,
         'gender_change' => true,
         'data' => [],

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 
 use App\User;
+use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Validator;
 
@@ -16,31 +18,31 @@ class ProfileController extends Controller
      */
     public function __construct()
     {
-
     }
 
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         $facebook = $user->socialAccount('facebook');
         $twitter = $user->socialAccount('twitter');
         return view('profile', compact('user', 'facebook', 'twitter'));
     }
 
-    public function update(Request $request) {
-        $user = \Auth::user();
+    public function update(Request $request)
+    {
+        $user = Auth::user();
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
         ]);
 
-        $validator->sometimes('password', 'required|min:6|confirmed', function($input) {
+        $validator->sometimes('password', 'required|min:6|confirmed', function ($input) {
             return strlen($input->password) > 0;
         });
 
@@ -54,7 +56,7 @@ class ProfileController extends Controller
         $user->email = $request->get('email');
 
         $password = $request->get('password');
-        if(!empty($password)) {
+        if (!empty($password)) {
             $user->password = bcrypt($password);
         }
 
@@ -64,12 +66,13 @@ class ProfileController extends Controller
         return back();
     }
 
-    public function delete(Request $request) {
-        $user = User::findOrFail(\Auth::id());
+    public function delete(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
         $user->socialAccounts()->forceDelete();
         $user->forceDelete();
 
-        \Auth::logout();
+        Auth::logout();
         flash("Your account has been destroyed.")->success()->important();
         return redirect('/');
     }

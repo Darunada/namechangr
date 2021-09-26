@@ -9,7 +9,9 @@
 namespace App\Generators\Exceptions;
 
 
-class TypeNotSupportedException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+class TypeNotSupportedException extends UnexpectedValueException
 {
 
 }

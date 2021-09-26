@@ -1,4 +1,3 @@
-
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Raleway:300,400,600');
 
@@ -29,12 +28,12 @@
 
 body[data-controller='HomeController'] {
   #supported-states-map-container {
-    max-width:600px;
-    margin:0 auto;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   #supported-states-map {
-    margin:0 auto;
+    margin: 0 auto;
   }
 
 }
@@ -45,7 +44,7 @@ body.application {
 }
 
 footer.footer {
-  min-height:100px;
+  min-height: 100px;
 }
 
 select.loading::before {
@@ -68,9 +67,9 @@ ul#applications-list {
     text-align: center;
     /*background-color: #000000;*/
     margin-right: 30px;
-    margin-top:15px;
+    margin-top: 15px;
     width: 150px;
-    position:relative;
+    position: relative;
 
     .overlay {
       position: absolute;
@@ -81,7 +80,7 @@ ul#applications-list {
       width: 100%;
       height: 0;
       transition: .5s ease;
-      color:white;
+      color: white;
 
     }
 
@@ -111,7 +110,7 @@ ul#applications-list {
     }
 
     &:hover .overlay {
-      height:100%;
+      height: 100%;
     }
 
     a {
@@ -121,7 +120,8 @@ ul#applications-list {
     }
 
     a.new-application {
-      color:white;
+      color: white;
+
       &:hover {
         background: darken(#a3cd3a, 15%);
       }

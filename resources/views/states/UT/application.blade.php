@@ -1,13 +1,13 @@
 @section('title', 'Utah Application')
 
 @push('objects')
-<script type="text/javascript">
-    window.Laravel.application = {!! $application->toJson() !!};
-</script>
+    <script type="text/javascript">
+        window.Laravel.application = {!! $application->toJson() !!};
+    </script>
 @endpush
 
 @push('scripts')
-<script src="{{ mix('js/UT.js') }}"></script>
+    <script src="{{ mix('js/UT.js') }}"></script>
 @endpush
 
 @extends('layouts.dashboard')

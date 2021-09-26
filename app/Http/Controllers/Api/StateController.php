@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Location\State;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class StateController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index()
     {
@@ -22,7 +22,7 @@ class StateController extends Controller
      * Display the specified resource.
      *
      * @param State $state
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(State $state)
     {

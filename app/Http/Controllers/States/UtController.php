@@ -5,7 +5,7 @@ namespace App\Http\Controllers\States;
 
 use App\Http\Controllers\Controller;
 use App\Models\Application\Application;
-use App\Models\Application\File AS ApplicationFile;
+use App\Models\Application\File as ApplicationFile;
 use App\Models\Location\County;
 use App\Models\Location\State;
 use App\Scopes\ActiveScope;
@@ -20,12 +20,13 @@ class UtController extends Controller
 
     public function __construct()
     {
-        $this->state = Cache::remember('state-ut', 60*24, function() {
+        $this->state = Cache::remember('state-ut', 60 * 24, function () {
             return State::where('name', 'Utah')->first();
         });
     }
 
-    public function index() {
+    public function index()
+    {
         return view('states.UT.index');
     }
 
@@ -37,7 +38,7 @@ class UtController extends Controller
         $data = $application->data;
         $districts = [];
         $locations = [];
-        if(array_key_exists('county_id', $data)) {
+        if (array_key_exists('county_id', $data)) {
             $currentCounty = County::where('id', $data['county_id'])->get()->first();
             $districts = $currentCounty->districts->pluck('name', 'id');
             $locations = $currentCounty->locations()->whereIn('district_id', $districts->keys())->get();
@@ -46,7 +47,8 @@ class UtController extends Controller
         return view('states.UT.application', compact('locations', 'counties', 'districts', 'states', 'application'));
     }
 
-    public function download_file(Request $request, Application $application, ApplicationFile $applicationFile) {
+    public function download_file(Request $request, Application $application, ApplicationFile $applicationFile)
+    {
         $fileContents = Storage::get($applicationFile->path);
 
         return response()->stream(function () use ($fileContents) {
@@ -62,16 +64,17 @@ class UtController extends Controller
         ]);
     }
 
-    public function instructions() {
+    public function instructions()
+    {
         $file = resource_path('templates/ut/instructions.pdf');
         return response()->file($file);
     }
 
-    public function coverSheet() {
+    public function coverSheet()
+    {
         $file = resource_path('templates/ut/cover-sheet.pdf');
         return response()->file($file);
     }
-
 
 
 }

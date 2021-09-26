@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Models\Application\File AS ApplicationFile;
+use App\Models\Application\File as ApplicationFile;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class DeleteExpiredFiles implements ShouldQueue
 {
@@ -31,8 +31,8 @@ class DeleteExpiredFiles implements ShouldQueue
      */
     public function handle()
     {
-        $applicationFiles = ApplicationFile::where('expired', '<=', Carbon::now())->chunk(10, function($files) {
-            foreach($files AS $file) {
+        $applicationFiles = ApplicationFile::where('expired', '<=', Carbon::now())->chunk(10, function ($files) {
+            foreach ($files as $file) {
                 job(new DeleteApplicationFile($file));
             }
         });

@@ -18,7 +18,7 @@
                     <div class="row">
                         <ul id="applications-list">
                             @php
-                                $colors = ['blue', 'green', 'yellow', 'orange', 'purple'];
+                                $colors = ['blue', 'green', 'yellow', 'orange', 'purple']
                             @endphp
 
                             @foreach ($applications AS $application)
@@ -41,7 +41,8 @@
                                                     <i class="fa fa-fw fa-check"></i> Gender Change<br/>
                                                 @endif
                                                 @if($application->exists)
-                                                    <small><i class="fa fa-fw fa-calendar"></i> Created {{ $application->created_at->format('m/d/Y') }}</small><br/>
+                                                    <small><i class="fa fa-fw fa-calendar"></i>
+                                                        Created {{ $application->created_at->format('m/d/Y') }}</small><br/>
                                                 @else
                                                     <small><i class="fa fa-fw fa-remove"></i> Not Saved</small><br/>
                                                 @endif
@@ -75,7 +76,8 @@
                                                 <br/></br/>
                                                 <div class="row">
                                                     <div class="col-xs-12">
-                                                        <button class="btn btn-default btn-confirm" href="{{ route('start') }}">Start</button>
+                                                        <button class="btn btn-default btn-confirm" href="{{ route('start') }}">Start
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>

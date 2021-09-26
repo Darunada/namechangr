@@ -1,7 +1,7 @@
 @php
     if(!isset($value)):
         $value = '';
-    endif;
+    endif
 @endphp
 <div class="form-group">
     <label class="form-label">{{ $label }}</label>

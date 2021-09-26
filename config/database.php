@@ -5,25 +5,25 @@ if (getenv('DATABASE_URL')) {
     $url = parse_url(getenv("DATABASE_URL"));
 
     $connection = $url['scheme'];
-    if($connection == 'postgres') {
+    if ($connection == 'postgres') {
         $connection = 'pgsql';
     }
 
-    putenv('DB_CONNECTION='.$connection);
+    putenv('DB_CONNECTION=' . $connection);
 
-    putenv('DB_HOST='.$url['host']);
-    putenv('DB_PORT='.$url['port']);
-    putenv('DB_DATABASE='.substr($url["path"], 1)); // remove starting /
-    putenv('DB_USERNAME='.$url['user']);
-    putenv('DB_PASSWORD='.$url['pass']);
+    putenv('DB_HOST=' . $url['host']);
+    putenv('DB_PORT=' . $url['port']);
+    putenv('DB_DATABASE=' . substr($url["path"], 1)); // remove starting /
+    putenv('DB_USERNAME=' . $url['user']);
+    putenv('DB_PASSWORD=' . $url['pass']);
 }
 
 if (getenv('REDIS_URL')) {
     $url = parse_url(getenv('REDIS_URL'));
 
-    putenv('REDIS_HOST='.$url['host']);
-    putenv('REDIS_PORT='.$url['port']);
-    putenv('REDIS_PASSWORD='.$url['pass']);
+    putenv('REDIS_HOST=' . $url['host']);
+    putenv('REDIS_PORT=' . $url['port']);
+    putenv('REDIS_PASSWORD=' . $url['pass']);
 }
 
 return [
@@ -66,9 +66,9 @@ return [
         ],
 
         'testing' => [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ],
 
         'mysql' => [

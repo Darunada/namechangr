@@ -21,12 +21,11 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-
         //
         // TODO: Note!  Heroku scheduler runs a one-off dyno for each schedule to I am wary about running it every 10 minutes (heroku max)
         // I have configured it to run every hour at :00.  Hopefully that will do
@@ -37,7 +36,7 @@ class Kernel extends ConsoleKernel
          * Delete expired files every day
          * We don't need to keep them around past then
          */
-        $schedule->call(function() {
+        $schedule->call(function () {
             job(new DeleteExpiredFiles());
         })->everyMinute(); // every minute = every time it runs
     }
@@ -49,7 +48,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
 use App\Models\Application\Application;
+use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ApplicationPolicy
@@ -13,7 +13,7 @@ class ApplicationPolicy
     /**
      * Determine whether the user can view the application.
      *
-     * @param  User $user
+     * @param User $user
      * @param Application $application
      * @return mixed
      */
@@ -25,7 +25,7 @@ class ApplicationPolicy
     /**
      * Determine whether the user can create applications.
      *
-     * @param  User  $user
+     * @param User $user
      * @return mixed
      */
     public function create(User $user)
@@ -36,8 +36,8 @@ class ApplicationPolicy
     /**
      * Determine whether the user can update the application.
      *
-     * @param  User  $user
-     * @param  Application  $application
+     * @param User $user
+     * @param Application $application
      * @return mixed
      */
     public function update(User $user, Application $application)
@@ -48,8 +48,8 @@ class ApplicationPolicy
     /**
      * Determine whether the user can delete the application.
      *
-     * @param  User  $user
-     * @param  Application  $application
+     * @param User $user
+     * @param Application $application
      * @return mixed
      */
     public function delete(User $user, Application $application)

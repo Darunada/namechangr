@@ -4,19 +4,17 @@ namespace App\Mail;
 
 use App\Models\Application\Application;
 use App\Models\Application\File;
-use App\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
 use Storage;
 
 class ApplicationGenerated extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /** @var Application  */
+    /** @var Application */
     protected $application;
 
     /** @var  File */
@@ -41,13 +39,16 @@ class ApplicationGenerated extends Mailable implements ShouldQueue
      */
     public function build()
     {
-
-        if($this->application->name_change && $this->application->gender_change) {
+        if ($this->application->name_change && $this->application->gender_change) {
             $type = 'Name and Gender Change';
-        } else if($this->application->name_change) {
-            $type = 'Name Change';
-        } else if($this->application->gender_change) {
-            $type = 'Gender Change';
+        } else {
+            if ($this->application->name_change) {
+                $type = 'Name Change';
+            } else {
+                if ($this->application->gender_change) {
+                    $type = 'Gender Change';
+                }
+            }
         }
 
         $name = $this->application->data['requested_legal_name'];
@@ -59,17 +60,17 @@ class ApplicationGenerated extends Mailable implements ShouldQueue
             ->subject("An Application was Generated!")
             ->attachData($fileContent, "document-package.{$this->file->type}")
             ->markdown('vendor.notifications.email')->with([
-                "level" => "default",
-                "greeting" => "Hello!",
-                "introLines" => [
-                    "A $type application has been generated!",
-                    "The user is now $name"
-                ],
-                "actionText" => "See the site!",
-                "actionUrl" => url('/'),
-                "outroLines" => [
-                    "Their email is $user->email"
-                ]
-            ]);
+                                                               "level" => "default",
+                                                               "greeting" => "Hello!",
+                                                               "introLines" => [
+                                                                   "A $type application has been generated!",
+                                                                   "The user is now $name"
+                                                               ],
+                                                               "actionText" => "See the site!",
+                                                               "actionUrl" => url('/'),
+                                                               "outroLines" => [
+                                                                   "Their email is $user->email"
+                                                               ]
+                                                           ]);
     }
 }

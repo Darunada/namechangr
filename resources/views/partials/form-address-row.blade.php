@@ -2,7 +2,7 @@
     // ew
     if(!isset($value)):
         $value = ['address1'=>'', 'city'=>'', 'state_id'=>'', 'zipcode'=>''];
-    endif;
+    endif
 @endphp
 
 <div class="address">

@@ -46,9 +46,10 @@ class GetPassportKeys extends Command
             file_put_contents(storage_path('oauth-public.key'), $publicKey);
 
             $this->info('Keys fetched successfully');
-        } catch(Exception $e)  {
-            $this->error('Unable to fetch keys!  Do you have your config set for s3?  You can generate your own using `php artisan passport:keys`');
+        } catch (Exception $e) {
+            $this->error(
+                'Unable to fetch keys!  Do you have your config set for s3?  You can generate your own using `php artisan passport:keys`'
+            );
         }
-
     }
 }

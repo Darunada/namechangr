@@ -5,20 +5,17 @@ namespace Tests\Feature;
 use App\Models\Application\Application;
 use App\Models\Location\State;
 use App\User;
-use Greggilbert\Recaptcha\Facades\Recaptcha;
-use Illuminate\Support\Collection;
-use Mockery;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use NoCaptcha;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class DashboardTest extends TestCase
 {
     use RefreshDatabase;
 
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->seed('TestingDatabaseSeeder');
@@ -26,7 +23,8 @@ class DashboardTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
-    public function testDashboardShowsApplications() {
+    public function testDashboardShowsApplications()
+    {
         /** @var Application $application */
         $application = factory(Application::class)->create();
 
@@ -36,19 +34,22 @@ class DashboardTest extends TestCase
             ->assertSee('<div class="application-desc">New Application</div>');
     }
 
-    public function testDashboardHasNewApplicationBtn() {
+    public function testDashboardHasNewApplicationBtn()
+    {
         $this->actingAs($this->user)
             ->get('/dashboard')
             ->assertSee('<div class="application-desc">New Application</div>');
     }
 
-    public function testUserCanSeeStartApplication() {
+    public function testUserCanSeeStartApplication()
+    {
         $this->actingAs($this->user)
             ->get('/dashboard/start')
             ->assertStatus(200);
     }
 
-    public function testUserCanStartAnApplication() {
+    public function testUserCanStartAnApplication()
+    {
         $state = State::where('iso_3166_2', 'UT')->first();
 
         NoCaptcha::shouldReceive('verifyResponse')
@@ -57,14 +58,15 @@ class DashboardTest extends TestCase
 
         $this->actingAs($this->user);
         $this->post('/dashboard/start', [
-            'state_id'=>$state->id,
+            'state_id' => $state->id,
             'name_change' => true,
             'gender_change' => true,
-            'g-recaptcha-response'=>'valid'
+            'g-recaptcha-response' => 'valid'
         ])->assertRedirect("/$state->iso_3166_2/1"); // always the first
     }
 
-    public function testUserNeedsRecaptcha() {
+    public function testUserNeedsRecaptcha()
+    {
         $state = State::where('iso_3166_2', 'UT')->first();
 
         NoCaptcha::shouldReceive('verifyResponse')
@@ -73,19 +75,20 @@ class DashboardTest extends TestCase
 
         $this->actingAs($this->user);
         $this->post('/dashboard/start', [
-            'state_id'=>$state->id,
+            'state_id' => $state->id,
             'name_change' => true,
             'gender_change' => true,
-            'g-recaptcha-response'=>'invalid'
+            'g-recaptcha-response' => 'invalid'
         ])->assertRedirect("/");
     }
 
-    public function testNoCaptchaRedirectsOut() {
+    public function testNoCaptchaRedirectsOut()
+    {
         $state = State::where('iso_3166_2', 'UT')->first();
 
         $this->actingAs($this->user);
         $this->post('/dashboard/start', [
-            'state_id'=>$state->id,
+            'state_id' => $state->id,
             'name_change' => true,
             'gender_change' => true,
         ])->assertRedirect()->assertSessionHasErrors();

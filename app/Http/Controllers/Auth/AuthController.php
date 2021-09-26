@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Notifications\UserRegistered;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\Controller;
+use App\Notifications\UserRegistered;
 use App\User;
 use App\UserSocialAccount;
 use Auth;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use InvalidArgumentException;
 use Socialite;
 
 class AuthController extends Controller
@@ -19,7 +19,6 @@ class AuthController extends Controller
 
     public function __construct()
     {
-
     }
 
     /**
@@ -35,7 +34,7 @@ class AuthController extends Controller
             $request->session()->flash('oauth_redirect_url', back()->getTargetUrl());
 
             return Socialite::driver($provider)->redirect();
-        } catch(\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             return back()->withErrors('Unable to authenticate via that provider.  Sorry!');
         }
     }
@@ -52,20 +51,20 @@ class AuthController extends Controller
         try {
             /** @var \Laravel\Socialite\Two\User $socialUser */
             $socialUser = Socialite::driver($provider)->user();
-        } catch(\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             return redirect('login')->withErrors('Unable to authenticate via that provider!  Sorry!');
         }
 
         // check the database for a social account
         $authorizedUser = UserSocialAccount::where('provider', $provider)->where('provider_uid', $socialUser->getId())->first();
-        if($authorizedUser) {
+        if ($authorizedUser) {
             Auth::loginUsingId($authorizedUser->user_id);
             flash('Logged in successfully!')->success();
             return redirect('dashboard');
         } else {
             if (Auth::check()) {
                 // The user is logged in...
-                UserSocialAccount::create(['user_id'=>Auth::id(), 'provider'=>$provider, 'provider_uid'=>$socialUser->getId()]);
+                UserSocialAccount::create(['user_id' => Auth::id(), 'provider' => $provider, 'provider_uid' => $socialUser->getId()]);
 
                 $redirect = 'dashboard';
                 if ($request->session()->has('oauth_redirect_url')) {
@@ -76,10 +75,14 @@ class AuthController extends Controller
                 return redirect($redirect);
             } else {
                 // check for the email?
-                if($socialUser->getEmail()) {
+                if ($socialUser->getEmail()) {
                     $existingUser = User::where('email', $socialUser->getEmail())->count();
-                    if($existingUser > 0) {
-                        flash('It appears you have already created an account with another method.  Please log in before connecting your account to '.ucfirst($provider).'.')
+                    if ($existingUser > 0) {
+                        flash(
+                            'It appears you have already created an account with another method.  Please log in before connecting your account to ' . ucfirst(
+                                $provider
+                            ) . '.'
+                        )
                             ->error()->important();
                         return redirect('login');
                     } else {
@@ -89,7 +92,9 @@ class AuthController extends Controller
                         $newUser = User::create(compact('name', 'email'));
 
                         // store its social account
-                        UserSocialAccount::create(['user_id'=>$newUser->id, 'provider'=>$provider, 'provider_uid'=>$socialUser->getId()]);
+                        UserSocialAccount::create(
+                            ['user_id' => $newUser->id, 'provider' => $provider, 'provider_uid' => $socialUser->getId()]
+                        );
 
                         Auth::loginUsingId($newUser->id);
                         $newUser->notify(new UserRegistered());
@@ -105,23 +110,22 @@ class AuthController extends Controller
         }
     }
 
-    public function handleDeauthorizeCallback($provider) {
-
-        if(Auth::check()) {
-
+    public function handleDeauthorizeCallback($provider)
+    {
+        if (Auth::check()) {
             $user = Auth::user();
-            if($user->password == null) {
+            if ($user->password == null) {
                 flash("You must set a password on your account before you can remove a social link.")->error();
                 return redirect()->back();
             }
 
             $user_id = Auth::id();
-            UserSocialAccount::where(['user_id'=>$user_id, 'provider'=>$provider])->delete();
+            UserSocialAccount::where(['user_id' => $user_id, 'provider' => $provider])->delete();
         } else {
-            if($provider == 'facebook') {
+            if ($provider == 'facebook') {
                 $secret = config('services.facebook.client_secret');
                 $signed_request = $this->parse_signed_request(Input::get('signed_request'), $secret);
-                if($signed_request) {
+                if ($signed_request) {
                     UserSocialAccount::where('provider', $provider)->where('provider_uid', $signed_request->user_id)->delete();
                 }
             }
@@ -129,11 +133,12 @@ class AuthController extends Controller
             return;
         }
 
-        flash(ucfirst($provider).' account unlinked.')->success();
+        flash(ucfirst($provider) . ' account unlinked.')->success();
         return back();
     }
 
-    private function parse_signed_request($signed_request) {
+    private function parse_signed_request($signed_request)
+    {
         list($encoded_sig, $payload) = explode('.', $signed_request, 2);
 
         $secret = "appsecret"; // Use your app secret here
@@ -152,7 +157,8 @@ class AuthController extends Controller
         return $data;
     }
 
-    private function base64_url_decode($input) {
+    private function base64_url_decode($input)
+    {
         return base64_decode(strtr($input, '-_', '+/'));
     }
 }

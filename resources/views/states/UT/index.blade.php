@@ -29,7 +29,8 @@
                     </ul>
 
                     <p>If you are also changing your gender, the process is slightly more complicated.
-                        We recommend you include as much information as possible with your court petition when you file to change your gender.
+                        We recommend you include as much information as possible with your court petition when you file to change your
+                        gender.
                         Try not to give them a reason to say no.
                     </p>
                     <ul>
@@ -51,7 +52,8 @@
                                     <span class="label label-info">Info!</span>
                                     <small>
                                         The State department has a good form letter for your doctor on their website.
-                                        <a href="https://travel.state.gov/content/passports/en/passports/information/gender.html" target="_blank">View <i class="fa fa-link"></i></a>
+                                        <a href="https://travel.state.gov/content/passports/en/passports/information/gender.html"
+                                           target="_blank">View <i class="fa fa-link"></i></a>
                                     </small>
                                 </li>
                             </ol>
@@ -61,7 +63,7 @@
                     <h2>After Court...</h2>
                     <p>
                         When your name change is granted, you will be allowed to change your name easily everywhere.
-                        If you are also changing your gender, of course, you have more work to do.  Changing your
+                        If you are also changing your gender, of course, you have more work to do. Changing your
                         documents in a particular order will make the process go smoother.
                     </p>
 
@@ -69,23 +71,30 @@
                     <p>
                         Changing your name at Social Security requires your court order and a few other things.
                         Changing your gender additionally requires <strong>either</strong> a letter from your doctor (the form letter
-                        from above) <strong>or</strong> your court order changing gender.  Why not bring both if you got em?
-                        <small><a href="https://faq.ssa.gov/link/portal/34011/34019/Article/2856/How-do-I-change-my-gender-on-Social-Security-s-records" target="_blank">More Info<i class="fa fa-link"></i></a></small>
+                        from above) <strong>or</strong> your court order changing gender. Why not bring both if you got em?
+                        <small><a
+                                href="https://faq.ssa.gov/link/portal/34011/34019/Article/2856/How-do-I-change-my-gender-on-Social-Security-s-records"
+                                target="_blank">More Info<i class="fa fa-link"></i></a></small>
                     </p>
 
                     <legend>US Passport</legend>
                     <p>
-                        Changing your name on your Passport is as easy as filing form DS-11 at the post office with your court order changing name
-                        plus the regularly required documents.  If you are also changing your gender file with your new gender and include your
+                        Changing your name on your Passport is as easy as filing form DS-11 at the post office with your court order
+                        changing name
+                        plus the regularly required documents. If you are also changing your gender file with your new gender and include
+                        your
                         doctor letter and court order.
-                        <small><a href="https://travel.state.gov/content/passports/en/passports/information/gender.html" target="_blank">More Info<i class="fa fa-link"></i></a></small>
+                        <small><a href="https://travel.state.gov/content/passports/en/passports/information/gender.html" target="_blank">More
+                                Info<i class="fa fa-link"></i></a></small>
                     </p>
 
                     <legend>Birth Certificate</legend>
                     <p>
-                        Changing your gender on your Utah birth certificate requires a certified copy of your court order and a small fee.  The new copy will contain a permanent
+                        Changing your gender on your Utah birth certificate requires a certified copy of your court order and a small fee.
+                        The new copy will contain a permanent
                         amendment notification [unless you also include your order sealing case -rumor]
-                        <small><a href="https://vitalrecords.utah.gov/certificates/amend-a-vital-record" target="_blank">More Info<i class="fa fa-link"></i></a></small>
+                        <small><a href="https://vitalrecords.utah.gov/certificates/amend-a-vital-record" target="_blank">More Info<i
+                                    class="fa fa-link"></i></a></small>
                     </p>
                     <p>
                         <small>If you were born in another state, you'll need to look that up separately.</small>
@@ -93,7 +102,8 @@
 
                     <legend>Driver's License/State ID</legend>
                     <p>
-                        Arguably the most important one for your daily life, changing the name on your driver's license or state ID in Utah is possible with your order changing name.
+                        Arguably the most important one for your daily life, changing the name on your driver's license or state ID in Utah
+                        is possible with your order changing name.
                     </p>
 
                     <p>
@@ -104,23 +114,24 @@
 
                     <p>
                         If you are unable to change your birth certificate because of your birth state law, you will
-                        need to get an updated passport.  They're expensive and take a long time to come, so this is a huge road block.
-                        Some people have gotten by this requirement by getting lucky with a clerk who doesn't know the policy.  Good luck!
+                        need to get an updated passport. They're expensive and take a long time to come, so this is a huge road block.
+                        Some people have gotten by this requirement by getting lucky with a clerk who doesn't know the policy. Good luck!
                     </p>
 
                     <legend>Other Places...</legend>
                     <p>
                         You will likely need to update your records at several other places, so make sure you get
-                        enough certified copies of your court order for you.  Consider the following places you may need to update through the mail:
+                        enough certified copies of your court order for you. Consider the following places you may need to update through
+                        the mail:
 
-                        <ul>
-                            <li>The IRS</li>
-                            <li>Your Bank</li>
-                            <li>Credit Card Companies</li>
-                            <li>Your Job</li>
-                            <li>Mortgage/Land Lord/Utilities</li>
-                            <li>...etc</li>
-                        </ul>
+                    <ul>
+                        <li>The IRS</li>
+                        <li>Your Bank</li>
+                        <li>Credit Card Companies</li>
+                        <li>Your Job</li>
+                        <li>Mortgage/Land Lord/Utilities</li>
+                        <li>...etc</li>
+                    </ul>
                     </p>
 
 
