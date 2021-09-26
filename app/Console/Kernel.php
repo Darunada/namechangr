@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
-        // TODO: Note!  Heroku scheduler runs a one-off dyno for each schedule to I am wary about running it every 10 minutes (heroku max)
+        // TODO: Note!  Heroku scheduler runs a one-off dyno for each schedule so I am wary about running it every 10 minutes (heroku max)
         // I have configured it to run every hour at :00.  Hopefully that will do
         // But you need to be aware of it at least, don't schedule for other times.
         //

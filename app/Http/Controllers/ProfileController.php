@@ -43,7 +43,7 @@ class ProfileController extends Controller
         ]);
 
         $validator->sometimes('password', 'required|min:6|confirmed', function ($input) {
-            return strlen($input->password) > 0;
+            return $input->password != '';
         });
 
         if ($validator->fails()) {

@@ -1,4 +1,4 @@
-let mix = require('laravel-mix');
+const mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,14 +11,14 @@ let mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-    .js('resources/assets/js/pages/states/UT.js', 'public/js');
+mix.js('resources/js/app.js', 'public/js')
+    .js('resources/js/pages/states/UT.js', 'public/js');
 
-mix.copyDirectory('resources/assets/js/vendor/simplemaps', 'public/js/usmap');
+mix.copyDirectory('resources/js/vendor/simplemaps', 'public/js/usmap');
 
-mix.sass('resources/assets/sass/app.scss', 'public/css');
+mix.sass('resources/sass/app.scss', 'public/css');
 
-mix.copyDirectory('resources/assets/favicons', 'public/favicons');
+mix.copyDirectory('resources/favicons', 'public/favicons');
 
 mix.version().sourceMaps(false);
 
