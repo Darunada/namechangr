@@ -148,7 +148,7 @@ class AuthenticationTest extends TestCase
 
         $this->post('/login', [
             'email' => $user->email,
-            'password' => 'secret'
+            'password' => 'password'
         ])->assertRedirect('/dashboard')->assertSessionHas('flash_notification');
     }
 

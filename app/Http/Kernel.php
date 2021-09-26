@@ -26,16 +26,16 @@ class Kernel extends HttpKernel
     /**
      * The application's global HTTP middleware stack.
      *
-     * These middleware are run during every request to your application.
+     * These middleware execute during every request to the application.
      *
      * @var array
      */
     protected $middleware = [
+        TrustProxies::class,
         CheckForMaintenanceMode::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        TrustProxies::class,
     ];
 
     /**

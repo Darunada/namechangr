@@ -20,7 +20,7 @@ class UtController extends Controller
 
     public function __construct()
     {
-        $this->state = Cache::remember('state-ut', 60 * 24, function () {
+        $this->state = Cache::remember('state-ut', now()->addDay(), function () {
             return State::where('name', 'Utah')->first();
         });
     }

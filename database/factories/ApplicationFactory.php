@@ -14,6 +14,7 @@ use Faker\Generator as Faker;
 |
 */
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Models\Application\Application::class, function (Faker $faker) {
     return [
         'user_id' => fn() => factory(App\User::class)->create()->id,

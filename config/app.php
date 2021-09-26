@@ -201,6 +201,7 @@ return [
     'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
+        'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
@@ -236,6 +237,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'States' => AdrianMejias\States\StatesFacade::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,

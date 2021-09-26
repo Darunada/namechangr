@@ -42,7 +42,7 @@ class ProfileController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
         ]);
 
-        $validator->sometimes('password', 'required|min:6|confirmed', function ($input) {
+        $validator->sometimes('password', 'required|min:8|confirmed', function ($input) {
             return $input->password != '';
         });
 
