@@ -25,14 +25,14 @@ Installation
 ----------------------------------------------
 NameChangr works in both Windows and Linux.  Most dev computers set up as a *AMP server will be able to run it. 
 
-* You have PHP and Node installed
-* You have `composer` installed
-* You have a database installed (mysql, postgres, even sqlite is supported)
+* You have PHP 7.4 and Node 14 LTS installed
+* You have Composer 2 installed
+* You have a database available (mysql, postgres, even sqlite is supported)
 * You have NameChangr cloned into a working directory.
 
 From this point, we can begin installing NameChangr.
 
-```
+```console
 $ cp .env.example .env              # copies local environment config file from template 
 $ composer install                  # downloads all php depdendencies
 $ npm install                       # downloads all js dependencies
@@ -41,8 +41,14 @@ $ php artisan passport:keys         # generates new keypair for api token authen
 $ npm run dev                       # compiles css and js assets 
 ```
 
-Now look in your `.env` file and follow the documentation it contains onwards to enlightenment.
+Now look in your `.env` file and follow the documentation within.  You must configure a database connection, but
+otherwise the defaults will use Laravel's local drivers without (m)any issues.
 
-Once your environment is configured, you can run NameChangr with `$ php artisan serve` and connect 
+With the database connection configured, we may now initialize it.
+```console
+$ php artisan migrate               # installs the database schema
+$ php artisan db:seed               # seeds the database with states and other initial data
+```
+
+You may now run NameChangr with `$ php artisan serve` and connect 
 on `http://localhost:8000`.  If you run into problems, troubleshoot with the logs in `storage/logs` or file an issue.
-
