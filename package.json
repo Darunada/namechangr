@@ -28,7 +28,7 @@
     "cross-env": "^5.1",
     "jquery": "^3.4.1",
     "jquery-steps": "^1.1.0",
-    "jquery-validation": "^1.19.0",
+    "jquery-validation": "^1.19.4",
     "raphael": "^2.2.8",
     "underscore": "^1.9.1"
   }
